@@ -1,0 +1,17 @@
+<div class="profile-photo">
+  <div class="photo-wrapper">
+    <mat-icon *ngIf="allowReset && !readonlyMode && value" class="clear-photo" (click)="resetPhoto()">add_circle</mat-icon>
+    <app-letter-logo [name]="name" [value]="value"></app-letter-logo>
+    <label *ngIf="!readonlyMode" for="inputFiled" class="custom-file-input">
+      <div class="update-logo"><div class="update-text">{{value ? 'Update' : 'Upload'}} Logo</div>
+        <div class="photo-upload-description">
+          <div>{{label}}</div>
+          <div class="text-style">{{description}}</div>
+        </div>
+      </div>
+      <input #fileInput (change)="fileChanged($event)" type="file" accept=".png, .jpg, .jpeg, .gif" class="input-file" id="inputFiled"/>
+    </label>
+  </div>
+</div>
+
+

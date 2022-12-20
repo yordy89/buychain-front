@@ -1,0 +1,10 @@
+<app-modal-base header="Add CRM Account">
+  <ng-container content>
+    <app-company-form [parentForm]="form" [isCrm]="true"></app-company-form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="createCrmAccount()">Save</app-button>
+  </ng-container>
+</app-modal-base>

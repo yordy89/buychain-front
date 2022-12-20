@@ -1,0 +1,52 @@
+.modal-base-wrapper {
+  position: relative;
+}
+
+.header {
+  font-size: 22px;
+  line-height: 25px;
+  margin: 0;
+  font-family: Helvetica, sans-serif;
+}
+
+.sub-header {
+  margin: 10px 0 0;
+  font-size: 16px;
+}
+
+.content {
+  margin: 0;
+  padding: 10px 0;
+  overflow: auto;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: auto;
+  padding: 20px 0 0;
+  margin: 0;
+
+  &.actions-top {
+    padding: 0 0 20px;
+  }
+}
+
+.header-actions {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  z-index: 10;
+}
+
+.created-and-modified {
+  text-align: right;
+  color: grey;
+  font-style: italic;
+  margin-top: 10px;
+
+  &:empty {
+    display: none;
+  }
+}

@@ -1,0 +1,86 @@
+<div class="shipping-info-wrapper" [ngClass]="{'is-modified-transport': isModifyTransportState}">
+	<app-table-base [minWidth]="isModifyTransportState ? '500px': '450px'" headingText="Ship From">
+		<ng-container header>
+			<tr class="header-row">
+				<th class="ship-from-company">Ship From Company</th>
+				<th class="ship-from-facility">Ship From</th>
+				<th class="ship-from-sales-rep">Ship From Sales Rep</th>
+			</tr>
+		</ng-container>
+
+		<ng-container body>
+			<tr class="body-row">
+				<td class="ship-from-company transportation-table-unit">
+					<div>{{transactionData.sellerCompanyName}}</div>
+				</td>
+				<td class="ship-from-facility transportation-table-unit">
+					<div>{{transactionData.shipFromName}}</div>
+				</td>
+				<td class="ship-from-sales-rep transportation-table-unit">
+					<div>
+						{{transactionData.sellerName}}<br>
+						{{transactionData.seller.username}}
+					</div>
+				</td>
+			</tr>
+		</ng-container>
+	</app-table-base>
+
+	<app-table-base [minWidth]="isModifyTransportState ? '500px': '450px'"
+	                headingText="Ship to"
+	>
+		<ng-container header>
+			<tr class="header-row">
+				<th class="ship-to-company">Ship to Company</th>
+				<th class="ship-to-facility">Ship to Facility</th>
+				<th class="ship-to-sales-rep">Ship to Sales Rep</th>
+			</tr>
+		</ng-container>
+
+		<ng-container body>
+			<tr class="body-row">
+				<td class="ship-to-company transportation-table-unit">
+					<div>{{transactionData.buyingCompanyName}}</div>
+				</td>
+				<td class="ship-to-facility transportation-table-unit">
+					<div *ngIf="!isModified; else ModifiedShipToLocation">{{transactionData.shipToName}}</div>
+					<ng-template #ModifiedShipToLocation>
+						<div [ngStyle]="{'color': isLocationModified ? 'red' : 'black'}">
+							{{modifiedLocation?.shortName}}
+						</div>
+					</ng-template>
+				</td>
+				<td class="ship-to-sales-rep transportation-table-unit">
+          <app-user-details [userData]="isModified ? modifiedContact : transactionData.buyer" [isModified]="isContactModified"></app-user-details>
+        </td>
+			</tr>
+		</ng-container>
+	</app-table-base>
+
+	<app-table-base [minWidth]="isModifyTransportState ? '500px': '450px'"
+	                headingText="Bill to"
+	>
+		<ng-container header>
+			<tr class="header-row">
+				<th class="ship-to-facility">Bill to Facility</th>
+				<th class="ship-to-sales-rep">Bill to Contact</th>
+			</tr>
+		</ng-container>
+
+		<ng-container body>
+			<tr class="body-row">
+				<td class="ship-to-facility transportation-table-unit">
+					<div *ngIf="!isModified; else ModifiedBillToLocation">{{transactionData.billToLocation.shortName}}</div>
+          <ng-template #ModifiedBillToLocation>
+            <div [ngStyle]="{'color': isBillToLocationModified ? 'red' : 'black'}">
+              {{modifiedBillToLocation?.shortName}}
+            </div>
+          </ng-template>
+				</td>
+				<td class="ship-to-sales-rep transportation-table-unit">
+          <app-user-details [userData]="isModified ? modifiedBillToContact : transactionData.billToContact" [isModified]="isBillToContactModified"></app-user-details>
+        </td>
+			</tr>
+		</ng-container>
+	</app-table-base>
+</div>

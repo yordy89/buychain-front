@@ -1,0 +1,7 @@
+.is-text {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: calc(100% - 35px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

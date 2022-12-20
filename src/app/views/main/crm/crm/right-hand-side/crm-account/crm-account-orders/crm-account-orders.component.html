@@ -1,0 +1,58 @@
+<div class="table-container">
+  <div class="header-section">
+    <h4>{{crmAccountData.fullName}} Transactions</h4>
+    <app-bookmark [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+                  (stateChanged)="onStateChanged($event)"></app-bookmark>
+  </div>
+  <dx-data-grid #txGrid
+    id="transactionGridContainer"
+    [dataSource]="companyNormalizedTransactions"
+    [showBorders]="true"
+    [remoteOperations]="false"
+    [allowColumnResizing]="true"
+    columnResizingMode="widget"
+    [columnAutoWidth]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    [columnHidingEnabled]="true"
+    [hoverStateEnabled]="true"
+    [selectedRowKeys]="[]"
+    (onCellClick)="onTransactionSelectionChanged($event)"
+    (onToolbarPreparing)="onToolbarPreparing($event)"
+    (onExporting)="onExporting($event)"
+  >
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-load-panel [enabled]="true"></dxo-load-panel>
+    <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+    <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+    <dxo-selection mode="single"></dxo-selection>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState" [savingTimeout]="100"></dxo-state-storing>
+
+    <dxi-column dataField="transactionNumber" [allowGrouping]="false"></dxi-column>
+    <dxi-column dataField="sellerName" [visible]="false"></dxi-column>
+    <dxi-column dataField="shipFromName"></dxi-column>
+    <dxi-column dataField="sellerCompanyName" [visible]="false"></dxi-column>
+    <dxi-column dataField="buyerName" [visible]="false"></dxi-column>
+    <dxi-column dataField="shipToName"></dxi-column>
+    <dxi-column dataField="buyingCompanyName" [visible]="false"></dxi-column>
+    <dxi-column dataField="totalPrice" [allowGrouping]="false" format="currency"></dxi-column>
+    <dxi-column dataField="description" [visible]="false" [allowGrouping]="false" cssClass="width-restriction"></dxi-column>
+    <dxi-column dataField="state"></dxi-column>
+  </dx-data-grid>
+
+  <span style="visibility: hidden; position: fixed"
+        [style.left]="txGridMenuData.position.x"
+        [style.top]="txGridMenuData.position.y"
+        [matMenuTriggerFor]="orderMenu"></span>
+  <mat-menu #orderMenu="matMenu" class="group-menu-wrapper">
+    <button mat-menu-item (click)="openTxDetails()">Open details</button>
+    <button mat-menu-item (click)="openTxInNewTab()">Open in new tab</button>
+    <button mat-menu-item (click)="openTxInNewWindow()" >Open in new window</button>
+  </mat-menu>
+
+</div>

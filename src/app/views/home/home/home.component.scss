@@ -1,0 +1,164 @@
+.home-container {
+  /* General styles */
+  button {
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .message {
+    font-size: 22px;
+    max-width: 800px;
+    white-space: pre-wrap;
+    border: 1px solid #ddebf6;
+    margin: 20px auto;
+    padding: 10px;
+    background: #f5deb31c;
+    border-radius: 8px;
+  }
+
+  .action-btn {
+    text-align: center;
+
+    button {
+      padding: 10px 35px;
+      font-size: 15px;
+      //padding: 20px;
+      width: 225px;
+      //font-size: 22px;
+      border: 1px solid #e0e2e7;
+      box-shadow: inset 0 0 0 0 rgba(var(--palette-warn-500), 1);
+      background: #5679ad;
+      height: 50px;
+      outline: none;
+      border-radius: 20px;
+      margin: 10px 0;
+    }
+  }
+
+  /*
+  ** Section Choose between Company creation and/or join
+  **/
+  .section-initial-selection {
+    h1,
+    h3 {
+      text-align: center;
+      color: #3c68a4;
+    }
+
+    & > div {
+      text-align: center;
+      border: 1px solid #ddebf6;
+      margin: 8% auto;
+      padding: 20px;
+      background: #f5deb31c;
+      border-radius: 8px;
+      max-width: 360px;
+
+      button {
+        width: 270px;
+        font-size: 21px;
+        border: 1px solid #e0e2e7;
+        box-shadow: inset 0 0 0 0 rgba(var(--palette-warn-500), 1);
+        background: #5679ad;
+        height: 75px;
+        outline: none;
+        border-radius: 20px;
+        margin: 10px 0;
+      }
+    }
+  }
+
+  /*
+  ** Section to Create a new Company
+  **/
+  .creation-layout {
+    text-align: center;
+    color: #3c68a4;
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .facility-creation .action-btn {
+      button {
+        margin: 50px 10px 5px;
+
+        &.yes {
+          background: rgba(var(--palette-primary-500), 1);
+        }
+
+        &.yes:hover {
+          background: rgba(var(--palette-primary-700), 1);
+        }
+
+        &.no {
+          background: #f7f8fb;
+          color: black;
+        }
+
+        &.no:hover {
+          background: #e0e2e7;
+        }
+      }
+    }
+
+    .company-creation {
+      background-color: rgba(var(--palette-background-dialog), 1);
+      width: 600px;
+      margin: 0 auto;
+
+      app-company-form {
+        width: 100%;
+      }
+    }
+  }
+
+  /*
+  ** Section to join already existng Company
+  **/
+  .join-layout {
+    text-align: center;
+    color: rgba(var(--palette-primary-500), 1);
+
+    h1 {
+      margin-bottom: 30px;
+    }
+  }
+
+  /*
+  ** Section for pending for approval message
+  **/
+  .pending-layout {
+    text-align: center;
+    color: rgba(var(--palette-primary-500), 1);
+  }
+
+  /*
+  ** Section for Home.
+  **/
+  .profile-layout {
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 20%), 0 2px 2px 0 rgba(0, 0, 0, 14%), 0 1px 5px 0 rgba(0, 0, 0, 12%);
+    background-color: rgba(var(--palette-background-dialog), 1);
+    height: 100%;
+    overflow: auto;
+    padding: 10px 24px 16px;
+
+    h2,
+    h3 {
+      text-align: center;
+      color: rgba(var(--palette-primary-500), 1);
+    }
+  }
+
+  .action-btns-save-profile {
+    padding: 10px 18px;
+    float: right;
+    margin-right: 5%;
+  }
+}
+
+.not-ready-parts {
+  width: 94%;
+  margin-top: 30px;
+}

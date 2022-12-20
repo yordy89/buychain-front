@@ -1,0 +1,65 @@
+@use 'variables' as *;
+
+// dx chart tooltip not showing on modal windows
+.dxc-tooltip {
+  z-index: 2000;
+}
+
+.accounting-full-staked-bar-chart .dxc-val-title text {
+  transform: translate(35px, 0) !important;
+}
+
+.chart-container {
+  .chart-legends {
+    color: $text-1;
+
+    &-heading {
+      display: flex;
+      justify-content: flex-end;
+      font-weight: 700;
+    }
+
+    &-list {
+      padding: 0;
+      list-style: none;
+      margin: 10px 0;
+
+      li {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+
+    &-summary {
+      display: flex;
+      justify-content: flex-end;
+      border-top: 1px solid darkgray;
+      padding-top: 10px;
+    }
+  }
+
+  .chart-legend {
+    margin: 5px 0;
+
+    &-label {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    &-color {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    &:nth-last-child(2) {
+      margin-bottom: 10px;
+    }
+
+    &:last-child {
+      border-top: 1px solid darkgray;
+      padding-top: 10px;
+    }
+  }
+}

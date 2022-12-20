@@ -1,0 +1,60 @@
+.wrapper {
+  position: relative;
+
+  .page-view-wrapper {
+    display: flex;
+    align-items: center;
+
+    .page-view-text {
+      color: var(--text-1);
+      margin-right: 15px;
+    }
+
+    .icon-and-name {
+      position: relative;
+      width: 300px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      border: 1px solid darkgrey;
+      border-radius: 5px;
+
+      mat-icon {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+      }
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.saved-bookmark-item {
+  width: 300px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  cursor: pointer;
+  margin: 0;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(var(--palette-primary-500), 0.1);
+  }
+
+  &.selected {
+    background-color: rgba(var(--palette-primary-500), 0.3);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+  }
+}

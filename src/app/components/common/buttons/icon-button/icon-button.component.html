@@ -1,0 +1,8 @@
+<button mat-icon-button 
+  type="button"
+  [disabled]="isDisabled" 
+  (click)="click($event)">
+  <mat-icon *ngIf="icon" [color]="color">
+    {{icon}}
+  </mat-icon>
+</button>

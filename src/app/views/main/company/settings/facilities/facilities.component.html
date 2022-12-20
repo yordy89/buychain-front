@@ -1,0 +1,72 @@
+<div class="content">
+
+  <div *ngIf="facilitiesCompleteSummary?.length" class="show-inactive-slider">
+    <mat-slide-toggle
+      labelPosition="before"
+      color="primary"
+      class="text-secondary"
+      (change)="showInactiveSwitch($event)"
+    >Show Archived</mat-slide-toggle>
+  </div>
+  <app-table-base *ngIf="facilitiesSummary?.length; else NoFacilities" class="striped">
+    <ng-container header>
+      <tr>
+        <th class="name" (click)="sort('shortName')">
+          Name
+          <mat-icon *ngIf="sorted?.by === 'shortName'">
+            <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+            <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+          </mat-icon>
+        </th>
+        <th class="description">Description</th>
+        <th class="address">Address</th>
+        <th class="city">City</th>
+        <th class="state">State</th>
+        <th class="facility-archived">Archived</th>
+        <th class="updated-at" (click)="sort('updatedAt')">
+          Last Modified
+          <mat-icon *ngIf="sorted?.by === 'updatedAt'">
+            <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+            <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+          </mat-icon>
+        </th>
+        <th class="actions" *ngIf="permissions.canRead"></th>
+      </tr>
+    </ng-container>
+
+    <ng-container body>
+      <tr *ngFor="let facility of facilitiesSummary"  [ngClass]="{'archived-facility': facility.archived}">
+        <td class="name">{{facility.shortName}}</td>
+        <td class="description">{{facility.description}}</td>
+        <td class="address">{{facility.streetAddress}}</td>
+        <td class="city">{{facility.city}}</td>
+        <td class="state">{{facility.state}}</td>
+        <td class="facility-archived">{{facility.archived | booleanYesNo}}</td>
+        <td class="updated-at">{{facility.updatedAt | date}}</td>
+        <td class="actions" *ngIf="permissions.canRead">
+          <app-table-actions [data]="facility"
+                             [actions]="actions"
+                             (action)="onTableAction($event, facility)"
+          ></app-table-actions>
+        </td>
+      </tr>
+    </ng-container>
+  </app-table-base>
+
+  <ng-template #NoFacilities>
+    <div *ngIf="permissions.canRead; else NoPermissions">
+      <div class="no-data-plate">
+        <h3>Company Does not have any facilities defined</h3>
+        <h4 *ngIf="permissions.canCreate">You can add new facilities using the button below</h4>
+      </div>
+    </div>
+
+    <ng-template #NoPermissions>
+      <div class="no-data-plate">You do not have enough permissions for this section</div>
+    </ng-template>
+  </ng-template>
+</div>
+
+<mat-action-row *ngIf="permissions.canCreate">
+  <app-button (clicked)="addNewFacility()">Add new Facility</app-button>
+</mat-action-row>

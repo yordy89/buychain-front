@@ -1,0 +1,44 @@
+.ship-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-top: 5px;
+}
+
+.container-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 10px 0;
+
+  .label {
+    font-weight: bold;
+    font-size: 17px;
+    padding: 2px 10px;
+  }
+
+  .section-personnel {
+    width: 40%;
+
+    .personnel-table {
+      margin: 10px 20px;
+    }
+  }
+
+  .section-notes {
+    width: 30%;
+
+    .active-hours,
+    .comments {
+      padding: 10px 20px;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      textarea {
+        resize: none;
+      }
+    }
+  }
+}

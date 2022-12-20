@@ -1,0 +1,10 @@
+<app-modal-base header="Alternative Bill To Location">
+  <ng-container content>
+    <app-facility-form [parentForm]="form" [facilityData]="data" [readonlyMode$]="readonlyMode$" [isCrm]="true"></app-facility-form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="saveAltBillTo()">Save</app-button>
+  </ng-container>
+</app-modal-base>

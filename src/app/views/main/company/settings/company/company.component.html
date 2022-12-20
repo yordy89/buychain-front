@@ -1,0 +1,62 @@
+<div class="wrapper" *ngIf="company">
+
+  <div class="section-wrapper section-wrapper-company">
+    <div class="section-header">
+      <div class="header-label">General Information</div>
+      <mat-icon color="primary" *ngIf="permissions?.canUpdateMainData" (click)="editCompanyInfo()">edit</mat-icon>
+    </div>
+    <div class="company-main">
+      <div class="upload-photo-section">
+        <app-letter-logo [value]="logoUrl" [name]="company.name"></app-letter-logo>
+      </div>
+      <div class="basic-info-container">
+        <div>{{company.name}}</div>
+        <div><a href="{{company.website}}">{{company.website}}</a></div>
+        <div>{{company.streetAddress}} {{company.zipCode}}</div>
+        <div>{{company.city}} {{company.state}}</div>
+        <div>{{company.country}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrapper">
+    <div class="section-header">
+      <div class="header-label">Sales Practices</div>
+      <mat-icon color="primary" *ngIf="permissions?.canUpdateSalesPractices" (click)="editSalesPractices()">edit</mat-icon>
+    </div>
+    <div class="section-content">
+      <div class="disabled-property">
+        <div class="label">Selection Criteria:</div>
+        <div class="value">{{selectionCriteria}} <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.SALES_PRACTICE_SELECTION_CRITERIA"></app-tooltip-info-icon></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-wrapper">
+    <div class="section-header">
+      <div class="header-label">Privacy Settings</div>
+      <mat-icon color="primary" *ngIf="permissions?.canUpdatePrivacySettings" (click)="editPrivacySettings()">edit</mat-icon>
+    </div>
+    <div class="section-content">
+      <div class="disabled-property">
+        <div class="label">Allow Listing: </div>
+        <div class="value">{{privacySettings.allowListing}} <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.ALLOW_LISTING"></app-tooltip-info-icon></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-wrapper">
+    <div class="section-header">
+      <div class="header-label">BuyChain Contract</div>
+    </div>
+    <div class="section-content">
+      <div class="disabled-property">
+        <div class="label">Type: </div>
+        <div class="value">{{companyContract.type}}</div>
+      </div>
+      <div class="disabled-property">
+        <div class="label">Basis Point: </div>
+        <div class="value">{{companyContract.basisPoints}}</div>
+      </div>
+    </div>
+  </div>
+
+</div>

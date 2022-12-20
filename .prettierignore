@@ -1,0 +1,12 @@
+**/dist
+**/.cache
+**/coverage
+**/.vscode
+**/.idea
+**/.github
+**/node_modules
+
+**/src/app/services/data-layer
+
+.DS_Store
+*.html

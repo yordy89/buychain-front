@@ -1,0 +1,37 @@
+<app-chart-container [caption]="'Order Logistics'">
+  <div class="content">
+    <dx-calendar>
+      <span  *dxTemplate="let cellData of 'cell'">
+        <div class="cell-template" >
+          <div [ngClass]="getDateMarkerCssClass(cellData)" (mouseover)="onMouseOver($event, cellData)" (mouseout)="onMouseOut()">
+          </div>
+          <span class="date-text">{{cellData.text}}</span>
+        </div>
+      </span>
+    </dx-calendar>
+    <div class="tooltip" *ngIf="showTooltip"
+      [ngStyle]="{ 'bottom.px': tooltipBottom, 'left.px': tooltipLeft, 'width.px': tooltipWidth, 'top.px': 60}"
+      (mouseover)="toolTipMouseOver()"
+      (mouseout)="toolTipMouseOut()">
+      <ul>
+        <li *ngFor="let order of tooltipData.orders">
+          <a mat-button [routerLink]="getLinkToTransaction(order.id)" (click)="navigateToTransaction(order.id)">{{order.transactionNumber}}</a> - {{order.description}}
+        </li>
+      </ul>
+    </div>
+    <div class="legends">
+      <div>
+        <div class="circle green"></div>Less than {{seriesCalcBasis}}
+      </div>
+      <div>
+        <div class="circle orange"></div>More or equal {{seriesCalcBasis}}
+      </div>
+      <div>
+        <div class="circle red"></div>At least {{2 * seriesCalcBasis}}
+      </div>
+    </div>
+    <div class="info">
+      *Based on Median Orders/Day
+    </div>
+  </div>
+</app-chart-container>

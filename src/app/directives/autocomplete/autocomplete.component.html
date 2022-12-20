@@ -1,0 +1,37 @@
+<mat-form-field [appearance]="appearance" [ngClass]="{'w-100': fullWidth}">
+  <mat-label>{{label}}</mat-label>
+  <input matInput
+         autocomplete="off"
+         [placeholder]="placeholder"
+         [required]="isRequired"
+         [formControl]="formControl"
+         [matAutocomplete]="autocompleteSelect"
+         #autocomplete="matAutocompleteTrigger"
+         (blur)="onBlurInput($event)"
+         (click)="onFocusInput()"
+         (keydown.enter)="onEnter($event)"
+  >
+  <mat-icon *ngIf="iconName" matPrefix class="info-icon">{{iconName}}</mat-icon>
+  <button [ngStyle]="{'visibility': (hasValue && !isDisabled) ? 'visible': 'hidden'}"
+          type="button"
+          class="clear-icon"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="onClearSelection()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <mat-autocomplete #autocompleteSelect="matAutocomplete"
+                    [displayWith]="getNameById.bind(this)"
+                    (optionSelected)="onOptionChange($event.option.value)"
+                    (closed)="onLeaveInput()"
+                    [panelWidth]="panelWidth"
+  >
+    <mat-option *ngFor="let item of filteredOptions" [value]="getKeyName(item)">
+      {{ getDisplayName(item) }}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error>{{formControl?.errors | errorMessage}}</mat-error>
+</mat-form-field>

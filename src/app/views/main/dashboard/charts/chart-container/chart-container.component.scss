@@ -1,0 +1,25 @@
+.wrapper {
+  min-width: 550px;
+  margin: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid lightgray;
+  height: 40px;
+  padding: 7px 20px;
+}
+
+.caption {
+  font-size: 18px;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+.content {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}

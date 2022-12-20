@@ -1,0 +1,40 @@
+.modal-base {
+  .actions {
+    > app-button {
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .form-vertical {
+    .mat-form-field {
+      display: block;
+    }
+  }
+
+  .plaintext-field {
+    display: flex;
+    align-items: baseline;
+    font-size: 15px;
+
+    .label {
+      margin-right: 5px;
+    }
+
+    .value {
+      font-weight: 800;
+    }
+  }
+
+  .static-textarea {
+    .mat-form-field {
+      width: 100%;
+      height: 100%;
+    }
+
+    textarea {
+      resize: none;
+    }
+  }
+}

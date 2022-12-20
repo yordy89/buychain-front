@@ -1,0 +1,193 @@
+<ng-container *ngIf="data">
+	<div class="flex-row align-items-start">
+		<div class="flex-col-3 pr-20">
+      <div class="flex-row">
+        <div class="flex-col">
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Status</div>
+            <div class="key-value-pair-value">
+              <span class="badge" [ngClass]="data.badgeClass">{{data.state | stringUnderscoreToSpaceTitleCase}}</span>
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Number</div>
+            <div class="key-value-pair-value">
+              <app-copy-text-button
+                class="small"
+                [text]="data.number"
+                [valueToCopy]="entryUrl"
+                successMessage="Link to this Sales Order copied to clipboard"
+              ></app-copy-text-button>
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Customer</div>
+            <div class="key-value-pair-value">
+              {{data.customer.company | displayItemFromList: crmAccounts:'id':'name'}}
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">SO Reference</div>
+            <div class="key-value-pair-value">
+              {{data.SONumber || '-'}}
+            </div>
+          </div>
+        </div>
+        <div class="flex-col">
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Sales Rep</div>
+            <div class="key-value-pair-value">
+              {{data.owner | displayItemFromList: members:'id':'name'}}
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Group</div>
+            <div class="key-value-pair-value">
+              {{data.group || null | displayItemFromList: groups:'id':'name'}}
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Dimension</div>
+            <div class="key-value-pair-value">
+              {{(data.costCenter | displayItemFromList: dimensions:'id':'name') || '-'}}
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Created At</div>
+            <div class="key-value-pair-value">
+              {{data.createdAt | date}}
+            </div>
+          </div>
+        </div>
+        <div class="flex-col">
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Payment Terms</div>
+            <div class="key-value-pair-value">
+              {{data?.terms || '-'}}
+            </div>
+          </div>
+          <div class="key-value-pair">
+            <div class="key-value-pair-label">Credit Terms</div>
+            <div class="key-value-pair-value">
+              {{creditTerms || '-'}}
+            </div>
+          </div>
+          <div *ngIf="transaction" class="key-value-pair">
+            <div class="key-value-pair-label">Transaction State</div>
+            <div class="key-value-pair-value">
+              <span class="badge" [ngClass]="transaction?.badgeClass">{{transaction?.state || '' | stringUnderscoreToSpaceTitleCase}}</span>
+            </div>
+          </div>
+          <div *ngIf="transaction" class="key-value-pair">
+            <div class="key-value-pair-label">Transaction Link</div>
+            <div class="key-value-pair-value text-nowrap">
+              <a [href]="transactionUrl" target="_blank" class="link-btn">View</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div class="flex-col-2 key-value-pair description">
+          <div class="key-value-pair-label">Description</div>
+          <div class="key-value-pair-value">{{data.description}}</div>
+        </div>
+      </div>
+    </div>
+
+		<div *ngIf="data?.allLines.length > 0" class="flex-col-2 chart-container accounting-full-staked-bar-chart">
+			<h4 class="chart-title">Estimated Profit/Loss</h4>
+			<div class="charts-content">
+				<div class="chart-legends">
+					<div class="chart-legends-heading">Totals</div>
+					<ul class="chart-legends-list">
+						<li *ngFor="let item of profitLegendsList" class="chart-legend">
+							<span class="chart-legend-label">
+								<span class="chart-legend-color" [ngStyle]="{backgroundColor: item.color}"></span>
+								{{item.key}}
+							</span>
+              <span *ngIf="item.total >= 0">{{item.total | currency}}</span>
+              <span *ngIf="item.total < 0" [ngStyle]="{color: item.color}">({{legendValue(item.total)}})</span>
+						</li>
+					</ul>
+				</div>
+
+				<dx-chart
+						[dataSource]="getProfitData()"
+						[animation]="false"
+						palette="Soft Pastel"
+						[size]="{height: 150}"
+            #profitChart
+				>
+					<dxi-series
+            *ngFor="let item of profitItemsList"
+            [color]="item.color"
+            [valueField]="item.valueField"
+            [name]="item.name"
+            [visible]="item.visible"
+          >
+            <dxo-label
+              [visible]="true"
+              [customizeText]="customizeStackedBarLabelText"
+              backgroundColor="none"
+            >
+            </dxo-label>
+          </dxi-series>
+
+          <dxo-adaptive-layout [height]="300" [width]="400"></dxo-adaptive-layout>
+					<dxi-value-axis
+            [visible]="true"
+            [grid]="{visible: false}"
+            [label]="{visible: false}"
+            [tick]="{ shift: -8, length: 18, color: getAxisColor(profitItemsList)}"
+            [offset]="20"
+            [title]="{ text: valueAxisTitle(), font: { color: getAxisColor(profitItemsList)}}"
+            position="right"
+            [tickInterval]="1"
+            [color]="getAxisColor(profitItemsList)"
+          ></dxi-value-axis>
+					<dxo-argument-axis [visible]="false" [grid]="{visible: false}" [label]="{visible: false}" [tick]="{visible: false}"></dxo-argument-axis>
+					<dxo-common-series-settings argumentField="name" type="fullStackedBar" [barWidth]="100"></dxo-common-series-settings>
+					<dxo-legend [visible]="false"></dxo-legend>
+					<dxo-tooltip [enabled]="true"  location="edge" [customizeTooltip]="customizeStackedBarTooltip"></dxo-tooltip>
+        </dx-chart>
+			</div>
+		</div>
+
+	</div>
+
+  <div class="lines-container flex-row">
+    <div class="flex-col-2">
+      <app-sales-order-line-items-grid
+        [salesOrder]="data"
+        (lineItemDeletedEvent)="onLineItemDeleted()">
+      </app-sales-order-line-items-grid>
+    </div>
+
+    <div class="flex-col">
+      <app-sales-order-invoices-grid
+        [salesOrder]="data"
+        [onInvoiceDeleted]="onInvoiceDeleted">
+      </app-sales-order-invoices-grid>
+    </div>
+  </div>
+
+	<div class="flex-row">
+    <div *ngIf="data?.attachments?.length" class="flex-col">
+      <app-accounting-file-upload
+        [attachments]="data.attachments"
+        [isEditable]="false"
+      ></app-accounting-file-upload>
+    </div>
+		<div class="flex-col">
+			<div *ngIf="data.notes" class="key-value-pair notes">
+				<div class="key-value-pair-label">Notes</div>
+				<div class="key-value-pair-value">{{data.notes}}</div>
+			</div>
+		</div>
+	</div>
+
+  <div *ngIf="canCloseSalesOrder" class="d-flex justify-content-end">
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onCloseSalesOrder()">Close Sales Order</app-button>
+  </div>
+</ng-container>

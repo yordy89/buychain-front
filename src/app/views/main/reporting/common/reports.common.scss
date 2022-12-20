@@ -1,0 +1,65 @@
+@use 'variables' as *;
+
+.reports-wrapper {
+  width: 98%;
+  margin: 1%;
+
+  .header-container {
+    height: 60px;
+
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .options-wrapper {
+    mat-form-field {
+      margin: 0 5px;
+    }
+
+    .caption {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-1);
+    }
+
+    .filters-and-options-container {
+      .filter-container {
+        display: flex;
+
+        .dx-filterbuilder {
+          background-color: transparent;
+        }
+
+        app-button {
+          display: flex;
+          flex-direction: column-reverse;
+        }
+      }
+
+      .data-options-container {
+        display: flex;
+      }
+
+      .time-period-selector {
+        display: flex;
+      }
+    }
+  }
+
+  .datagrid-wrapper {
+    width: 100%;
+    margin: 10px 0;
+
+    dx-data-grid {
+      max-width: 100%;
+      max-height: 500px;
+    }
+  }
+
+  .no-data {
+    padding: 100px;
+  }
+}

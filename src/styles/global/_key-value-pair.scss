@@ -1,0 +1,27 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.key-value-pair {
+  font-size: 14px;
+  line-height: 1.25em;
+  display: flex;
+  color: rgba(var(--palette-foreground-disabled-text), 0.8);
+  flex-direction: column;
+  padding: 8px 0;
+
+  @include mat_css-dark-theme-global {
+    color: rgba(255, 255, 255, 70%);
+  }
+
+  &-label {
+    opacity: 0.5;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-value {
+    word-break: break-all;
+    padding-top: 3px;
+  }
+}

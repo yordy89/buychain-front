@@ -1,0 +1,156 @@
+@use 'mixins' as mixins;
+
+.wrapper {
+  width: 100%;
+  padding: 0 1%;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: -2px;
+    }
+  }
+
+  .form-wrapper {
+    width: 100%;
+
+    .transaction-transportation {
+      width: 100%;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .original-transportation {
+        width: 100%;
+
+        &.diff-mode {
+          width: 100%;
+          border: 2px solid red;
+          border-radius: 5px;
+        }
+      }
+
+      .modified-transportation {
+        border: 2px solid red;
+        border-radius: 5px;
+        width: 100%;
+      }
+
+      .original-transportation,
+      .modified-transportation {
+        .header {
+          width: 100%;
+          text-align: center;
+        }
+      }
+
+      .diff-arrow {
+        width: 60px;
+        text-align: center;
+
+        .mat-icon {
+          font-size: 60px;
+          height: 60px;
+          width: 60px;
+        }
+      }
+
+      .invalid {
+        border: 2px solid rgba(var(--palette-warn-500), 1);
+        border-radius: 5px;
+      }
+
+      .button-section {
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+
+    .description-notes-wrapper {
+      display: flex;
+      flex-wrap: nowrap;
+
+      .transaction-description-box,
+      .transaction-internal-notes {
+        textarea {
+          resize: none;
+        }
+
+        margin: 10px 10px 0;
+        width: 48%;
+        min-width: 200px;
+
+        mat-form-field {
+          width: 100%;
+        }
+      }
+    }
+
+    app-transaction-state {
+      width: 100%;
+    }
+
+    .tally-wrapper {
+      margin-top: 5px;
+    }
+
+    .add-product-button {
+      display: flex;
+      justify-content: flex-end;
+
+      app-button {
+        margin-left: 10px;
+      }
+    }
+
+    .purchase-sales-numbers {
+      margin: 40px 10px 0;
+    }
+
+    .milestones-and-shipping {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      margin-top: 30px;
+
+      .milestones-container {
+        max-width: 100%;
+        flex: 1;
+      }
+
+      .shipping-information-container {
+        width: 300px;
+        margin-left: 3%;
+        align-self: flex-end;
+        margin-bottom: 50px;
+      }
+    }
+  }
+
+  .actions-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+}
+
+@include mixins.breakpoint(large-desktop) {
+  .transaction-transportation {
+    flex-direction: row !important;
+  }
+
+  .modified-transportation {
+    width: calc(50% - 30px) !important;
+  }
+
+  .diff-mode {
+    width: calc(50% - 30px) !important;
+  }
+}

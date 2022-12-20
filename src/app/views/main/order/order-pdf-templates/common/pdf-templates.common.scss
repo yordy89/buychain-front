@@ -1,0 +1,102 @@
+.main-wrapper {
+  .content {
+    font-size: 10px;
+  }
+}
+
+.accounts {
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
+
+  .headers {
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .values {
+    margin-left: 5px;
+  }
+}
+
+.buyer-info {
+  margin-top: 30px;
+}
+
+.details-table-section {
+  margin-top: 30px;
+}
+
+.order-details-header {
+  .first-line {
+    display: flex;
+    justify-content: stretch;
+    border: 2px solid black;
+    padding: 2px 3px;
+
+    .in-line-value {
+      width: 30%;
+    }
+  }
+
+  .second-line {
+    display: grid;
+    //grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    > div {
+      border: 2px solid black;
+      border-top: 0;
+      border-right: 0;
+      padding: 2px 3px;
+
+      &:last-child {
+        border-right: 2px solid black;
+      }
+    }
+  }
+}
+
+.tally-units-table {
+  width: 100%;
+  border: 2px solid;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 12px;
+
+  thead {
+    background: lightgray;
+  }
+
+  tr {
+    height: 40px;
+    break-inside: avoid;
+  }
+
+  th {
+    height: 40px;
+    border: 1px solid;
+  }
+
+  td {
+    border: 1px solid;
+    border-bottom: 0;
+    border-top: 0;
+    text-align: center;
+  }
+
+  th,
+  td {
+    padding: 5px 10px;
+  }
+
+  td.text-left,
+  th.text-left {
+    text-align: left;
+  }
+}
+
+.total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+}

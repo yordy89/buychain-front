@@ -1,0 +1,132 @@
+<app-filter-grid-layout *ngIf="isLoaded && permissions.canRead"
+                        header="Invoices"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()"
+>
+	<ng-container right-side-button-section>
+		<app-bookmark [viewKey]="viewKey"
+		              [currentState]="viewState"
+		              [defaultState]="defaultState"
+		              (stateChanged)="onViewStateChanged($event)"
+		></app-bookmark>
+	</ng-container>
+
+  <ng-container filter-section>
+    <app-invoices-filters
+      [filters]="viewState.filters"
+      [filtersState]="viewState.filtersState"
+    ></app-invoices-filters>
+
+    <div class="text-center">
+      <app-button
+        [matTooltip]="allLoaded && !isFiltersChanged() ? 'All the invoices for the specified filters are loaded.' : ''"
+        [isNarrow]="true"
+        [isPrimary]="true"
+        [isDisabled]="!isFiltersChanged()"
+        (clicked)="searchInvoices()">
+        {{isFiltersChanged() || allLoaded ? 'Run Query' : 'Load More'}}
+      </app-button>
+    </div>
+  </ng-container>
+
+	<ng-container main-section>
+		<div class="grid-container">
+      <app-invoice-table-chart *ngIf="isChartVisible"
+                               [items]="invoicesList"
+                               (closed)="onCloseChart()"
+      ></app-invoice-table-chart>
+
+			<dx-data-grid #grid
+			              [visible]="!isChartVisible"
+			              [dataSource]="invoicesList"
+			              [showBorders]="true"
+			              [remoteOperations]="false"
+			              [allowColumnResizing]="true"
+			              columnResizingMode="widget"
+			              [allowColumnReordering]="true"
+			              [rowAlternationEnabled]="false"
+			              [columnHidingEnabled]="true"
+			              [hoverStateEnabled]="true"
+			              [columnAutoWidth]="true"
+			              [focusedRowEnabled]="true"
+			              keyExpr="id"
+			              (onToolbarPreparing)="onToolbarPreparing($event)"
+			              (onContentReady)="onContentReady()"
+			>
+				<dxo-paging [enabled]="false"></dxo-paging>
+				<dxo-sorting mode="multiple"></dxo-sorting>
+				<dxo-search-panel [visible]="true"></dxo-search-panel>
+				<dxo-load-panel [enabled]="true"></dxo-load-panel>
+				<dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+				<dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+				<dxo-group-panel [visible]="true"></dxo-group-panel>
+				<dxo-state-storing [enabled]="true"
+				                   type="custom"
+				                   [customLoad]="loadGridState"
+				                   [customSave]="saveGridState"
+				                   [savingTimeout]="100"
+				></dxo-state-storing>
+
+        <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+				<dxi-column
+				            [allowHiding]="false"
+				            [allowGrouping]="false"
+				            [width]="40"
+				            cellTemplate="actionsTemplate"
+				></dxi-column>
+				<div *dxTemplate="let item of 'actionsTemplate'">
+					<app-table-actions *ngIf="item.data"
+					                   [data]="item.data"
+					                   [actions]="actions"
+					                   (action)="onAction($event, item.data)"
+					></app-table-actions>
+				</div>
+        <dxi-column dataField="number" alignment="left" width="100px"></dxi-column>
+        <div *dxTemplate="let data of 'numberTemplate'">
+          <app-copy-text-button
+            class="small"
+            [text]="data.value"
+            [valueToCopy]="getInvoiceUrl(data.data.id)"
+            successMessage="Link to Invoice copied to clipboard"
+          ></app-copy-text-button>
+        </div>
+
+        <dxi-column dataField="invoiceDate" dataType="date" caption="Invoice Date"></dxi-column>
+        <dxi-column dataField="dueDate" dataType="date" caption="Due Date"></dxi-column>
+
+        <dxi-column dataField="sinceIssue" caption="Since Issue (Days)"></dxi-column>
+        <dxi-column dataField="pastDue" caption="Past Due (Days)"></dxi-column>
+
+        <dxi-column dataField="state" caption="Status" cellTemplate="stateTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'stateTemplate'">
+							<span class="badge" [ngClass]="data?.data?.stateBadgeClass">
+								{{data?.data?.isClosedWriteOff ? 'Written Off' : (data?.value || '' | stringUnderscoreToSpaceTitleCase) }}
+							</span>
+        </div>
+
+        <dxi-column dataField="age" caption="Aging"></dxi-column>
+        <dxi-column dataField="unbilled" caption="Unbilled">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="unpaid" caption="Billed/Unpaid">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="paid" caption="Billed/Paid">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="total" caption="Total">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+				<div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+					<app-table-results-text [visibleRows]="visibleRows" [results]="invoicesList?.length"></app-table-results-text>
+				</div>
+
+			</dx-data-grid>
+		</div>
+	</ng-container>
+</app-filter-grid-layout>
+
+<ng-container *ngIf="!permissions.canRead">
+	<div class="no-data">You do not have enough permissions for this section</div>
+</ng-container>

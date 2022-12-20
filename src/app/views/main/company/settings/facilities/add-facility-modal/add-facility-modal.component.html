@@ -1,0 +1,44 @@
+<app-modal-base
+    header="Add a New Facility"
+    subHeader="Please fill the fields below to create facility"
+>
+  <ng-container content>
+    <form [formGroup]="form">
+      <div class="flex-row">
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Name</mat-label>
+            <input matInput appNullOnEmpty placeholder="Facility Name" required [formControl]="name" type="text">
+            <mat-error>{{name?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Address</mat-label>
+          <input matInput appNullOnEmpty placeholder="Facility Address" required [formControl]="address">
+          <mat-error>{{address?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col static-textarea">
+          <mat-label>Description</mat-label>
+          <textarea matInput appNullOnEmpty placeholder="Facility Description" required [formControl]="description" rows="2"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <app-address-form *ngIf="form"
+                        [isRequired]="true"
+                        [form]="form"
+      ></app-address-form>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="addFacility()">Continue</app-button>
+  </ng-container>
+</app-modal-base>

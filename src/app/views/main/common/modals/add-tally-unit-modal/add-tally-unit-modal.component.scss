@@ -1,0 +1,21 @@
+.units-form {
+  display: flex;
+  font-size: 16px;
+  padding-top: 10px;
+  height: 130px;
+
+  .label {
+    margin-right: 10px;
+    padding-top: 18px;
+  }
+
+  mat-form-field {
+    width: 100px;
+  }
+
+  .validation-errors {
+    color: rgba(var(--palette-warn-500), 1);
+    max-width: 180px;
+    margin-top: -20px;
+  }
+}

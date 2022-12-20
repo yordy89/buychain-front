@@ -1,0 +1,48 @@
+.wrapper {
+  padding: 0 40px;
+
+  > * {
+    padding-bottom: 30px;
+  }
+}
+
+.profile-section {
+  display: flex;
+  align-items: baseline;
+
+  > * {
+    margin-right: 10px;
+  }
+
+  app-button {
+    margin-left: 30px;
+  }
+}
+
+.settings-section {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.option-group {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.option-switch {
+  margin: 0 16px;
+}
+
+.option-color-picker {
+  height: 30px;
+  width: 60px;
+  border: 1px solid black;
+  margin: 0 5px;
+  border-radius: 5px;
+}

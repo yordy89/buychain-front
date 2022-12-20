@@ -1,0 +1,225 @@
+<div class="filters-wrapper">
+
+  <app-filter-expander caption="Group" [(isExpanded)]="filtersState.groupExpanded">
+    <app-tree-selector class="w-100"
+                       label="Group"
+                       [treeListData]="groups"
+                       [control]="groupControl"
+                       keyExpr="id"
+                       displayKey="name"
+                       placeholder="Group"
+                       [allowClear]="true"
+                       parentExpr="parent"
+    ></app-tree-selector>
+
+    <mat-checkbox
+        [(ngModel)]="filters.includeChildGroups"
+        [disabled]="!groupControl.value"
+        color="primary"
+    >Include Child Groups</mat-checkbox>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Source" [(isExpanded)]="filtersState.sourceExpanded">
+    <div *ngFor="let item of sources">
+      <mat-checkbox color="primary"
+                    (change)="onSourceCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key === sourceEnum.MANUAL ? (item.key | stringUnderscoreToSpaceTitleCase) : item.key}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Type" [(isExpanded)]="filtersState.typeExpanded">
+    <div *ngFor="let item of types">
+      <mat-checkbox color="primary"
+                    (change)="onTypeCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Post Date" [(isExpanded)]="filtersState.postDateExpanded">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>From</mat-label>
+        <input matInput
+               [(ngModel)]="filters.postDateFrom"
+               [matDatepicker]="postDateFrom"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #postDateFrom></mat-datepicker>
+
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="postDateFrom"></mat-datepicker-toggle>
+          <button *ngIf="filters.postDateFrom" mat-icon-button (click)="resetDate($event, 'postDateFrom')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput
+               [(ngModel)]="filters.postDateTo"
+               [matDatepicker]="postDateTo"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #postDateTo></mat-datepicker>
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="postDateTo"></mat-datepicker-toggle>
+          <button *ngIf="filters.postDateTo" mat-icon-button (click)="resetDate($event, 'postDateTo')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Account" [(isExpanded)]="filtersState.accountExpanded">
+    <app-select-with-search
+        label="Account"
+        appearance="outline"
+        [allowClear]="true"
+        [form]="accountControl"
+        [optionList]="accountsList"
+        [valueField]="'id'"
+        [displayField]="'numberAndName'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Status" [(isExpanded)]="filtersState.statusExpanded">
+    <div *ngFor="let item of statuses">
+      <mat-checkbox color="primary"
+                    (change)="onStatusCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Dimension" [(isExpanded)]="filtersState.dimensionExpanded">
+    <app-select-with-search
+        label="Dimension"
+        appearance="outline"
+        [allowClear]="true"
+        [form]="dimensionControl"
+        [optionList]="dimensionsList"
+        [valueField]="'id'"
+        [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Reverse Date" [(isExpanded)]="filtersState.reverseDateExpanded">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>From</mat-label>
+        <input matInput
+               [(ngModel)]="filters.reverseDateFrom"
+               [matDatepicker]="reverseDateFrom"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #reverseDateFrom></mat-datepicker>
+
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="reverseDateFrom"></mat-datepicker-toggle>
+          <button *ngIf="filters.reverseDateFrom" mat-icon-button (click)="resetDate($event, 'reverseDateFrom')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput
+               [(ngModel)]="filters.reverseDateTo"
+               [matDatepicker]="reverseDateTo"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #reverseDateTo></mat-datepicker>
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="reverseDateTo"></mat-datepicker-toggle>
+          <button *ngIf="filters.reverseDateTo" mat-icon-button (click)="resetDate($event, 'reverseDateTo')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Approval Date" [(isExpanded)]="filtersState.approvalDateExpanded">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>From</mat-label>
+        <input matInput
+               [(ngModel)]="filters.approvalDateFrom"
+               [max]="currentDate"
+               [matDatepicker]="approvalDateFrom"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #approvalDateFrom></mat-datepicker>
+
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="approvalDateFrom"></mat-datepicker-toggle>
+          <button *ngIf="filters.approvalDateFrom" mat-icon-button (click)="resetDate($event, 'approvalDateFrom')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput
+               [(ngModel)]="filters.approvalDateTo"
+               [max]="currentDate"
+               [matDatepicker]="approvalDateTo"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #approvalDateTo></mat-datepicker>
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="approvalDateTo"></mat-datepicker-toggle>
+          <button *ngIf="filters.approvalDateTo" mat-icon-button (click)="resetDate($event, 'approvalDateTo')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Approved By" [(isExpanded)]="filtersState.approverExpanded">
+    <app-select-with-search
+        label="Approved By"
+        appearance="outline"
+        [allowClear]="true"
+        [form]="approverControl"
+        [optionList]="members"
+        [valueField]="'id'"
+        [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Created By" [(isExpanded)]="filtersState.createdByExpanded">
+    <app-select-with-search
+        label="Created By"
+        appearance="outline"
+        [allowClear]="true"
+        [form]="createdByControl"
+        [optionList]="members"
+        [valueField]="'id'"
+        [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Last Modified By" [(isExpanded)]="filtersState.lastModifiedByExpanded">
+    <app-select-with-search
+        label="Last Modified By"
+        appearance="outline"
+        [allowClear]="true"
+        [form]="lastModifiedByControl"
+        [optionList]="members"
+        [valueField]="'id'"
+        [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+</div>

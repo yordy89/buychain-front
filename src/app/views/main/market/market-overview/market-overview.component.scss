@@ -1,0 +1,30 @@
+.market-menu-wrapper {
+  p {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 16px;
+    margin: 0;
+    color: grey;
+  }
+
+  .transactions-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+
+    .tx-wrapper {
+      position: relative;
+
+      .description {
+        position: absolute;
+        top: 28px;
+        left: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 200px;
+        font-size: 13px;
+        color: grey;
+      }
+    }
+  }
+}

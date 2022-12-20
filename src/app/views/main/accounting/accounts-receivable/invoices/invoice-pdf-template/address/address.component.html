@@ -1,0 +1,25 @@
+<div class="wrapper">
+  <div class="address-section">
+    <div class="header">
+      SHIP TO:
+    </div>
+    <div>{{shipToLocation.shortName}}</div>
+    <div *ngIf="shipToLocation.streetAddress">
+       {{shipToLocation.streetAddress}}
+    </div>
+    <div *ngIf="shipToLocation.city || shipToLocation.state || shipToLocation.country || shipToLocation.zipCode">
+      {{ buildAddressLine2(shipToLocation) }}
+    </div>
+  </div>
+
+  <div class="address-section">
+    <div class="header">
+      BILL TO:
+    </div>
+    <div>{{billToLocation.shortName}}</div>
+    <div *ngIf="billToLocation.streetAddress">{{billToLocation.streetAddress}}</div>
+    <div *ngIf="billToLocation.city || billToLocation.state || billToLocation.country || billToLocation.zipCode">
+      {{ buildAddressLine2(billToLocation) }}
+    </div>
+  </div>
+</div>

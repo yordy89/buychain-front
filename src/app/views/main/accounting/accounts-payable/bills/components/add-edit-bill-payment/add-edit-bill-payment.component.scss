@@ -1,0 +1,9 @@
+.select-full-amount {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.select-full-amount-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  cursor: pointer;
+}

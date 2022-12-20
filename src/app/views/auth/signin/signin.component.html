@@ -1,0 +1,61 @@
+<div class="header-section">
+  <span class="header-text">
+    Sign In
+  </span>
+</div>
+
+<form [formGroup]="form">
+
+  <div class="input-box">
+    <input type="email" placeholder="Username" autocomplete="username" [formControl]="username" data-qa-id="signin-username">
+    <mat-icon class="icon">perm_identity_outline</mat-icon>
+  </div>
+  <div *ngIf="isInvalidField(username) && submitAttempted" class="error">
+    Please check the username for a valid email.
+  </div>
+
+  <div class="input-box">
+    <input type="password" placeholder="Password" autocomplete="current-password" [formControl]="password" data-qa-id="signin-password">
+    <mat-icon class="icon">lock_outline</mat-icon>
+  </div>
+  <div *ngIf="isInvalidField(password) && submitAttempted" class="error">
+    <div *ngIf="password.hasError('required'); else passwordValidationMessages">
+      Please make sure you have typed a password.
+    </div>
+
+    <ng-template #passwordValidationMessages>{{password.errors | errorMessage}}</ng-template>
+  </div>
+
+  <div class="login-options">
+    <div class="check-box">
+      <label>
+        <input type="checkbox" data-qa-id="signin-remember-me">
+        <span>Remember me</span>
+      </label>
+    </div>
+    <div>
+      <a routerLink="../../request-reset-password" data-qa-id="signin-forgot-pwd">Forgot password?</a>
+    </div>
+  </div>
+
+  <div *ngIf="form.valid && apiErrorMessage" class="error-message" >
+    {{apiErrorMessage | authErrorMessage}}
+  </div>
+
+  <div>
+    <a routerLink="/dashboard"></a>
+    <a *ngIf="tempRedirectUrl" [routerLink]="tempRedirectUrl"></a>
+
+    <button type="submit"
+            class="login-button"
+            (click)="signIn()"
+            [disabled]="form.invalid && submitAttempted"
+            data-qa-id="signin-submit"
+    >Sign In</button>
+  </div>
+
+  <div class="other-actions">
+    <a routerLink="../../request-confirmation-email" data-qa-id="signin-resend-email">Resend Activation Email</a>
+  </div>
+
+</form>

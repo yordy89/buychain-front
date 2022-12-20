@@ -1,0 +1,164 @@
+<div class="group-details-wrapper" *ngIf="groupDetails">
+  <mat-expansion-panel class="group-section" [disabled]="true" [expanded]="true">
+    <mat-expansion-panel-header class="styled">
+      <mat-panel-title>Group Information</mat-panel-title>
+      <mat-panel-description class="actions-buttons-row">
+        <app-button *ngIf="userPermissions.canDelete"
+                    [isNarrow]="true"
+                    [isWarn]="true"
+                    (clicked)="deleteGroup()"
+        >Archive Group</app-button>
+
+        <ng-container *ngIf="!isEditMode; else editModeTpl">
+          <app-button *ngIf="userPermissions.canUpdate"
+                      [isPrimary]="true"
+                      [isNarrow]="true"
+                      (clicked)="edit()"
+          >Edit Group</app-button>
+
+          <app-button [isNarrow]="true"
+                      (clicked)="backToCompanySettings()"
+          >Back</app-button>
+        </ng-container>
+
+        <ng-template #editModeTpl>
+          <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateGroup()">Save</app-button>
+          <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+        </ng-template>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div>
+
+      <div class="group-details">
+
+        <div>
+          <div class="title">Image</div>
+          <div class="image-section">
+            <app-image-upload
+              [readonlyMode]="!userPermissions.canUpdate || !isEditMode"
+              class="image-control"
+              [imageResourceType]="ImageResourceType.Logo"
+              [formControl]="imageUrl"
+              [name]="groupDetails.name"
+              [allowReset]="true"
+              label='Select an Image'
+              description='*Maximum file size 2MB. PNG, JPG accepted'>
+            </app-image-upload>
+          </div>
+        </div>
+        <div class="information-section">
+          <div class="group-form">
+            <div class="title">Information</div>
+            <ng-container *ngIf="groupDetails && !isEditMode; else EditMode">
+              <div class="flex-grid-row">
+                <div class="flex-col">Group Name: {{groupDetails?.name}}</div>
+                <div class="flex-col">Manager: {{managerDetails?.name}}</div>
+              </div>
+              <div class="flex-grid-row">
+                <div class="flex-col">Group Description: {{groupDetails?.description}}</div>
+              </div>
+              <div class="flex-grid-row">
+                <div class="flex-col">Accounting Contact: {{accountingContactDetails?.name}}</div>
+                <div class="flex-col">Parent: {{parentGroup?.name || 'Global'}}
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="readonly-info-part">
+            <div class="title">Parent Chain</div>
+            <div class="group-chain-wrapper">
+              <div class="group-wrapper">
+                <div class="label global">Global</div>
+              </div>
+              <div *ngFor="let group of getParentTreeGroups()" class="group-wrapper">
+                <mat-icon>arrow_upward</mat-icon>
+                <div class="label">{{group.name}}</div>
+              </div>
+              <div class="group-wrapper">
+                <mat-icon>arrow_upward</mat-icon>
+                <div class="label current">{{groupDetails.name}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="formGroup">
+          <ng-template #EditMode>
+
+            <div>
+              <div class="flex-row">
+                <mat-form-field appearance="outline" class="flex-col">
+                  <mat-label>Name</mat-label>
+                  <input matInput appNullOnEmpty placeholder="Account Name" required [formControl]="name" type="text">
+                  <mat-error>{{name?.errors | errorMessage}}</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="flex-col">
+                  <mat-label>Manager</mat-label>
+                  <mat-select [formControl]="manager">
+                    <mat-option *ngFor="let member of companyMembers" [value]="member.id">
+                      {{member.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="description-wrapper">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Description</mat-label>
+                  <textarea rows="3" matInput appNullOnEmpty placeholder="Description" [formControl]="description" type="text"></textarea>
+                  <mat-error>{{description?.errors | errorMessage}}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="flex-row">
+                <mat-form-field appearance="outline" class="flex-col">
+                  <mat-label>Accounting Contact</mat-label>
+                  <mat-select [formControl]="accountingContact">
+                    <mat-option *ngFor="let member of companyMembers" [value]="member.id">
+                      {{member.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <app-tree-selector
+                  class="flex-col"
+                  [control]="parent"
+                  label="Parent"
+                  [allowClear]="true"
+                  appearance="outline"
+                  keyExpr="id"
+                  parentExpr="parent"
+                  displayKey="name"
+                  [nullValue]="null"
+                  nullExpression="Global"
+                  [treeListData]="groupsList">
+                </app-tree-selector>
+
+              </div>
+            </div>
+          </ng-template>
+        </form>
+
+      </div>
+    </div>
+
+    <div class="created-and-modified" *ngIf="groupDetails">
+      <p>Created: <span>{{groupDetails.createdAt | date}}</span>, Last Modified:
+        <span>{{groupDetails.updatedAt | date}}</span></p>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="!accountingDisabled" [expanded]="true">
+    <mat-expansion-panel-header class="styled">
+      <mat-panel-title>
+        Accounting Info
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <div class="accounting-info-container">
+        <app-accounting-info [groupDetails]="groupDetails" (accountingInfoUpdated)="setAccountingInfo($event)"></app-accounting-info>
+      </div>
+    </ng-template>
+  </mat-expansion-panel>
+
+</div>

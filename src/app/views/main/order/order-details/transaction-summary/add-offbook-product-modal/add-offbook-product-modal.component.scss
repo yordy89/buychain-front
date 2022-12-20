@@ -1,0 +1,68 @@
+.section {
+  padding-bottom: 10px;
+
+  .header {
+    font-family: Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 19px;
+    margin-bottom: 10px;
+  }
+
+  .origin-section {
+    display: flex;
+    justify-content: space-around;
+
+    .origin-section-item {
+      width: 400px;
+      margin-right: 50px;
+
+      & .mat-form-field {
+        display: inherit;
+        position: inherit;
+      }
+    }
+  }
+
+  .no-crm-accounts-text {
+    font-size: 20px;
+    color: rgba(var(--palette-warn-500), 1);
+  }
+
+  table {
+    border-top: 5px rgb(var(--palette-primary-500), 1) solid;
+    border-spacing: 0;
+    background-color: rgba(var(--palette-primary-100), 0.1);
+    min-height: 150px;
+    width: 100%;
+
+    th {
+      height: 37px;
+      background-color: rgba(var(--palette-primary-900), 0.2);
+      border-top: 5px solid #fff;
+      border-right: 5px solid #fff;
+      padding: 0 20px;
+      font-family: Helvetica, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: left;
+
+      &:last-child {
+        border-right: 0;
+      }
+    }
+
+    td {
+      padding: 20px;
+      font-family: Helvetica, sans-serif;
+      font-size: 16px;
+      vertical-align: top;
+    }
+  }
+}
+
+hr {
+  height: 5px;
+  background-color: rgba(var(--palette-primary-900), 0.2);
+  border: none;
+}

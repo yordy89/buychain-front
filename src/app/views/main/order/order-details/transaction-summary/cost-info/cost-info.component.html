@@ -1,0 +1,93 @@
+<div class="cost-info-wrapper" *ngIf="transactionData">
+  <div class="cog-item">
+    <p>Material Cost <mat-icon matTooltip="Sum of sales price for all products." matTooltipPosition="above">info</mat-icon></p>
+    <p>${{transactionData.costInfoMaterialCost || 0 | number : '1.0-2'}}</p>
+  </div>
+  <div class="cog-item" *ngIf="transactionData.isShippingCostVisible && !isBuyerCollect">
+    <p>Shipping <mat-icon matTooltip="Sum of Unit of Measure (UoM) times the transportation rate." matTooltipPosition="above">info</mat-icon></p>
+    <p>${{transactionData.costData?.shippingCost || 0 | number : '1.0-2'}}</p>
+  </div>
+  <div class="cog-item">
+    <p class="total-row">Total <mat-icon matTooltip="The total material cost plus shipping. Amount to be invoiced to Buyer." matTooltipPosition="above">info</mat-icon></p>
+    <p class="total-row">${{transactionData.priceToInvoice || 0 | number : '1.0-2'}}</p>
+  </div>
+
+  <ng-container *appShowViewCost>
+    <hr>
+    <div class="description-header">
+      <p>Estimated Cost Of Goods <span>{{transactionData.isSales ? 'Sold' : 'Purchased'}}</span></p>
+      <mat-icon (click)="configureShippingFees()" matTooltip="Edit" matTooltipPosition="above">more_horiz</mat-icon>
+    </div>
+    <div *ngFor="let cog of transactionData.costData.cogArray">
+      <div class="cog-item" *ngIf="cog.value">
+        <p class="cog-label text-ellipsis">{{cog.label}}</p>
+        <p>${{cog.value | number : '1.0-2'}}</p>
+      </div>
+    </div>
+    <div class="cog-item">
+      <p>Buy Chain Transaction Fee</p>
+      <p>${{transactionData.buyChainTxFee | number : '1.0-2'}}</p>
+    </div>
+    <div class="cog-item">
+      <p><span>{{transactionData.isSales ? 'COGS' : 'COGP'}}</span> Subtotal</p>
+      <p>${{transactionData.costData.cogSubtotal | number : '1.0-2'}}</p>
+    </div>
+    <hr>
+    <div *ngIf="transactionData.isSales; else BuyerTotals">
+      <div class="description-header">
+        <p>Estimated Profitability Report</p>
+      </div>
+      <div class="cog-item">
+        <p>Cost Basis</p>
+        <p>{{transactionData.costBasisForSeller || 0 | currency}}</p>
+      </div>
+      <div class="cog-item" *ngIf="!transactionData.hasMixedUomTallyItem">
+        <p>Profit Per {{transactionData.measureLabel}}</p>
+        <p>{{transactionData.totalProfitPerUoM || 0 | currency}}</p>
+      </div>
+      <div class="cog-item">
+        <p>Total Profit</p>
+        <p>{{transactionData.profit || 0 | currency}}</p>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #BuyerTotals>
+    <div class="cog-item" *ngIf="isBuyerCollect">
+      <p>Shipping <mat-icon matTooltip="Sum of Unit of Measure (UoM) times the transportation rate." matTooltipPosition="above">info</mat-icon></p>
+      <p>${{transactionData.costData?.shippingCost || 0 | number : '1.0-2'}}</p>
+    </div>
+    <div class="cog-item">
+      <p>Cost Basis</p>
+      <p>${{transactionData.costBasisForBuyer || 0 | number : '1.0-2'}}</p>
+    </div>
+    <div class="cog-item" *ngIf="!transactionData.hasMixedUomTallyItem">
+      <p>Cost Basis per {{transactionData.measureLabel}}</p>
+      <p>${{transactionData.costBasisForBuyerPerUoM || 0 | number : '1.0-2'}}</p>
+    </div>
+  </ng-template>
+
+  <div *ngIf="finalPayment.isDefined">
+    <hr>
+    <div class="description-header">
+      <p>Accounting Report</p>
+    </div>
+    <div class="cog-item" *ngIf="finalPayment.amountDefined">
+      <p>Final Payment</p>
+      <p>{{transactionData.costData.finalPayment?.amount || 0 | currency}}</p>
+    </div>
+    <div class="cog-item" *ngIf="finalPayment.discountDefined">
+      <p>Discount</p>
+      <p>{{transactionData.costData.finalPayment?.discount || 0 | currency}}</p>
+    </div>
+    <div class="cog-item" *ngIf="finalPayment.profitDefined && showFinalProfit">
+      <p>Final Profit</p>
+      <p>{{transactionData.costData.finalPayment?.profit || 0 | currency}}</p>
+    </div>
+    <div class="cog-item" *ngIf="finalPayment.dateDefined">
+      <p>Date Of Payment</p>
+      <p>{{transactionData.costData.finalPayment?.dateTime | date}}</p>
+    </div>
+  </div>
+
+</div>

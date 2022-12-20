@@ -1,0 +1,22 @@
+dx-data-grid {
+  max-height: 500px;
+}
+
+.table-container {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  position: relative;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-left: 10px;
+    padding-bottom: 5px;
+
+    h4 {
+      margin: 2px 15px 0 0;
+    }
+  }
+}

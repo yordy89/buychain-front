@@ -1,0 +1,15 @@
+<div class="wrapper">
+  <span class="label">{{label}}:</span>
+  <ng-container *ngIf="mode==='view'">
+   <span class="value">{{value}}</span>
+   <app-icon-button [isDisabled]="!editable" (clicked)="onEditClick()" icon="edit"></app-icon-button>
+  </ng-container>
+  <ng-container *ngIf="mode==='edit'">
+    <mat-form-field class="value-form"  appearance="outline">
+      <input matInput [formControl]="valueControl" appNullOnEmpty>
+      <mat-error>{{valueControl?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+    <app-icon-button [isDisabled]="valueControl.invalid" (clicked)="onSaveClick()" icon="save"></app-icon-button>
+    <app-icon-button [isWarn]="true" (clicked)="onCancelClick()" icon="cancel"></app-icon-button>
+  </ng-container>
+</div>

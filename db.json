@@ -1,0 +1,208 @@
+{
+  "sales-orders": [
+    {
+      "id": "60a36262b70fec418fc9c87f",
+      "number": 1,
+      "state": "OPEN",
+      "transaction": "614b43d76a03c441ce3ab87a",
+      "customer": {
+        "company": "60a36275b70fec418fc9c88e",
+        "billToLocation": "60a3628eb70fec418fc9c88f",
+        "billToContact": "60a362abb70fec418fc9c890",
+        "shipToLocation": "60a7c7eb7438ec182f3c2290",
+        "shipToContact": "60a362abb70fec418fc9c890"
+      },
+      "owner": "60a2caccb70fec418fc9c86b",
+      "group": "60a40b6eb70fec418fc9c8ab",
+      "costCenter": "605089d3563839f5bd440730",
+      "openLineItems": [{
+        "type": "INVENTORY",
+        "quantity": 5,
+        "units": "Pieces",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "txLineRef": "",
+        "receivable": {
+          "revenueOrWipAccount": "60a2d05e1301a7479730827b",
+          "currency": "USD",
+          "amount": 21
+        },
+        "costOfSale": {
+          "cosAccount": "60a2d05e1301a74797308278",
+          "valueAccount": "60a2d05e1301a74797308277",
+          "currency": "USD",
+          "amount": 33
+        }
+      }],
+      "currency": "USD",
+      "invoices": [{
+        "id": "80a36262b70fec418fc9c87f",
+        "invoiceDate": "2021-06-09T12:21:48.252Z",
+        "number": 20100,
+        "state": "DRAFT",
+        "reviewState": "NONE",
+        "terms": "",
+        "status": "UNPAID",
+        "dueDate": "2021-09-09T12:21:48.252Z",
+        "currency": "USD",
+        "ARAccount": "60a2d05e1301a74797308276",
+        "lineItems": [{
+          "type": "INVENTORY",
+          "quantity": 9,
+          "units": "",
+          "description": "",
+          "txLineRef": "",
+          "receivable": {
+            "revenueOrWipAccount": "60a2d05e1301a7479730827b",
+            "currency": "USD",
+            "amount": 21
+          },
+          "costOfSale": {
+            "cosAccount": "60a2d05e1301a74797308278",
+            "valueAccount": "60a2d05e1301a74797308277",
+            "currency": "USD",
+            "amount": 33
+          }
+        }, {
+          "type": "INVENTORY",
+          "quantity": 4,
+          "units": "",
+          "description": "",
+          "txLineRef": "",
+          "receivable": {
+            "revenueOrWipAccount": "60a2d05e1301a7479730827b",
+            "currency": "USD",
+            "amount": 7
+          },
+          "costOfSale": {
+            "cosAccount": "60a2d05e1301a74797308278",
+            "valueAccount": "60a2d05e1301a74797308277",
+            "currency": "USD",
+            "amount": 21
+          }
+        }],
+        "notes": "",
+        "attachments": [],
+        "payments": [{
+          "amount": 11
+        }, {
+          "amount": 4
+        }],
+        "receivablesJE": "",
+        "costOfSaleJE": "",
+        "voidedJournalEntry": "",
+        "createdBy": "60a2caccb70fec418fc9c86b",
+        "createdAt": "2021-06-09T12:21:48.252Z",
+        "modifiedBy": "60a2caccb70fec418fc9c86b",
+        "modifiedAt": "2021-09-09T12:21:48.252Z"
+      }, {
+        "id": "80a36262b70fec418fc9c87f",
+        "invoiceDate": "2021-06-09T12:21:48.252Z",
+        "number": 20100,
+        "state": "ISSUED",
+        "reviewState": "NONE",
+        "terms": "",
+        "status": "UNPAID",
+        "dueDate": "2021-06-06T12:21:48.252Z",
+        "currency": "USD",
+        "ARAccount": "60a2d05e1301a74797308276",
+        "lineItems": [{
+          "type": "INVENTORY",
+          "quantity": 9,
+          "units": "",
+          "description": "",
+          "txLineRef": "",
+          "receivable": {
+            "revenueOrWipAccount": "60a2d05e1301a7479730827b",
+            "currency": "USD",
+            "amount": 21
+          },
+          "costOfSale": {
+            "cosAccount": "60a2d05e1301a74797308278",
+            "valueAccount": "60a2d05e1301a74797308277",
+            "currency": "USD",
+            "amount": 33
+          }
+        }],
+        "notes": "",
+        "attachments": [],
+        "payments": [{
+          "amount": 11
+        }, {
+          "amount": 4
+        }],
+        "receivablesJE": "",
+        "costOfSaleJE": "",
+        "voidedJournalEntry": "",
+        "createdBy": "60a2caccb70fec418fc9c86b",
+        "createdAt": "2021-06-09T12:21:48.252Z",
+        "modifiedBy": "60a2caccb70fec418fc9c86b",
+        "modifiedAt": "2021-09-09T12:21:48.252Z"
+      }],
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ligula felis, dignissim quis quam quis, congue molestie sem. Mauris risus odio, bibendum id finibus a, lacinia at nisi.",
+      "notes": "some notes",
+      "attachments": [],
+      "terms": "",
+      "createdBy": "60a2caccb70fec418fc9c86b",
+      "createdAt": "2021-06-09T12:21:48.252Z",
+      "modifiedBy": "60a2caccb70fec418fc9c86b",
+      "modifiedAt": "2021-09-09T12:21:48.252Z",
+      "log": []
+    },
+    {
+      "id": "60a36262b70fec418fc9c88f",
+      "number": 2,
+      "state": "CLOSED",
+      "transaction": "614b43d76a03c441ce3ab87a",
+      "customer": {
+        "company": "60a36275b70fec418fc9c88e",
+        "billToLocation": "60a3628eb70fec418fc9c88f",
+        "billToContact": "60a362abb70fec418fc9c890",
+        "shipToLocation": "60a7c7eb7438ec182f3c2290",
+        "shipToContact": "60a362abb70fec418fc9c890"
+      },
+      "owner": "60a2caccb70fec418fc9c86b",
+      "group": "60a40b6eb70fec418fc9c8ab",
+      "costCenter": "605089d3563839f5bd440730",
+      "openLineItems": [],
+      "currency": "USD",
+      "invoices": [],
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ligula felis, dignissim quis quam quis, congue molestie sem. Mauris risus odio, bibendum id finibus a, lacinia at nisi.",
+      "notes": "some notes",
+      "attachments": [],
+      "terms": "",
+      "createdBy": "60a2caccb70fec418fc9c86b",
+      "createdAt": "2021-06-09T12:21:48.252Z",
+      "modifiedBy": "60a2caccb70fec418fc9c86b",
+      "modifiedAt": "2021-09-09T12:21:48.252Z",
+      "log": []
+    },
+    {
+      "id": "60a36262b70fec418fc9c89f",
+      "number": 3,
+      "state": "PENDING_CLOSE",
+      "transaction": "614b43d76a03c441ce3ab87a",
+      "customer": {
+        "company": "60a36275b70fec418fc9c88e",
+        "billToLocation": "60a3628eb70fec418fc9c88f",
+        "billToContact": "60a362abb70fec418fc9c890",
+        "shipToLocation": "60a7c7eb7438ec182f3c2290",
+        "shipToContact": "60a362abb70fec418fc9c890"
+      },
+      "owner": "60a2caccb70fec418fc9c86b",
+      "group": "60a40b6eb70fec418fc9c8ab",
+      "costCenter": "605089d3563839f5bd440730",
+      "openLineItems": [],
+      "currency": "USD",
+      "invoices": [],
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ligula felis, dignissim quis quam quis, congue molestie sem. Mauris risus odio, bibendum id finibus a, lacinia at nisi.",
+      "notes": "some notes",
+      "attachments": [],
+      "terms": "",
+      "createdBy": "60a2caccb70fec418fc9c86b",
+      "createdAt": "2021-06-09T12:21:48.252Z",
+      "modifiedBy": "60a2caccb70fec418fc9c86b",
+      "modifiedAt": "2021-09-09T12:21:48.252Z",
+      "log": []
+    }
+  ]
+}

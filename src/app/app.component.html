@@ -1,0 +1,8 @@
+<div *ngIf="isActive"
+     class="fade-me"
+     [ngClass]="{'full-mode': component?.isFullMode, 'icon-mode': component?.isIconMode}"
+>
+	<mat-progress-spinner [diameter]="40" color="primary" mode="indeterminate"></mat-progress-spinner>
+</div>
+
+<router-outlet (activate)="onActivate($event)"></router-outlet>

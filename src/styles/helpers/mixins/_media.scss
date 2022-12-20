@@ -1,0 +1,21 @@
+@mixin breakpoint($breakpoint) {
+  @if $breakpoint == large-desktop {
+    @media (min-width: 1666px) {
+      @content;
+    }
+  } @else if $breakpoint == desktop {
+    @media (min-width: 1367px) and (max-width: 1665px) {
+      @content;
+    }
+  } @else if $breakpoint == tablet {
+    @media (min-width: 1021px) and (max-width: 1366px) {
+      @content;
+    }
+  } @else if $breakpoint == tablet-height {
+    @media (max-height: 940px) {
+      @content;
+    }
+  } @else {
+    @error 'No value could be retrieved from `#{$breakpoint}` breakpoint.';
+  }
+}

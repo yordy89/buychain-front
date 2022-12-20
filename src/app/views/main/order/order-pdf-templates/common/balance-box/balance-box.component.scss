@@ -1,0 +1,17 @@
+.balance-box {
+  display: flex;
+  align-items: baseline;
+  font-size: 18px;
+  font-weight: 700;
+
+  .label {
+    margin-right: 5px;
+  }
+
+  .value {
+    border: 2px solid;
+    width: 200px;
+    text-align: right;
+    padding: 5px 10px;
+  }
+}

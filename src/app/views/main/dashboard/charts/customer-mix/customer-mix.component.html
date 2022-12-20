@@ -1,0 +1,11 @@
+<app-chart-container caption="Customer Mix">
+  <dx-pie-chart palette="Material" [dataSource]="data" type="doughnut">
+    <dxo-legend [visible]='false'></dxo-legend>
+    <dxi-series argumentField="argument" valueField="value">
+      <dxo-label [visible]="true" [customizeText]="customizeLabelText" backgroundColor="none">
+        <dxo-connector [visible]="true" [width]="1"></dxo-connector>
+      </dxo-label>
+    </dxi-series>
+    <dxo-size [width]="500"></dxo-size>
+  </dx-pie-chart>
+</app-chart-container>

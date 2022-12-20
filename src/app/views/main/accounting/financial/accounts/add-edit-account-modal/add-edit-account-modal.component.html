@@ -1,0 +1,65 @@
+<app-modal-base class="wrap" [header]="account ? 'Edit Account' : 'Add Account'" (closed)="close()">
+	<ng-container content>
+		<div [formGroup]="formGroup" class="form">
+
+			<div class="flex-row">
+				<mat-form-field appearance="outline" class="flex-col">
+					<mat-label>Number</mat-label>
+					<input matInput placeholder="Account Number" required [formControl]="number" type="number">
+          <mat-error>{{number?.errors | errorMessage}}</mat-error>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline" class="flex-col">
+					<mat-label>Name</mat-label>
+					<input matInput placeholder="Account Name" required [formControl]="name" type="text" appNullOnEmpty>
+          <mat-error>{{name?.errors | errorMessage}}</mat-error>
+				</mat-form-field>
+			</div>
+
+			<div class="flex-row">
+				<mat-form-field appearance="outline" class="flex-col">
+					<mat-label>Description</mat-label>
+					<textarea matInput placeholder="Description" [formControl]="description" type="text"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+				</mat-form-field>
+			</div>
+
+			<div class="flex-row">
+				<mat-form-field appearance="outline" class="flex-col">
+					<mat-label>Type</mat-label>
+					<mat-select [formControl]="type" required>
+						<mat-option *ngFor="let item of accountTypes" [value]="item">
+							{{item | stringUnderscoreToSpaceTitleCase}}
+						</mat-option>
+					</mat-select>
+          <mat-error>{{type?.errors | errorMessage}}</mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="flex-col">
+					<mat-label>SubType</mat-label>
+					<input matInput placeholder="Account Name" [formControl]="subtype" type="text">
+          <mat-error>{{subtype?.errors | errorMessage}}</mat-error>
+				</mat-form-field>
+			</div>
+
+			<div class="flex-row">
+				<mat-form-field appearance="outline" class="flex-col">
+					<mat-label>Natural Balance</mat-label>
+					<mat-select [formControl]="naturalBalance" required>
+						<mat-option *ngFor="let balance of naturalBalances" [value]="balance">
+							{{balance | stringUnderscoreToSpaceTitleCase}}
+						</mat-option>
+					</mat-select>
+          <mat-error>{{naturalBalance?.errors | errorMessage}}</mat-error>
+				</mat-form-field>
+
+        <mat-checkbox class="flex-col mt-15" [checked]="!archived.value" (change)="onChangeActive($event.checked)">Active</mat-checkbox>
+      </div>
+
+		</div>
+	</ng-container>
+	<ng-container actions>
+		<app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+		<app-button [isPrimary]="true" [isNarrow]="true" [isDisabled]="!this.formGroup.valid" (clicked)="submit()">Submit
+		</app-button>
+	</ng-container>
+</app-modal-base>

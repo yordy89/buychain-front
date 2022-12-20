@@ -1,0 +1,34 @@
+@use 'mixins' as mixins;
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(var(--palette-primary-500), 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--palette-primary-500), 0.8);
+
+  &:hover {
+    background: rgba(var(--palette-primary-500), 1);
+  }
+}
+
+.use-large-scroll-bars {
+  ::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@include mixins.breakpoint(tablet) {
+  .use-large-scroll-bars {
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+  }
+}

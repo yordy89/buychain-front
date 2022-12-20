@@ -1,0 +1,65 @@
+@use 'variables' as *;
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: -2px;
+  }
+}
+
+.table-base-wrapper {
+  border: 1px solid rgba(var(--palette-foreground-divider), var(--palette-foreground-divider-alpha));
+}
+
+.table-base {
+  .icon {
+    width: 50px;
+    min-width: 40px;
+  }
+
+  .header {
+    .icon {
+      text-align: center;
+    }
+  }
+
+  .milestone-description {
+    width: 400px;
+    overflow-wrap: break-word;
+  }
+
+  .time-stamp {
+    width: 100px;
+  }
+
+  .user {
+    width: 200px;
+  }
+
+  .attachment {
+    &:hover {
+      cursor: pointer;
+    }
+
+    .mat-icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    span {
+      margin-left: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

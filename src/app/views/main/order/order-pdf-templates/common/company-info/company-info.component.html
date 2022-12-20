@@ -1,0 +1,11 @@
+<div>
+  <div *ngIf="imageUrl" class="logo">
+    <img [src]="imageUrl" crossorigin="anonymous" />
+  </div>
+
+  <div class="info">
+    <div>{{company.name}}</div>
+    <div>{{company.streetAddress}}</div>
+    <div>{{company.city}}, {{company.state}} {{company.zipCode}} {{company.country}}</div>
+  </div>
+</div>

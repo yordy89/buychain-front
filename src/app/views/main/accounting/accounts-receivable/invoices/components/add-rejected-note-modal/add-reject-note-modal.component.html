@@ -1,0 +1,22 @@
+<app-modal-base header="Add Reason for Reject">
+  <ng-container content>
+    <form [formGroup]="form" novalidate>
+      <mat-form-field appearance="outline" class="w-100 mt-15">
+        <mat-label>Notes</mat-label>
+        <textarea matInput placeholder="Notes" formControlName="rejectNotes" appNullOnEmpty maxlength="500"></textarea>
+        <mat-error>{{form.get('rejectNotes')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button
+      [isDisabled]="!form.get('rejectNotes')?.value || !form.valid"
+      [isPrimary]="true"
+      [isNarrow]="true"
+      (clicked)="addNote()">
+      Add
+    </app-button>
+  </ng-container>
+</app-modal-base>

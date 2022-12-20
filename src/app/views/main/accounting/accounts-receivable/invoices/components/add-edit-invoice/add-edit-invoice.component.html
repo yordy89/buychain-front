@@ -1,0 +1,200 @@
+<form
+  [formGroup]="form"
+  novalidate
+  (keydown.enter)="onEnter($event)"
+>
+  <section class="flex-row add-edit-invoice-top-section-row">
+    <section class="flex-col-2">
+      <div class="flex-row">
+        <div class="flex-col">
+          <app-autocomplete label="Account"
+                            [data]="accounts"
+                            [isRequired]="true"
+                            panelWidth="auto"
+                            formControlName="ARAccount"
+                            keyName="id"
+                            displayName="numberAndName"
+                            placeholder="Account"
+          ></app-autocomplete>
+        </div>
+        <div class="flex-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Due Date</mat-label>
+            <input matInput
+                   formControlName="dueDate"
+                   [matDatepicker]="dueDate"
+                   placeholder="mm/dd/yyyy"
+                   required
+            >
+            <mat-datepicker-toggle matSuffix [for]="dueDate"></mat-datepicker-toggle>
+            <mat-datepicker #dueDate></mat-datepicker>
+            <mat-error>{{form.get('dueDate')?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="badge-select">
+            <mat-label>State</mat-label>
+            <mat-select formControlName="state">
+              <mat-select-trigger>
+                <span class="badge" [ngClass]="[stateBadgeClass(form.get('state').value)]">{{form.get('state').value | stringUnderscoreToSpaceTitleCase}}</span>
+              </mat-select-trigger>
+              <mat-option
+                *ngFor="let item of states"
+                [value]="item"
+                [disabled]="!!stateOptionDisabledTooltip(item)"
+                [matTooltip]="stateOptionDisabledTooltip(item)"
+                matTooltipPosition="right"
+              >
+                <span class="badge" [ngClass]="[stateBadgeClass(item)]">{{item | stringUnderscoreToSpaceTitleCase}}</span>
+              </mat-option>
+            </mat-select>
+
+            <mat-error>{{form.get('state')?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="badge-select">
+            <mat-label>Review State</mat-label>
+            <mat-select
+              formControlName="reviewState"
+              [disabled]="!data?.isDraft"
+              matTooltip="Review state can change in DRAFT state only"
+              [matTooltipDisabled]="!editMode || data?.isDraft"
+              matTooltipPosition="right"
+            >
+              <mat-select-trigger>
+                <span class="badge" [ngClass]="[reviewStateBadgeClass(form.get('reviewState').value)]">{{form.get('reviewState').value | stringUnderscoreToSpaceTitleCase}}</span>
+              </mat-select-trigger>
+              <mat-option
+                *ngFor="let item of reviewStates"
+                [value]="item"
+                [disabled]="!!reviewStateOptionDisabledTooltip(item)"
+                [matTooltip]="reviewStateOptionDisabledTooltip(item)"
+                matTooltipPosition="right"
+              >
+                <span class="badge" [ngClass]="[reviewStateBadgeClass(item)]">{{item | stringUnderscoreToSpaceTitleCase}}</span>
+              </mat-option>
+            </mat-select>
+
+            <mat-error>{{form.get('reviewState')?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </section>
+    <section class="flex-col-2">
+      <div class="flex-row">
+        <div class="flex-col add-edit-invoice-location-wrapper">
+          <div class="add-edit-invoice-location-header">
+            <div class="add-edit-invoice-location-header-label">Bill To</div>
+            <mat-icon
+              color="primary"
+              [ngClass]="{ 'add-edit-invoice-location-edit-icon': true, 'disabled': isNotEditable }"
+              (click)="editAltBillToLocation()">
+              edit
+            </mat-icon>
+          </div>
+          <div class="add-edit-invoice-location">
+            <span>{{billTo?.shortName}}</span><br/>
+            <span>{{billTo?.streetAddress}}</span><br/>
+            <span>{{billTo?.city}}</span> <span *ngIf="billTo?.city && billTo?.state">, </span> <span>{{billTo?.state}}</span><br/>
+            <span>{{billTo?.zipCode}}</span>
+          </div>
+        </div>
+        <section class="flex-col add-edit-invoice-location-wrapper">
+          <div class="add-edit-invoice-location-header">
+            <div class="add-edit-invoice-location-header-label">Ship To</div>
+          </div>
+          <div class="add-edit-invoice-location">
+            <span>{{shipToLocation?.fullName}}</span><br/>
+            <span>{{shipToLocation?.streetAddress}}</span><br/>
+            <span>{{shipToLocation?.city}}</span> <span *ngIf="shipToLocation?.city && shipToLocation?.state">, </span> <span>{{shipToLocation?.state}}</span><br/>
+            <span>{{shipToLocation?.zipCode}}</span>
+          </div>
+        </section>
+      </div>
+    </section>
+  </section>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Terms</mat-label>
+    <textarea rows="1" matInput placeholder="Terms" formControlName="terms" appNullOnEmpty maxlength="500"></textarea>
+    <mat-error>{{form.get('terms')?.errors | errorMessage}}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Customer Ref</mat-label>
+    <textarea rows="3" matInput placeholder="Customer Ref" formControlName="customerRefField" appNullOnEmpty maxlength="500"></textarea>
+    <mat-error>{{form.get('customerRefField')?.errors | errorMessage}}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Description</mat-label>
+    <textarea rows="3" matInput placeholder="Description" formControlName="description" appNullOnEmpty maxlength="500"></textarea>
+    <mat-error>{{form.get('description')?.errors | errorMessage}}</mat-error>
+  </mat-form-field>
+
+  <div class="open-lines-items-container" *ngIf="!editMode">
+    <app-open-line-items-grid
+      [salesOrder]="salesOrder"
+      [accounts]="accounts"
+      (selectedOpenLineItems)="onSelectedOpenLineItemsChange($event)">
+    </app-open-line-items-grid>
+  </div>
+
+  <dx-tab-panel class="mt-15" *ngIf="editMode">
+    <dxi-item title="Line Items">
+      <app-invoice-line-items-grid
+        [data]="data"
+        [salesOrder]="salesOrder">
+      </app-invoice-line-items-grid>
+    </dxi-item>
+    <dxi-item tabTemplate="tabTemplate">
+      <app-invoice-payments-grid
+        [data]="data"
+        [salesOrder]="salesOrder"
+        [members]="members"
+        (paymentsUpdatedEvent)="onPaymentsUpdated()">
+      </app-invoice-payments-grid>
+    </dxi-item>
+    <div *dxTemplate="let content of 'tabTemplate'">
+      <span>{{paymentsTabTitle}}</span>
+    </div>
+  </dx-tab-panel>
+
+  <div class="mt-25" *ngIf="editMode">
+    <app-accounting-milestones [milestones]="milestones">
+    </app-accounting-milestones>
+  </div>
+
+  <div class="flex-row mt-25">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload
+        [(attachments)]="attachments"
+        (removeAttachment)="removeAttachment($event)"
+      ></app-accounting-file-upload>
+    </div>
+    <div class="flex-col">
+      <dx-tab-panel>
+        <dxi-item class="p-horizontal-5" title="Internal Notes">
+          <mat-form-field appearance="standard" class="w-100">
+            <textarea rows="3" matInput placeholder="Enter Notes" formControlName="internalNotes" maxlength="500"></textarea>
+          </mat-form-field>
+        </dxi-item>
+        <dxi-item class="p-horizontal-5" title="External Notes" [disabled]="isNotEditable">
+          <mat-form-field appearance="standard" class="w-100">
+            <textarea rows="3" matInput placeholder="Enter Notes" formControlName="externalNotes" maxlength="500"></textarea>
+          </mat-form-field>
+        </dxi-item>
+      </dx-tab-panel>
+      <mat-error>{{form.get('internalNotes')?.errors | errorMessage}}</mat-error>
+      <mat-error>{{form.get('externalNotes')?.errors | errorMessage}}</mat-error>
+    </div>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end mt-15">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">Submit</app-button>
+</div>

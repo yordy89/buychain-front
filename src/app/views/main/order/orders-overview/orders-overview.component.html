@@ -1,0 +1,229 @@
+<app-filter-grid-layout *ngIf="userPermissions.canReadTransactions; else NoPermission"
+                        header="Company Transactions"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()"
+>
+
+  <ng-container right-side-button-section>
+    <app-bookmark
+      [viewKey]="viewKey"
+      [currentState]="viewState"
+      [defaultState]="defaultState"
+      (stateChanged)="onStateChanged($event)">
+    </app-bookmark>
+    <app-button
+      (clicked)="goToNewOrder()"
+      [isDisabled]="!userPermissions.canCreateOrder"
+      [isPrimary]="true"
+      [matTooltip]="userPermissions.canCreateOrder ? '' : 'You do not have enough permissions for this action'">
+      New Order
+    </app-button>
+  </ng-container>
+
+  <ng-container filter-section>
+    <form [formGroup]="filterForm">
+
+      <app-filter-expander *ngIf="!userPermissions.canReadOnlyOwnTx" caption="Scope"
+                           [(isExpanded)]="viewState.filtersState.isOwnerFilterVisible">
+        <mat-radio-group [formControl]="ownerControl">
+          <mat-radio-button color="primary" [value]="true">Me</mat-radio-button>
+          <mat-radio-button color="primary" [value]="false">Company</mat-radio-button>
+        </mat-radio-group>
+      </app-filter-expander>
+
+      <app-filter-expander caption="Date" [(isExpanded)]="viewState.filtersState.isDateFilterVisible">
+        <div class="date-selectors">
+          <mat-form-field appearance="outline">
+            <mat-label>From</mat-label>
+            <input matInput [formControl]="startDate" [max]="currentDate" [matDatepicker]="DateFrom"
+              placeholder="mm/dd/yyyy">
+            <mat-datepicker #DateFrom></mat-datepicker>
+            <div matSuffix class="d-flex align-items-center">
+              <mat-datepicker-toggle [for]="DateFrom"></mat-datepicker-toggle>
+              <button *ngIf="startDate.value" mat-icon-button (click)="resetStartDate()" class="clear">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>To</mat-label>
+            <input matInput [formControl]="endDate" [max]="currentDate" [matDatepicker]="DateTo" placeholder="mm/dd/yyyy">
+            <mat-datepicker #DateTo></mat-datepicker>
+            <div matSuffix class="d-flex align-items-center">
+              <mat-datepicker-toggle [for]="DateTo"></mat-datepicker-toggle>
+              <button *ngIf="endDate.value" mat-icon-button (click)="resetEndDate()" class="clear">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+        </div>
+      </app-filter-expander>
+
+      <app-filter-expander caption="Type" [(isExpanded)]="viewState.filtersState.isTypesFilterVisible">
+        <mat-radio-group *ngIf="viewState.filtersState.isTypesFilterVisible" [formControl]="roleControl">
+          <mat-radio-button *ngFor="let role of rolesFilter" color="primary" [value]="role">
+            {{getTypeForRole(role) | stringUnderscoreToSpaceTitleCase}}
+          </mat-radio-button>
+          <mat-radio-button color="primary" [value]="null">
+            Both
+          </mat-radio-button>
+        </mat-radio-group>
+      </app-filter-expander>
+    </form>
+    <div class="state-filter">
+      <app-filter-expander caption="State" [(isExpanded)]="viewState.filtersState.isStatesFilterVisible">
+        <div *ngFor="let state of statesFilter">
+          <mat-checkbox color="primary" (change)="onStateCheckboxToggle($event, state)" [(ngModel)]="state.isSelected">
+            <span class="label">{{state.key | stringUnderscoreToSpaceTitleCase}}</span>
+          </mat-checkbox>
+        </div>
+      </app-filter-expander>
+    </div>
+    <div class="btn-section"
+      [matTooltip]="userPermissions.canReadTransactions ? '' : 'You do not have enough permissions for this action'">
+      <app-button
+        [matTooltip]="allLoaded && !isFiltersChanged() ? 'All the transactions for the specified filters are loaded.' : ''"
+        (clicked)="filterTransactions()"
+        [isDisabled]="!userPermissions.canReadTransactions || (allLoaded && !isFiltersChanged())"
+        [isPrimary]="true"
+        [isNarrow]="true">
+        {{isFiltersChanged() || allLoaded ? 'Run Query' : 'Load More'}}
+      </app-button>
+    </div>
+  </ng-container>
+
+  <ng-container main-section>
+    <div class="grid-container">
+      <dx-data-grid #grid
+                    [dataSource]="transactions"
+                    [showBorders]="true"
+                    [remoteOperations]="false"
+                    [allowColumnResizing]="true"
+                    columnResizingMode="widget"
+                    [columnAutoWidth]="true"
+                    [allowColumnReordering]="true"
+                    [rowAlternationEnabled]="true"
+                    [columnHidingEnabled]="true"
+                    [hoverStateEnabled]="true"
+                    (onCellClick)="onTransactionSelectionChanged($event)"
+                    (onContentReady)="gridContentReady()"
+                    (onToolbarPreparing)="onToolbarPreparing($event)"
+                    (onExporting)="onExporting($event)"
+      >
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+        <dxo-search-panel [visible]="true"></dxo-search-panel>
+        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+        <dxo-scrolling rowRenderingMode="virtual" columnRenderingMode="standard" [useNative]="true"></dxo-scrolling>
+        <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+          [savingTimeout]="100"></dxo-state-storing>
+
+        <div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+          <app-table-results-text *ngIf="!isLoadAllVisible()" [visibleRows]="grid.instance.totalCount()"
+                                  [results]="transactionIds.length"></app-table-results-text>
+          <app-load-all-units
+            *ngIf="isLoadAllVisible()"
+            [unitsIds]="transactionIds"
+            [type]="PageType.Orders"
+            [viewState]="viewState"
+            [offset]="offset"
+            [limit]="limit"
+            (setIsLoadingAll)="setIsLoadingAll($event)"
+            (completeData)="completeLoadedData($event)">
+          </app-load-all-units>
+
+        </div>
+
+        <dxi-column dataField="transactionNumber" [width]="100" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="purchaseOrderNumber" [width]="100"></dxi-column>
+        <dxi-column dataField="salesOrderNumber" [width]="100"></dxi-column>
+        <dxi-column dataField="shipDateInitial" dataType="date" [width]="100" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column caption="Chat" cellTemplate="messaging" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="type" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="sellerName"></dxi-column>
+        <dxi-column dataField="shipFromName" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="createdAt" caption="Created Date"></dxi-column>
+        <dxi-column dataField="updatedAt" caption="Modified Date"></dxi-column>
+        <dxi-column dataField="sellerCompanyName" [visible]="false"></dxi-column>
+        <dxi-column dataField="buyerName"></dxi-column>
+        <dxi-column dataField="shipToName" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="buyingCompanyName" [visible]="false"></dxi-column>
+
+        <dxi-column dataField="totalPrice" [allowGrouping]="false" headerCellTemplate="headerWithTooltip">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column *appShowViewCost dataField="profit" [allowGrouping]="false" headerCellTemplate="headerWithTooltip">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column *appShowViewCost dataField="margin" [allowGrouping]="false" headerCellTemplate="headerWithTooltip">
+          <dxo-format type="percent" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column *appShowViewCost dataField="discount" [allowGrouping]="false" headerCellTemplate="headerWithTooltip">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column *appShowViewCost dataField="discountPercentage" [allowGrouping]="false" headerCellTemplate="headerWithTooltip">
+          <dxo-format type="percent" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="description" [allowGrouping]="false" [width]="150" cssClass="width-restriction"></dxi-column>
+        <dxi-column dataField="transportMethodType" caption="Transport Method" [allowGrouping]="true" [width]="80" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="transportMethodCarrier" caption="Carrier" [allowGrouping]="true" [width]="80" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="transportMethodRailcar" caption="Railcar" [visible]="false" [allowGrouping]="true" [width]="100" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="transportNotes" [visible]="false" [allowGrouping]="true" [width]="150" headerCellTemplate="headerWithTooltip" cssClass="width-restriction"></dxi-column>
+        <dxi-column dataField="state" [sortingMethod]="sortByStateIndex" headerCellTemplate="headerWithTooltip"></dxi-column>
+
+        <div *dxTemplate="let data of 'messaging'" class="chat-column" (click)="openMessagingDialog(data.data, $event)">
+          <div class="unread-update-red-dot" *ngIf="data.data.hasUnreadComment"></div>
+          <mat-icon color="primary">chat_bubble_outline</mat-icon>
+        </div>
+
+        <div *dxTemplate="let info of 'headerWithTooltip'">
+          <div [matTooltip]="tooltips[info.column.dataField]">{{info.column.caption}}</div>
+        </div>
+
+        <dxo-summary [calculateCustomSummary]="calcCustomGroupSummary">
+          <dxi-group-item column="totalPrice" valueFormat="currency" summaryType="custom" name="totalPriceSummary"
+                          [customizeText]="formatGroupTotalAvgHeader" [showInGroupFooter]="false" [alignByColumn]="true"></dxi-group-item>
+          <dxi-group-item *appShowViewCost column="profit" valueFormat="currency" summaryType="custom" name="profitSummary"
+            [customizeText]="formatGroupTotalAvgHeader" [showInGroupFooter]="false" [alignByColumn]="true"></dxi-group-item>
+          <dxi-group-item *appShowViewCost column="margin" [valueFormat]="{type: 'percent', precision: 2}" summaryType="avg" displayFormat="Avg Margin: {0}"
+            [showInGroupFooter]="false" [alignByColumn]="true"></dxi-group-item>
+          <dxi-group-item *appShowViewCost column="discount" [valueFormat]="{type: 'currency', precision: 2}" summaryType="avg" displayFormat="Avg Discount: {0}"
+            [showInGroupFooter]="false" [alignByColumn]="true"></dxi-group-item>
+          <dxi-group-item *appShowViewCost column="discountPercentage" [valueFormat]="{type: 'percent', precision: 2}" summaryType="avg"
+            displayFormat="Avg Discount %: {0}" [showInGroupFooter]="false" [alignByColumn]="true"></dxi-group-item>
+        </dxo-summary>
+      </dx-data-grid>
+    </div>
+
+    <span style="visibility: hidden; position: fixed"
+          [style.left]="txGridMenuData.position.x"
+          [style.top]="txGridMenuData.position.y"
+          [matMenuTriggerFor]="orderMenu"></span>
+    <mat-menu #orderMenu="matMenu" class="group-menu-wrapper">
+      <button mat-menu-item (click)="openTxDetails()">Open details</button>
+      <button mat-menu-item (click)="openTxInNewTab()">Open in new tab</button>
+      <button mat-menu-item (click)="openTxInNewWindow()" >Open in new window</button>
+    </mat-menu>
+
+    <span class="d-flex justify-content-end">{{lastUpdatedTimeString}}&nbsp;
+      <span class="link text-primary" (click)="loadFreshData()" *ngIf="!isBackgroundLoading && !isFiltersChanged()">Reload Data</span>
+    </span>
+  </ng-container>
+
+</app-filter-grid-layout>
+
+<ng-template #NoPermission>
+  <div class="no-data">
+    <div>You do not have enough permissions for this section</div>
+  </div>
+</ng-template>

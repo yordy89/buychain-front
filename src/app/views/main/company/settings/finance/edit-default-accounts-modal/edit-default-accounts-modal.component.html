@@ -1,0 +1,24 @@
+<app-modal-base header="Update Default Accounts">
+  <ng-container content>
+    <form [formGroup]="form">
+      <div *ngFor="let item of accountsKeyTypeList" class="flex-row align-items-baseline">
+        <div class="flex-col">{{item.type}}
+          <app-tooltip-info-icon [tooltipText]="item.tooltip"></app-tooltip-info-icon>
+        </div>
+
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-select [formControlName]="item.key">
+            <mat-option *ngFor="let item of getOptions(item.key)" [value]="item.id">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSave()">Save</app-button>
+  </ng-container>
+</app-modal-base>

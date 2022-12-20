@@ -1,0 +1,22 @@
+<app-modal-base header="Update Sales Practices">
+  <ng-container content>
+    <form [formGroup]="form">
+      <div class="flex-row align-items-baseline">
+        <div class="flex-auto">Selection Criteria: <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.SALES_PRACTICE_SELECTION_CRITERIA"></app-tooltip-info-icon></div>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-select
+              [formControl]="selectionCriteria">
+            <mat-option *ngFor="let option of selectionCriteriaOptions" [value]="option.key">
+              {{option.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateSalesPractices()">Save</app-button>
+  </ng-container>
+</app-modal-base>

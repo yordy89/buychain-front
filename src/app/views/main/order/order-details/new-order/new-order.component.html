@@ -1,0 +1,41 @@
+<form [formGroup]="initialOrderForm">
+  <div class="new-order-container order-section">
+    <mat-expansion-panel [disabled]="true">
+      <mat-expansion-panel-header>
+
+        <mat-panel-title><span class="panel-title-text">Order</span></mat-panel-title>
+
+        <div class="form-control">
+          <span class="form-label-text">Type</span>
+          <mat-form-field appearance="outline" class="no-padding">
+            <mat-select [formControl]="orderType" placeholder="Select One" disableOptionCentering
+              panelClass="visible-selected-value">
+              <mat-option *ngFor="let type of orderTypesList" [value]="type" [disabled]="type !== OrderType.Stock">
+                {{type | stringUnderscoreToSpaceTitleCase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-control">
+          <span class="form-label-text">Subtype</span>
+          <mat-form-field appearance="outline" class="no-padding">
+            <mat-select [formControl]="orderSubType" placeholder="Select One" disableOptionCentering
+              panelClass="visible-selected-value">
+              <mat-option *ngFor="let subType of orderSubTypeList" [value]="subType">
+                {{subType | stringUnderscoreToSpaceTitleCase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-control">
+          <app-button [matTooltip]="userPermissions.canCreate ? '' : 'You do not have enough permissions for this action'"
+            [isDisabled]="!userPermissions.canCreate" (clicked)="createNewOrder()" [isPrimary]="true">Create New
+          </app-button>
+        </div>
+
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </div>
+</form>

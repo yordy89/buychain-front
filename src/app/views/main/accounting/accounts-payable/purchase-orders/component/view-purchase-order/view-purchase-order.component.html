@@ -1,0 +1,142 @@
+<ng-container *ngIf="data">
+  <div class="flex-row align-items-start">
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Status</div>
+        <div class="key-value-pair-value">
+          <span class="badge" [ngClass]="data.badgeClass">{{data.state | stringUnderscoreToSpaceTitleCase}}</span>
+        </div>
+      </div>
+
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Number</div>
+        <div class="key-value-pair-value">
+          <app-copy-text-button
+            class="small"
+            [text]="data.number"
+            [valueToCopy]="entryUrl"
+            successMessage="Link to this Purchase Order copied to clipboard"
+          ></app-copy-text-button>
+        </div>
+      </div>
+
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">PO Reference</div>
+        <div class="key-value-pair-value">
+          {{data.PONumber || '-'}}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Sales Rep</div>
+        <div class="key-value-pair-value">
+          {{data.owner | displayItemFromList: members:'id':'name'}}
+        </div>
+      </div>
+
+
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Group</div>
+        <div class="key-value-pair-value">
+          {{data.group || null | displayItemFromList: groups:'id':'name'}}
+        </div>
+      </div>
+
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Dimension</div>
+        <div class="key-value-pair-value">
+          {{(data.costCenter | displayItemFromList: dimensions:'id':'name') || '-'}}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Payment Terms</div>
+        <div class="key-value-pair-value">
+          {{data?.terms}}
+        </div>
+      </div>
+
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Vendor</div>
+        <div class="key-value-pair-value">
+          {{data.vendor.company | displayItemFromList: crmAccounts:'id':'name'}}
+        </div>
+      </div>
+
+      <div *ngIf="transaction" class="key-value-pair">
+        <div class="key-value-pair-label">Transaction State</div>
+        <div class="key-value-pair-value">
+          <span class="badge" [ngClass]="transaction?.badgeClass">{{transaction?.state || '' | stringUnderscoreToSpaceTitleCase}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Credit Terms</div>
+        <div class="key-value-pair-value">
+          {{creditTerms}}
+        </div>
+      </div>
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Created At</div>
+        <div class="key-value-pair-value">
+          {{data.createdAt | date}}
+        </div>
+      </div>
+      <div *ngIf="transaction" class="key-value-pair">
+        <div class="key-value-pair-label">Transaction Link</div>
+        <div class="key-value-pair-value text-nowrap">
+          <a [href]="transactionUrl" target="_blank" class="link-btn">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex-row">
+    <div class="flex-col-2 key-value-pair description">
+      <div class="key-value-pair-label">Description</div>
+      <div class="key-value-pair-value">{{data.description}}</div>
+    </div>
+  </div>
+
+
+  <div class="lines-container flex-row">
+    <div class="flex-col">
+      <app-purchase-order-line-items-grid
+        [purchaseOrder]="data"
+        (lineItemDeletedEvent)="onLineItemDeleted()">
+      </app-purchase-order-line-items-grid>
+    </div>
+    <div class="flex-col">
+      <app-purchase-order-bills-grid
+        [purchaseOrder]="data"
+        [onBillDeleted]="onBillDeleted">
+      </app-purchase-order-bills-grid>
+    </div>
+  </div>
+
+  <div class="flex-row">
+    <div *ngIf="data?.attachments?.length" class="flex-col">
+      <app-accounting-file-upload
+        [attachments]="data.attachments"
+        [isEditable]="false"
+      ></app-accounting-file-upload>
+    </div>
+    <div class="flex-col">
+      <div *ngIf="data.notes" class="key-value-pair notes">
+        <div class="key-value-pair-label">Notes</div>
+        <div class="key-value-pair-value">{{data.notes}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="canClosePurchaseOrder" class="d-flex justify-content-end">
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onClosePurchaseOrder()">Close Purchase Order</app-button>
+  </div>
+</ng-container>

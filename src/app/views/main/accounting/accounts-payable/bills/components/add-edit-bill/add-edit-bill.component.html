@@ -1,0 +1,118 @@
+<form
+  [formGroup]="form"
+  novalidate
+  (keydown.enter)="onEnter($event)"
+>
+  <section class="flex-row">
+    <section class="flex-col-2">
+      <div class="flex-row">
+        <div class="flex-col">
+          <app-autocomplete label="Account"
+                            [data]="accounts"
+                            [isRequired]="true"
+                            panelWidth="auto"
+                            formControlName="APAccount"
+                            keyName="id"
+                            displayName="numberAndName"
+                            placeholder="Account"
+          ></app-autocomplete>
+        </div>
+        <div class="flex-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Due Date</mat-label>
+            <input matInput
+                   formControlName="dueDate"
+                   [matDatepicker]="dueDate"
+                   placeholder="mm/dd/yyyy"
+                   required
+            >
+            <mat-datepicker-toggle matSuffix [for]="dueDate"></mat-datepicker-toggle>
+            <mat-datepicker #dueDate></mat-datepicker>
+            <mat-error>{{form.get('dueDate')?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="flex-col">
+          <app-tree-selector
+            label="Group"
+            [treeListData]="groups"
+            [control]="getControlFromGroup(form, 'group')"
+            [allowClear]="true"
+            appearance="outline"
+            keyExpr="id"
+            displayKey="name"
+            placeholder="Group"
+            parentExpr="parent"
+            (entered)="onEnter($event)"
+          ></app-tree-selector>
+        </div>
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="badge-select">
+            <mat-label>State</mat-label>
+            <mat-select formControlName="state">
+              <mat-select-trigger>
+                <span class="badge" [ngClass]="[stateBadgeClass(form.get('state').value)]">{{form.get('state').value | stringUnderscoreToSpaceTitleCase}}</span>
+              </mat-select-trigger>
+              <mat-option
+                *ngFor="let item of states"
+                [value]="item"
+                [disabled]="!!stateOptionDisabledTooltip(item)"
+                [matTooltip]="stateOptionDisabledTooltip(item)"
+                matTooltipPosition="right"
+              >
+                <span class="badge" [ngClass]="[stateBadgeClass(item)]">{{item | stringUnderscoreToSpaceTitleCase}}</span>
+              </mat-option>
+            </mat-select>
+
+            <mat-error>{{form.get('state')?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <dx-tab-panel class="mt-15" *ngIf="editMode">
+    <dxi-item title="Line Items">
+      <app-bill-line-items-grid
+        [data]="data"
+        [purchaseOrder]="purchaseOrder">
+      </app-bill-line-items-grid>
+    </dxi-item>
+    <dxi-item tabTemplate="tabTemplate">
+      <app-bill-payments-grid
+        [data]="data"
+        [purchaseOrder]="purchaseOrder"
+        [members]="members"
+        (paymentsUpdatedEvent)="onPaymentsUpdated()">
+      </app-bill-payments-grid>
+    </dxi-item>
+    <div *dxTemplate="let content of 'tabTemplate'">
+      <span>{{paymentsTabTitle}}</span>
+    </div>
+  </dx-tab-panel>
+
+  <div class="mt-25" *ngIf="editMode">
+    <app-accounting-milestones [milestones]="milestones">
+    </app-accounting-milestones>
+  </div>
+
+  <div class="flex-row mt-25">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload
+        [(attachments)]="attachments"
+        (removeAttachment)="removeAttachment($event)"
+      ></app-accounting-file-upload>
+    </div>
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Notes</mat-label>
+      <textarea rows="3" matInput placeholder="Notes" formControlName="notes" appNullOnEmpty maxlength="500"></textarea>
+      <mat-error>{{form.get('notes')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end mt-15">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">Submit</app-button>
+</div>

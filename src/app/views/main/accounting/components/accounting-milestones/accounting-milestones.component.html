@@ -1,0 +1,42 @@
+<div class="section-header">
+  <span>Milestones</span>
+</div>
+
+<div class="table-base-wrapper">
+  <app-table-base *ngIf="milestones?.length">
+    <ng-container header>
+      <tr class="header">
+        <th class="icon"></th>
+        <th class="milestone-description">Description</th>
+        <th class="time-stamp">Time Stamp</th>
+        <th class="user">User</th>
+        <th class="attachment">Attachment</th>
+      </tr>
+    </ng-container>
+
+    <ng-container body>
+      <tr *ngFor="let milestone of milestones">
+        <td class="icon text-center">
+          <img *ngIf="milestone.icon" src="/assets/milestoneIcons/{{milestone.icon}}.svg" alt="">
+        </td>
+        <td class="milestone-description">{{milestone.description}}</td>
+        <td class="time-stamp">{{milestone.updatedAt | date}}</td>
+        <td class="user">
+          <div *ngIf="milestone.creator">
+            {{milestone.creator.firstName}} {{milestone.creator.lastName}}
+          </div>
+        </td>
+        <td class="attachment">
+          <div *ngIf="milestone.attachment" (click)="downloadDocument(milestone)">
+            <mat-icon>attachment</mat-icon>
+            <span>{{milestone.attachment.name}}</span>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </app-table-base>
+</div>
+
+<ng-container *ngIf="!milestones?.length">
+  <div class="no-data">No Data</div>
+</ng-container>

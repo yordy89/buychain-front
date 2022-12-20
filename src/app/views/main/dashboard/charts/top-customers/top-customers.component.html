@@ -1,0 +1,20 @@
+<app-table-chart caption="Top Customers" [columns]="columns" (viewAllClick)="onViewAllClick()" [showViewAll]="showViewAll">
+  <tr *ngFor="let row of rows; let i = index">
+    <td>
+      <span class="row-number">{{i+1}}.</span>
+      <a mat-button [routerLink]="''" (click)="navigateToCrmAccount(row.buyingCompanyId)">{{row.buyingCompanyName}}</a>
+    </td>
+    <td>
+      {{row.ordersCount}}
+    </td>
+    <td>
+      ${{row.totalRevenues | abbreviateNumber}}
+    </td>
+    <td>
+      ${{row.margin | abbreviateNumber}}
+    </td>
+    <td>
+      {{row.lastOrderDate | dateAgo}}
+    </td>
+  </tr>
+</app-table-chart>

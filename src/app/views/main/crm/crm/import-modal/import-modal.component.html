@@ -1,0 +1,32 @@
+<app-modal-base header="Import CRM Data" (closed)="onClose()">
+  <ng-container content>
+    <div class="flex-row align-items-baseline">
+      <h5 class="flex-col-auto">Select CRM entity type to import: </h5>
+      <mat-form-field class="flex-col">
+        <mat-select [(value)]="selectedType">
+          <mat-option *ngFor="let entity of entityTypes" [value]="entity">
+            {{entity}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="file-selection">
+      <app-file-select
+        buttonText="Select file"
+        hintText="You may import CSV files."
+        icon="attachment" accept=".csv"
+        (changed)="onFileChange($event)"></app-file-select>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true"
+                [isPrimary]="true"
+                [isDisabled]="!selectedType || !selectedFile"
+                (clicked)="this.onImport()"
+    >
+      Import
+    </app-button>
+  </ng-container>
+</app-modal-base>

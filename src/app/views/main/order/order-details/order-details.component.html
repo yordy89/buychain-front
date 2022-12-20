@@ -1,0 +1,43 @@
+<div class="wrapper" *ngIf="isLoaded">
+
+  <div *ngIf="orderData" class="order-container order-section">
+    <mat-expansion-panel [disabled]="true">
+      <mat-expansion-panel-header>
+
+        <mat-panel-title><span class="panel-title-text">Order</span></mat-panel-title>
+
+        <div class="form-control">
+          <span class="form-label-text">Type:</span>
+          <div class="form-text">
+            {{orderData.type | stringUnderscoreToSpaceTitleCase}}
+          </div>
+        </div>
+
+        <div class="form-control">
+          <span class="form-label-text">Subtype:</span>
+          <div class="form-text">
+            {{orderData.subtype | stringUnderscoreToSpaceTitleCase}}
+          </div>
+        </div>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </div>
+
+  <div class="transactions-container">
+    <mat-expansion-panel [disabled]="true" [expanded]="true" hideToggle class="content-no-padding">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span class="panel-title-text">Transactions</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="content-section">
+          <app-transaction-summary-list [order]="orderData"
+                                        [transactionsIds]="transactionsIds"
+                                        [orderActions]="orderActions"
+          ></app-transaction-summary-list>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+</div>

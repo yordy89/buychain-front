@@ -1,0 +1,58 @@
+<div class="products-section">
+  <div class="spec-selector">
+
+    <div class="selection-list">
+      <mat-radio-group class="products-radio-group" [(ngModel)]="selectedProductGroup">
+        <mat-radio-button *ngFor="let spec of specsTree" class="spec-selection-item with-arrow-icon"
+                          [class.selected]="selectedProductGroup === spec" [value]="spec" color="primary">
+          {{spec.displayName}}
+          <i class="material-icons" *ngIf="spec.innerSpecs?.length">arrow_right</i>
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <ng-template #specNodeTemplate let-selectedSpec>
+
+      <div *ngIf="selectedSpec.innerSpecs[0] && selectedSpec.innerSpecs[0].type!==1" class="selection-list">
+        <mat-radio-group class="products-radio-group" [(ngModel)]="selectedSpec.selected">
+          <mat-radio-button *ngFor="let spec of selectedSpec.innerSpecs" class="spec-selection-item with-arrow-icon"
+                            [class.selected]="selectedSpec.selected === spec" [value]="spec" color="primary">
+            {{spec.displayName | uomToSymbol : spec.uom}}
+            <i class="material-icons" *ngIf="spec.innerSpecs?.length">arrow_right</i>
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div *ngIf="selectedSpec.innerSpecs[0] && selectedSpec.innerSpecs[0].type===1" class="selection-list">
+        <ng-container *ngFor="let spec of selectedSpec.innerSpecs">
+          <mat-checkbox *ngIf="spec?.innerSpecs?.length" class="spec-selection-item with-arrow-icon"
+                        [class.selected]="selectedSpec.selected === spec" [ngModel]="spec.isComplete()"
+                        (click)="selectedSpec.selected=spec" color="primary">
+            {{spec.displayName | uomToSymbol : spec.uom}}
+            <i class="material-icons">arrow_right</i>
+          </mat-checkbox>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="selectedSpec.selected">
+        <ng-container *ngTemplateOutlet="specNodeTemplate; context:{ $implicit: selectedSpec.selected }">
+        </ng-container>
+      </ng-container>
+
+    </ng-template>
+
+    <ng-container
+      *ngTemplateOutlet="specNodeTemplate; context:{ $implicit: selectedProductGroup.innerSpecs[0] }">
+    </ng-container>
+  </div>
+  <div class="autocompletion-row">
+    Selected spec: <span class="text-bold">{{currentProductSpec || '-'}}</span>
+  </div>
+
+  <div>
+    <app-button [isNarrow]="true" [isPrimary]="true" [isDisabled]="!canCreateProduct()" (clicked)="onCreateProduct()">Add To Tally</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" [isDisabled]="!canCreateProduct()" (clicked)="addToUserProducts()">Add To My Products</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="false" (clicked)="clearProduct()">Clear Product</app-button>
+  </div>
+
+</div>

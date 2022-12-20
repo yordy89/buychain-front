@@ -1,0 +1,54 @@
+<div class="wrapper">
+
+  <div class="top-panel">
+
+    <div class="left-side">
+      <div *ngIf="showSidebar" class="filter-icon-container" [ngClass]="{'opened': isFilterPanelOpened}" (click)="toggleFilterPanel()">
+        <mat-icon>filter_alt</mat-icon>
+        <span *ngIf="filtersCount" class="counter">{{filtersCount}}</span>
+      </div>
+
+      <h4>{{header}}</h4>
+      <ng-content select="[left-side-button-section]"></ng-content>
+    </div>
+
+    <div class="middle">
+      <ng-content select="[middle-section]"></ng-content>
+    </div>
+
+    <div class="right-side">
+      <ng-content select="[right-side-button-section]"></ng-content>
+    </div>
+
+  </div>
+
+  <div class="content">
+    <mat-drawer-container>
+
+      <mat-drawer *ngIf="showSidebar"
+                  mode="side"
+                  [opened]="isFilterPanelOpened"
+                  (opened)="onOpenChanged()"
+                  (closed)="onOpenChanged()"
+      >
+        <div class="filter">
+          <div class="filter-heading">
+            <h5>Filters</h5>
+            <button matTooltip="Reset To Default Filters" *ngIf="filtersCount" mat-icon-button color="warn" (click)="onReset()">
+              <mat-icon>restart_alt</mat-icon>
+            </button>
+          </div>
+
+          <ng-content select="[filter-section]"></ng-content>
+        </div>
+      </mat-drawer>
+
+      <mat-drawer-content>
+        <div class="grid">
+          <ng-content select="[main-section]"></ng-content>
+        </div>
+      </mat-drawer-content>
+
+    </mat-drawer-container>
+  </div>
+</div>

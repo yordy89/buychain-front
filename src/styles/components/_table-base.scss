@@ -1,0 +1,122 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+@use 'variables' as *;
+
+.table-base {
+  font-size: 14px;
+
+  &.disabled-hover {
+    tr {
+      pointer-events: none;
+    }
+  }
+
+  .table-heading {
+    font-size: inherit;
+  }
+
+  th,
+  td {
+    &:not(:last-child) {
+      border-right: 1px solid #ddd;
+    }
+  }
+
+  .table-header {
+    tr {
+      font-size: inherit;
+      background-color: #fff;
+      color: $text-1;
+      border-bottom: 2px solid #ddd;
+
+      @include mat-css-dark-theme-global {
+        background: #424242;
+      }
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      color: $text-1;
+      padding: 7px;
+      height: 25px;
+      z-index: 1;
+
+      @include mat-css-dark-theme-global {
+        background: #424242;
+      }
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(var(--palette-primary-100), 0.5);
+        z-index: -1;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      .mat-icon {
+        font-size: 17px;
+      }
+    }
+  }
+
+  .table-body {
+    width: 100%;
+    font-weight: 400;
+
+    tr {
+      font-size: 15px;
+
+      &:hover {
+        background: rgba(var(--palette-primary-50), 0.5);
+      }
+
+      td {
+        height: 25px;
+        padding: 5px 8px;
+      }
+    }
+
+    .invalid-line {
+      background-color: rgba(var(--palette-warn-500), 0.2);
+    }
+
+    .invalid-cell {
+      border: 2px solid rgba(var(--palette-warn-500), 1);
+    }
+  }
+
+  &.striped {
+    .table-body {
+      tr {
+        &:nth-child(even) {
+          background-color: rgba(var(--palette-primary-100), 0.35);
+        }
+
+        &:hover {
+          background: rgba(var(--palette-primary-50), 0.5);
+        }
+
+        &.invalid-line {
+          background-color: rgba(var(--palette-warn-500), 0.2);
+
+          &:nth-child(even) {
+            background-color: rgba(var(--palette-warn-100), 0.35);
+          }
+
+          &:hover {
+            background: rgba(var(--palette-warn-50), 0.5);
+          }
+        }
+      }
+    }
+  }
+}

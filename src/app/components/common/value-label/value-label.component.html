@@ -1,0 +1,10 @@
+<div class="wrap" [ngClass]="{'total-mode': mode === 'total'}">
+  <span class="label">{{label}}</span>
+  <span class="value">
+    {{value}}
+    <span *ngIf="unit" class="unit">{{unit}}</span>
+    <span>
+       <ng-content select="[addition]"></ng-content>
+    </span>
+  </span>
+</div>

@@ -1,0 +1,57 @@
+<app-modal-base header="Edit Rate Table Entry" (closed)="close()">
+  <ng-container content>
+    <form [formGroup]="form">
+
+      <div class="entry-details">
+
+        <div class="non-editable-section">
+          <div class="plaintext-field">
+            <div class="label">Location Name: </div>
+            <div class="value">{{entry.destinationShortName}}</div>
+          </div>
+          <div class="plaintext-field">
+            <div class="label">Location: </div>
+            <div class="value">{{entry.destinationCity}}, {{entry.destinationState}}, {{entry.destinationCountry}}</div>
+          </div>
+          <div class="plaintext-field">
+            <div class="label">Transport: </div>
+            <div class="value">{{entry.transportMethod.type | stringUnderscoreToSpaceTitleCase}}
+              <span *ngIf="entry.transportMethod.carrier"> - {{entry.transportMethod.carrier}}</span>
+              <span *ngIf="entry.transportMethod.railRestriction"> - {{entry.transportMethod.railRestriction | stringUnderscoreToSpaceTitleCase}}</span>
+            </div>
+          </div>
+          <div class="plaintext-field">
+            <div class="label">UoM: </div>
+            <div class="value">{{entry.uom | stringUnderscoreToSpaceTitleCase}}</div>
+          </div>
+          <div class="plaintext-field">
+            <div class="label">Capacity: </div>
+            <div class="value">{{entry.capacity}}</div>
+          </div>
+        </div>
+
+        <div class="editable-section">
+          <div class="plaintext-field">
+            <mat-form-field appearance="outline">
+              <mat-label>Cost</mat-label>
+              <input matInput placeholder="Cost" required [formControl]="cost" type="number" appNullOnEmpty>
+              <mat-error>{{cost?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea rows="2" matInput placeholder="Description" appNullOnEmpty [formControl]="destinationDescription" type="text"></textarea>
+              <mat-error>{{destinationDescription?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </ng-container>
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isNarrow]="true" [isDisabled]="form.invalid" (clicked)="editRateTableEntry()" [isPrimary]="true">Save</app-button>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,37 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+form {
+  margin-right: 10px;
+}
+
+.mat-form-field {
+  a {
+    color: currentcolor;
+  }
+}
+
+.flex-col {
+  > .mat-form-field,
+  > app-autocomplete,
+  > app-tree-selector,
+  > app-chip-list-input {
+    &:not(app-chip-list-input) {
+      height: 80px;
+    }
+
+    display: block;
+  }
+}
+
+.add-line-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  line-height: 0.1px;
+}
+
+.no-entries-text {
+  font-size: 16px;
+  color: rgba(var(--palette-warn-500), 1);
+}

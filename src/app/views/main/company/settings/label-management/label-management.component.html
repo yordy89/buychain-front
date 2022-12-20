@@ -1,0 +1,54 @@
+<div class="wrapper" *ngIf="labelPermissions?.read?.value === AccessControlScope.Company; else NoPermission">
+  <mat-tab-group *ngIf="labelData">
+    <mat-tab label="Account">
+      <app-labels-table
+        [labelsData]="labelData.accountCategoryTags"
+        [labelsHeader]="'Category Labels'"
+        [labelGroup]="LabelGroupName.accountCategoryTags"
+        [labelSet]="LabelSet.AccountCategoryTag"
+      ></app-labels-table>
+      <hr>
+      <app-labels-table
+        [labelsData]="labelData.accountIndustryTags"
+        [labelsHeader]="'Industry Labels'"
+        [labelGroup]="LabelGroupName.accountIndustryTags"
+        [labelSet]="LabelSet.AccountIndustryType"
+      ></app-labels-table>
+      <hr>
+      <app-labels-table
+        [labelsData]="labelData.accountTags"
+        [labelsHeader]="'Tag Labels'"
+        [labelGroup]="LabelGroupName.accountTags"
+        [labelSet]="LabelSet.AccountTag"
+      ></app-labels-table>
+    </mat-tab>
+    <mat-tab label="Contact">
+      <app-labels-table
+        [labelsData]="labelData.contactTags"
+        [labelsHeader]="'Tag Labels'"
+        [labelGroup]="LabelGroupName.contactTags"
+        [labelSet]="LabelSet.ContactTag"
+      ></app-labels-table>
+      <hr>
+      <app-labels-table
+        [labelsData]="labelData.contactRoleTags"
+        [labelsHeader]="'Role Labels'"
+        [labelGroup]="LabelGroupName.contactRoleTags"
+        [labelSet]="LabelSet.ContactRoleTag"
+      ></app-labels-table>
+    </mat-tab>
+    <mat-tab label="Location">
+      <app-labels-table
+        [labelsData]="labelData.locationTags"
+        [labelsHeader]="'Tag Labels'"
+        [labelGroup]="LabelGroupName.locationTags"
+        [labelSet]="LabelSet.LocationTag"
+      ></app-labels-table>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<ng-template #NoPermission>
+  <div class="no-data-plate">
+    <div>You do not have enough permissions for this section</div>
+  </div>
+</ng-template>

@@ -1,0 +1,34 @@
+<app-modal-base header="Add Personnel"
+                subHeader="Please fill the fields below to create Facility Personnel"
+                (closed)="close()"
+>
+  <ng-container content>
+
+    <form [formGroup]="form">
+      <div class="flex-row">
+        <app-autocomplete
+            [data]="data.members"
+            label="Select personnel"
+            formControlName="userId"
+            iconName="account_box"
+            keyName="id"
+            displayName="name"
+            class="flex-col-auto"
+        ></app-autocomplete>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Description</mat-label>
+          <textarea matInput placeholder="Facility Description" [formControl]="description"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="addPersonnel()">Add</app-button>
+  </ng-container>
+</app-modal-base>

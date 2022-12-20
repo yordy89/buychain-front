@@ -1,0 +1,23 @@
+<app-modal-base [header]="header" (closed)="close()">
+  <ng-container content>
+
+    <app-table-base *ngIf="data.logs?.length" class="striped" [disableHover]="true">
+      <ng-container body>
+        <tr *ngFor="let item of data.logs">
+          <td>
+            {{item.user | displayItemFromList: data.members:'id':'name'}} made the change [{{item.event}}] on {{item.updatedAt | date:'short'}}
+          </td>
+        </tr>
+      </ng-container>
+    </app-table-base>
+
+    <div *ngIf="!data.logs?.length" class="no-data-plate">
+      There are no log entries for this {{data.name}} yet.
+    </div>
+
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+  </ng-container>
+</app-modal-base>

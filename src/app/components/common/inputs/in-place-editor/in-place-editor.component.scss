@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 500;
+  height: 70px;
+  line-height: 3.9;
+
+  .label {
+    white-space: nowrap;
+    margin-right: 15px;
+  }
+
+  .value-form {
+    width: 100%;
+  }
+
+  .save-buttons {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+}

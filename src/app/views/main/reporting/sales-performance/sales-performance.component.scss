@@ -1,0 +1,21 @@
+.chart-wrapper {
+  width: 100%;
+
+  dx-chart {
+    width: 100%;
+  }
+
+  mat-form-field {
+    margin: 0 5px;
+  }
+
+  position: relative;
+  margin: 10px 0;
+
+  .chart-options-container {
+    position: absolute;
+    right: 65px;
+    top: 3px;
+    display: flex;
+  }
+}

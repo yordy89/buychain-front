@@ -1,0 +1,21 @@
+<span class="label" *ngIf="label">{{label}}:</span>
+<ng-container *ngIf="mode==='view'">
+  <span class="text-ellipsis" *ngIf="editorType==='text'">{{value}}</span>
+  <span class="text-ellipsis" *ngIf="editorType==='date'">{{value | date}}</span>
+  <app-icon-button [isDisabled]="!editable" (clicked)="onEditClick()" icon="edit"></app-icon-button>
+</ng-container>
+<ng-container *ngIf="mode==='edit'">
+  <mat-form-field class="value-form">
+    <input *ngIf="editorType==='text'" matInput appNullOnEmpty [required]="required" [formControl]="valueControl">
+    <ng-container *ngIf="editorType==='date'">
+      <input matInput [formControl]="valueControl" [required]="required" [min]="minValue" [matDatepicker]="DatePicker">
+      <mat-datepicker-toggle matSuffix [for]="DatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #DatePicker></mat-datepicker>
+    </ng-container>
+    <mat-error>{{valueControl?.errors | errorMessage}}</mat-error>
+  </mat-form-field>
+  <div class="save-buttons">
+    <app-icon-button [isDisabled]="valueControl.invalid" (clicked)="onSaveClick()" icon="save"></app-icon-button>
+    <app-icon-button [isWarn]="true" (clicked)="onCancelClick()" icon="cancel"></app-icon-button>
+  </div>
+</ng-container>

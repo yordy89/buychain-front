@@ -1,0 +1,31 @@
+<app-modal-base class="wrap" [header]="dimension ? 'Edit Dimension' : 'Add Dimension'" (closed)="close()">
+  <ng-container content>
+    <div [formGroup]="formGroup" class="form">
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Account Name" required [formControl]="name" type="text" appNullOnEmpty>
+          <mat-error>{{name?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Description</mat-label>
+          <textarea matInput placeholder="Description" [formControl]="description" type="text"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-checkbox class="flex-col " [checked]="!archived.value" (change)="onChangeActive($event.checked)">Active</mat-checkbox>
+      </div>
+
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" [isDisabled]="!this.formGroup.valid" (clicked)="submit()">Submit</app-button>
+  </ng-container>
+</app-modal-base>

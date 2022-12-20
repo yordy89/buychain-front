@@ -1,0 +1,94 @@
+.pending-approvals {
+  width: 100%;
+
+  .pending-members-title {
+    font-weight: 500;
+    font-size: 19px;
+  }
+
+  .pending-members-list-container {
+    border-top: 2px solid rgba(var(--palette-primary-200), 0.5);
+    width: 100%;
+    padding-top: 20px;
+
+    .pending-member-container {
+      text-align: center;
+      width: 100%;
+      color: rgba(var(--palette-primary-200), 1);
+      font-weight: 500;
+      font-size: 17px;
+      justify-content: space-between;
+      display: flex;
+      float: left;
+
+      div {
+        display: flex;
+        float: left;
+      }
+
+      .action-buttons {
+        div {
+          margin-right: 15px;
+          cursor: pointer;
+        }
+
+        .approve {
+          color: green;
+
+          mat-icon {
+            margin-right: 5px;
+          }
+        }
+
+        .deny {
+          color: rgba(var(--palette-warn-500), 1);
+
+          mat-icon {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.manage-users-container {
+  width: 100%;
+
+  .company-members-title {
+    font-weight: 500;
+    font-size: 19px;
+  }
+
+  .company-members-list-container {
+    width: 100%;
+    padding-top: 20px;
+    border-top: 2px solid rgba(var(--palette-primary-200), 0.5);
+
+    .company-member-container {
+      width: 100%;
+
+      .table-base {
+        .first-name {
+          width: 15%;
+        }
+
+        .last-name {
+          width: 15%;
+        }
+
+        .email {
+          width: 20%;
+        }
+
+        .permissions {
+          width: 25%;
+        }
+
+        .account-state {
+          width: 15%;
+        }
+      }
+    }
+  }
+}

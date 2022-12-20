@@ -1,0 +1,13 @@
+<div class="options-wrapper">
+  <div class="label">Filter by trader: </div>
+  <div class="options-selector">
+    <mat-form-field>
+      <mat-select [formControl]="sellerSelectorControl">
+        <mat-option *ngFor="let member of crmSellersList; trackBy: trackByFn" [value]="member">
+          {{member.name}}
+        </mat-option>
+        <mat-option value="all">All</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>

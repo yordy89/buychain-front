@@ -1,0 +1,37 @@
+<div class="wrapper-container">
+  <div class="contacts-table-wrapper">
+    <app-table-base *ngIf="accountContacts?.length; else NoCrmContacts" class="striped">
+      <ng-container header>
+        <tr class="header">
+          <th class="type">Type</th>
+          <th class="carrier">Name</th>
+          <th class="description">Email</th>
+          <th class="archived">Archived</th>
+          <th></th>
+        </tr>
+      </ng-container>
+
+      <ng-container body>
+        <tr *ngFor="let contact of accountContacts" [ngClass]="{'archived-crm': contact.archived}">
+          <td class="type"><mat-icon color="primary">account_circle</mat-icon></td>
+          <td>{{contact.firstName}} {{contact.lastName}}</td>
+          <td>{{contact.username}}</td>
+          <td>{{contact.archived | booleanYesNo}}</td>
+          <td>
+            <app-table-actions [data]="contact"
+                               [actions]="actions"
+                               (action)="onTableAction($event, contact)"
+            ></app-table-actions>
+          </td>
+        </tr>
+      </ng-container>
+    </app-table-base>
+
+    <ng-template #NoCrmContacts>
+      <p class="no-data-plate">You do not have any CRM Contacts yet</p>
+    </ng-template>
+  </div>
+  <div class="add-contact-wrapper">
+    <app-button *ngIf="crmPermissions.canCreate" [isNarrow]="true" icon="add" (clicked)="addCrmAccountContact()">Add New</app-button>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+.wrapper {
+  height: 100%;
+}
+
+.transactions-container,
+.order-container {
+  // min-width: 1200px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.order-section {
+  margin-bottom: 10px;
+
+  .order-number {
+    margin-right: 30px;
+    display: flex;
+  }
+}
+
+.panel-title-text {
+  font-size: 22px;
+}
+
+.form-label-text {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.form-text {
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.transactions-container {
+  .content-section {
+    padding: 1%;
+  }
+}
+
+mat-expansion-panel-header {
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 10%) !important;
+  height: 68px !important;
+
+  .form-control {
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+
+    .button-container {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+
+      app-icon-button {
+        margin-right: 33px;
+      }
+    }
+  }
+
+  mat-form-field {
+    margin-left: 10px;
+  }
+}
+
+.add-transaction-container {
+  display: flex;
+  justify-content: left;
+}

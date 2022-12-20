@@ -1,0 +1,72 @@
+<form [formGroup]="form">
+
+  <div class="ship-actions"
+       *ngIf="!isCrm && rateTables?.length && canUpdateShipFrom">
+    <app-button *ngIf="disabledMode; else DoneButton" [isPrimary]="true" [isNarrow]="true" (clicked)="edit()">Edit</app-button>
+    <ng-template #DoneButton>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="done()">Done</app-button>
+    </ng-template>
+  </div>
+
+  <div class="container-wrapper">
+
+    <ng-container *ngIf="!isCrm">
+      <div *ngIf="rateTables?.length; else NoRateTables" class="section-rate-table">
+        <div class="label">
+          <label>Rate Table</label>
+        </div>
+        <div class="rate-table-selector">
+          <app-autocomplete
+            label="Select Rate Table"
+            iconName="account_box"
+            keyName="id"
+            displayName="name"
+            [data]="rateTables"
+            [formControl]="rateTableId"
+            [isDisabled]="disabledMode"
+            [emptyValue]="null"
+          ></app-autocomplete>
+        </div>
+      </div>
+    </ng-container>
+
+
+    <div class="section-notes">
+      <div class="active-hours">
+        <mat-form-field appearance="outline">
+          <mat-label>Loading department active hours</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty [formControl]="loadingHours" rows="5"></textarea>
+          <mat-error>{{loadingHours?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="comments">
+        <mat-form-field appearance="outline">
+          <mat-label>Loading department Comments</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty [formControl]="loadingNotes" rows="5"></textarea>
+          <mat-error>{{loadingNotes?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="section-personnel">
+      <div class="label">
+        <label>Loading Personnel</label>
+      </div>
+      <div class="personnel-table">
+        <app-facility-personnel
+          [facility]="facility"
+          [type]="FacilityPersonnelType.Loading"
+          [disabled]="disabledMode"
+        ></app-facility-personnel>
+      </div>
+    </div>
+
+  </div>
+
+</form>
+
+<ng-template #NoRateTables>
+  <div class="no-data">
+    <h1>Company Does not have any rate tables defined</h1>
+    <h2>To add Ship From you first need to define a rate Table</h2>
+  </div>
+</ng-template>

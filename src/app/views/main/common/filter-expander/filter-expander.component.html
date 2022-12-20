@@ -1,0 +1,7 @@
+<div class="expander">
+  <div class="header" (click)="toggle()">
+    <p>{{caption}}</p>
+    <mat-icon>{{isExpanded ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+  </div>
+  <ng-content *ngIf="isExpanded"></ng-content>
+</div>

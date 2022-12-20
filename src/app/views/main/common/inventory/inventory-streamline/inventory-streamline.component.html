@@ -1,0 +1,357 @@
+<app-filter-grid-layout header="Inventory Search"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()">
+  <ng-container left-side-button-section></ng-container>
+
+  <ng-container middle-section>
+    <div class="mt-15">
+      <mat-button-toggle-group appearance="legacy" [value]="inventoryView" (change)="onChangeInventoryView($event)">
+        <mat-button-toggle class="background-primary" [value]="InventoryViewEnum.ProductView">Product View</mat-button-toggle>
+        <mat-button-toggle [value]="InventoryViewEnum.MasterView">Master View</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </ng-container>
+
+  <ng-container right-side-button-section>
+
+    <app-shopping-cart *ngIf="!isFromModal"
+                       [inventoryView]="InventoryViewEnum.ProductView"
+                       [membersList]="membersList">
+    </app-shopping-cart>
+
+    <app-bookmark [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+                  (stateChanged)="onStateChanged($event)"></app-bookmark>
+  </ng-container>
+
+  <ng-container filter-section>
+
+    <div class="filter-section">
+
+      <app-inventory-streamline-filters [fixedFilters]="fixedFilters"
+                                        [filters]="viewState.filters"
+                                        [filtersState]="viewState.filtersState"
+      ></app-inventory-streamline-filters>
+
+    </div>
+    <div class="btn-section">
+      <div class="d-flex flex-direction-column justify-content-center">
+        <app-button class="mb-20" (clicked)="search()"
+                    [matTooltip]="allLoaded && !isFiltersChanged() ? 'All the lots for the specified filters are loaded.' : ''"
+                    [isDisabled]="(allLoaded || isBackgroundLoading) && !isFiltersChanged()"
+                    [isPrimary]="true"
+                    [isNarrow]="true">
+          {{isFiltersChanged() || allLoaded ? 'Run Query' : 'Load More'}}
+        </app-button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container main-section>
+    <div class="grid-container fab-container">
+      <dx-data-grid #productGrid
+                    columnResizingMode="widget"
+                    [dataSource]="inventoryProductsData"
+                    [showBorders]="true"
+                    [remoteOperations]="false"
+                    [allowColumnResizing]="true"
+                    [columnAutoWidth]="true"
+                    [allowColumnReordering]="true"
+                    [rowAlternationEnabled]="true"
+                    [columnHidingEnabled]="true"
+                    [hoverStateEnabled]="true"
+                    [focusedRowEnabled]="true"
+                    [(selectedRowKeys)]="selectedRows"
+                    (onToolbarPreparing)="onToolbarPreparing($event)"
+                    (onCellClick)="onGridRowClick($event)"
+                    (onExporting)="onExporting($event)"
+                    keyExpr="specShorthand">
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+        <dxo-search-panel [visible]="true"></dxo-search-panel>
+        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-column-chooser [enabled]="true" [height]="700"></dxo-column-chooser>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+                           [savingTimeout]="100"></dxo-state-storing>
+        <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
+        <dxo-selection [mode]="isFromModal ? 'single' : 'multiple'" showCheckBoxesMode="always"></dxo-selection>
+        <dxo-editing mode="cell"></dxo-editing>
+        <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+
+        <div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+
+          <app-table-results-text *ngIf="!isLoadAllVisible()"
+                                  [visibleRows]="allLoaded ? productGrid.instance.totalCount() : productsList.length"
+                                  [results]="allLoaded ? inventoryProductsData.length : productsCountByFilter"></app-table-results-text>
+
+          <app-load-all-units
+            *ngIf="isLoadAllVisible()"
+            [totalCount]="productsCountByFilter"
+            [type]="PageType.Streamline"
+            [viewState]="viewState"
+            [offset]="offset"
+            [limit]="limit"
+            (setIsLoadingAll)="setIsLoadingAll($event)"
+            (completeData)="completeLoadedData()">
+          </app-load-all-units>
+
+        </div>
+
+        <dxi-column dataField="specShorthand"
+                    caption="Spec"
+                    [calculateSortValue]="specSortingValue"
+                    [calculateGroupValue]="specSortingValue"
+                    [sortingMethod]="specSorting"
+                    groupCellTemplate="specGroupTemplate"
+                    headerCellTemplate="headerWithTooltip"
+        ></dxi-column>
+
+        <div *dxTemplate="let data of 'specGroupTemplate'">
+          {{data.column.caption}}: {{getSpecGroupValue(data.value)}}
+        </div>
+
+        <dxi-column dataField="productGroupName" caption="Product Group" [visible]="false"></dxi-column>
+        <dxi-column dataField="productsCount" caption="Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="allocatedProductsCount" caption="Allocated Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="availableProductsCount" caption="Available Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column *appShowContract dataField="contractUnitsCount" caption="Contract Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="onHandCount" caption="On Hand Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="onOrderCount" caption="On Order Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="inTransitCount" caption="In Transit Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+
+        <dxi-column dataField="qtyInUomWithLabel" caption="Qty" [allowGrouping]="false"></dxi-column>
+
+        <dxi-column dataField="askPriceProductsTotal" format="currency" caption="Ask Price (Total)" [visible]="false"
+                    headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="totalCostBasis" format="currency" caption="Cost Basis (Total)" [visible]="false"
+                    headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="averageCostBasis" format="currency" caption="Avg Cost Basis" [visible]="false"
+                    headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="avgCostBasisPerUom" format="currency" caption="Avg Cost Basis (per UoM)" [visible]="false"
+                    headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column dataField="averageAskPricePerUnit" format="currency" caption="Avg Ask Price (per Product)" [visible]="false"
+                    headerCellTemplate="headerWithTooltip"></dxi-column>
+        <dxi-column *appShowViewCost dataField="profitProductsTotal" format="currency" caption="Profit (Total)" [visible]="false"></dxi-column>
+
+        <dxi-column dataField="priceSystem" caption="Price System" [visible]="false"
+                    headerCellTemplate="headerWithTooltip"></dxi-column>
+
+        <ng-container *appShowContract>
+          <dxi-column dataField="totalContractPrice" caption="Contract Price Total" [visible]="false">
+            <dxo-format type="currency" [precision]="2"></dxo-format>
+          </dxi-column>
+
+          <dxi-column dataField="openContractUnitsCount" caption="Open Contract Units" [visible]="false"></dxi-column>
+          <dxi-column dataField="closedContractUnitsCount" caption="Closed Contract Units" [visible]="false"></dxi-column>
+
+          <dxi-column dataField="avgContractPurchasePrice" caption="Avg. Contract Purchase Price" dataType="number" [visible]="false">
+            <dxo-format type="currency" [precision]="2"></dxo-format>
+          </dxi-column>
+
+          <dxi-column dataField="avgContractSoldPrice" caption="Avg. Contract Sold Price" dataType="number" [visible]="false">
+            <dxo-format type="currency" [precision]="2"></dxo-format>
+          </dxi-column>
+
+          <dxi-column dataField="avgContractMargin" caption="Avg. Contract Margin" dataType="number" [visible]="false">
+            <dxo-format type="currency" [precision]="2"></dxo-format>
+          </dxi-column>
+
+          <dxi-column dataField="avgContractAgeOfMaterials" caption="Avg. Contract Age of Materials" [visible]="false"
+                      cellTemplate="ageCellTemplate" dataType="number"></dxi-column>
+          <div *dxTemplate="let data of 'ageCellTemplate'">
+            <ng-container *ngIf="data.data.contractUnitsCount">
+              {{data.value}} {{data.value === 1 ? 'Day' : 'Days'}}
+            </ng-container>
+          </div>
+
+          <dxi-column dataField="contractFirstOpenedDate" dataType="date" [visible]="false"></dxi-column>
+          <dxi-column dataField="contractFirstClosedDate" dataType="date" [visible]="false"></dxi-column>
+          <dxi-column dataField="nearestContractExpirationClosedDate" dataType="date" [visible]="false"></dxi-column>
+        </ng-container>
+
+        <ng-container *ngIf="latestFilters?.productGroup?.name === 'Lumber'">
+          <dxi-column dataField="productName" caption="Product" [visible]="false"></dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberCutGrade" caption="Lumber: Cut & Grade"
+                      [sortingMethod]="cutGradeSorting" [groupIndex]="0">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberSeasoning" caption="Lumber: Seasoning">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberPattern" caption="Lumber: Pattern">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberSpecies" caption="Lumber: Species" [groupIndex]="1">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberSubspecies" caption="Lumber: Sub-Species">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberGrade" caption="Lumber: Grade">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberSubGrade" caption="Lumber: Sub-Grade">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="lumberCutType" caption="Lumber: CutType" [groupIndex]="2">
+          </dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="lumberThickness"
+                      name="lumberThicknessName"
+                      caption="Lumber: Thickness"
+                      dataType="string"
+                      [visible]="false"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="lumberLength"
+                      [sortingMethod]="sortDimensionValues"
+                      caption="Lumber: Length"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="lumberWidth"
+                      name="lumberWidthName"
+                      dataType="string"
+                      caption="Lumber: Width"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+          ></dxi-column>
+        </ng-container>
+
+        <ng-container *ngIf="latestFilters?.productGroup?.name === 'Panel'">
+
+          <dxi-column dataField="productName" caption="Product" [groupIndex]="0"></dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelType" caption="Panel: Type" [groupIndex]="1">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelSpecies" caption="Panel: Species" [groupIndex]="2">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelSeasoning" caption="Panel: Seasoning">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelSeasoningChemical"
+                      caption="Panel: Seasoning Chemical"></dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelGrade" caption="Panel: Grade">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelFinish" caption="Panel: Finish">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelMfgProcess"
+                      caption="Panel: Manufacturing Process"></dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelRating" caption="Panel: Rating">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelStandard" caption="Panel: Standard">
+          </dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="panelThickness"
+                      name="panelThicknessName"
+                      caption="Panel: Thickness"
+                      dataType="string"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="panelLength"
+                      name="panelLengthName"
+                      caption="Panel: Length"
+                      dataType="string"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="panelWidth"
+                      name="panelWidthName"
+                      caption="Panel: Width"
+                      dataType="string"
+                      [groupIndex]="3"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="panelPatternWidth" caption="Panel: Pattern Width">
+          </dxi-column>
+
+        </ng-container>
+
+        <ng-container *ngIf="latestFilters?.productGroup?.name === 'Engineered'">
+          <dxi-column dataField="productName" caption="Product" [groupIndex]="0"></dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="engineeredGrade" caption="Engineered: Grade">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="engineeredType" caption="Engineered: Type" [groupIndex]="1">
+          </dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="engineeredSeasoning"
+                      caption="Engineered: Seasoning"></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="engineeredThickness"
+                      name="engineeredThicknessName"
+                      caption="Engineered: Thickness"
+                      dataType="string"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="engineeredLength"
+                      name="engineeredLengthName"
+                      caption="Engineered: Length"
+                      dataType="string"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+                      [groupIndex]="2"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip"
+                      dataField="engineeredWidth"
+                      name="engineeredWidthName"
+                      caption="Engineered: Width"
+                      dataType="string"
+                      [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                      [sortingMethod]="sortDimensionValues"
+                      [groupIndex]="3"
+          ></dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="engineeredDepth" caption="Engineered: Depth">
+          </dxi-column>
+
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="engineeredCertification"
+                      caption="Engineered: Certification"></dxi-column>
+          <dxi-column headerCellTemplate="headerWithTooltip" dataField="engineeredClassification"
+                      caption="Engineered: Classification"></dxi-column>
+
+        </ng-container>
+
+        <div *dxTemplate="let info of 'headerWithTooltip'">
+          <!--          [matTooltip]="tooltips[info.column.dataField]"-->
+          <div>{{info.column.caption}}</div>
+        </div>
+
+      </dx-data-grid>
+
+      <app-table-fab *ngIf="selectedRows?.length > 1"
+                     [actions]="fabActions"
+                     (action)="onFABAction($event)"
+      ></app-table-fab>
+
+      <span style="visibility: hidden; position: fixed" [style.left]="menuData.position.x"
+            [style.top]="menuData.position.y" [matMenuTriggerFor]="groupMenu"></span>
+      <mat-menu #groupMenu="matMenu" class="group-menu-wrapper">
+        <button mat-menu-item (click)="bulkEditSelectedGroup('priceOfMerit')">Bulk Change Price Of Merit</button>
+        <button mat-menu-item (click)="bulkEditSelectedGroup('shipWeekEstimate')">Bulk Change Ship Week Estimate</button>
+        <button mat-menu-item (click)="bulkEditSelectedGroup('permission')">Bulk Change Permission</button>
+        <button mat-menu-item (click)="bulkEditSelectedGroup('owner')">Bulk Change Owner</button>
+        <button mat-menu-item (click)="bulkEditSelectedGroup('notes')">Bulk Change Notes</button>
+        <button *ngIf="productLots?.length > 1" mat-menu-item (click)="mergeSelectedLots()">Merge Lots</button>
+        <button mat-menu-item (click)="bulkAddToOrder()">Bulk Add to Order</button>
+        <button mat-menu-item (click)="bulkAddToCart()">Add to Cart</button>
+        <button *appShowContract mat-menu-item (click)="closeContract()">Convert To Cash</button>
+
+        <hr>
+
+        <button *appShowContract mat-menu-item (click)="onShowContractItems()">Show Contract Items</button>
+      </mat-menu>
+    </div>
+        <span class="d-flex justify-content-end">{{lastUpdatedTimeString}}&nbsp;
+          <span class="link text-primary" (click)="loadFreshData()" *ngIf="!isBackgroundLoading && !isFiltersChanged()">Reload Data</span></span>
+  </ng-container>
+
+</app-filter-grid-layout>

@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+.table-base-wrapper {
+  overflow-y: auto;
+
+  table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+}

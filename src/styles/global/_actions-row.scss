@@ -1,0 +1,14 @@
+.actions-row-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.actions-buttons-row {
+  display: flex;
+  justify-content: flex-end;
+
+  app-button {
+    margin-left: 10px;
+  }
+}

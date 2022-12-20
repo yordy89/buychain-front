@@ -1,0 +1,75 @@
+<div class="wrapper">
+  <div class="header-section">
+    <div class="header-label">
+      <div class="name-section">
+        <mat-icon color="primary" matPrefix>account_circle</mat-icon>
+        <h4 *ngIf="crmContactData; else NoCrmContactData">{{crmContactData.firstName}} {{crmContactData.lastName}}</h4>
+        <span class="badge badge-ui-warning ml-15" *ngIf="crmContactData?.archived">Archived</span>
+        <ng-template #NoCrmContactData>
+          <h4>New Contact Info</h4>
+        </ng-template>
+      </div>
+      <div class="account-part">
+        <mat-icon color="primary" matPrefix>store_mall_directory</mat-icon>
+        <span>A <a [routerLink]="[]" (click)="close()">{{crmAccountData.name}}</a> Contact</span>
+      </div>
+      <div class="linked-to-section" *ngIf="crmContactData?.link">
+        <span>Linked to BuyChain<sup>TH</sup> account <span>{{crmContactData.link.firstName}} {{crmContactData.link.lastName}}</span></span>
+      </div>
+    </div>
+    <div class="actions" *ngIf="readonlyMode$ | async">
+
+      <div *ngIf="!isOnlyOffline && crmAccountData.link && crmPermissions?.canUpdate">
+        <mat-icon *ngIf="crmContactData?.link; else UnlinkedIcon" color="primary" (click)="openLinkedCrmContactModal()">link</mat-icon>
+        <ng-template #UnlinkedIcon>
+          <mat-icon color="primary" (click)="openUnlinkedCrmContactModal()">link_off</mat-icon>
+        </ng-template>
+      </div>
+      <mat-icon *ngIf="crmPermissions?.canUpdate" color="primary" (click)="edit()">edit</mat-icon>
+      <app-tab-expansion-icon [isLeftPartVisible$]="crmStateService.isLeftPartVisible$"></app-tab-expansion-icon>
+      <mat-icon color="primary" (click)="close()">close</mat-icon>
+    </div>
+  </div>
+  <div class="actions-container">
+    <div class="actions" *ngIf="(readonlyMode$ | async) !== true">
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="createUpdateCRMContact()">Save</app-button>
+      <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+    </div>
+  </div>
+  <div [ngClass]="{'is-expanded': (crmStateService.isLeftPartVisible$ | async) !== true}">
+    <app-profile-form [parentForm]="form" [initialData$]="crmContactData$" [readonlyMode$]="readonlyMode$" [isCrm]="true"></app-profile-form>
+  </div>
+
+  <hr>
+  <div class="labels-section-wrapper" *ngIf="crmContactData">
+    <div class="labels-wrapper">
+      <div class="label-group">
+        <app-labels-group
+          [header]="'Roles'"
+          [crmType]="CRMType.CONTACT"
+          [labelGroup]="LabelKey.RoleTags"
+          [labelSection]="LabelGroupName.contactRoleTags"
+          [crmContactData]="crmContactData"
+        ></app-labels-group>
+      </div>
+      <div class="label-group">
+        <app-labels-group
+          [header]="'Tags'"
+          [crmType]="CRMType.CONTACT"
+          [labelGroup]="LabelKey.Tags"
+          [labelSection]="LabelGroupName.contactTags"
+          [crmContactData]="crmContactData"
+        ></app-labels-group>
+      </div>
+    </div>
+  </div>
+  <hr>
+
+  <div *ngIf="crmContactData">
+    <mat-tab-group *ngIf="form" class="styled padded-content">
+      <mat-tab label="Info" *ngIf="crmPermissions?.canReadSalesInfo">
+        <app-crm-contact-sales-info [crmContactData]="crmContactData"></app-crm-contact-sales-info>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

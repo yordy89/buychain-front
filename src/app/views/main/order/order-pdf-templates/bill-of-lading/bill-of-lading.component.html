@@ -1,0 +1,184 @@
+<div class="main-wrapper">
+  <div class="content">
+
+    <div class="d-flex-between">
+      <app-company-info [company]="sellerCompany"></app-company-info>
+      <div class="order-numbers">
+        <app-header-with-number header="BILL OF LADING" [number]="billOfLadingData.transactionNumber">
+        </app-header-with-number>
+        <div class="accounts">
+          <div class="headers">
+            <div>BILL DATE:</div>
+          </div>
+          <div class="values">
+            <div>{{billOfLadingData.register.confirmedDate | date}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="buyer-info">
+      <app-address
+        [Address1Header]="'TO'"
+        [Address2Header]="'FROM'"
+        [Location1]="shipToLocation"
+        [Contact1]="buyerContact"
+        [Location2]="shipFromFacility"
+        [Contact2]="sellerContact">
+      </app-address>
+    </div>
+
+    <div class="details-table-section">
+      <div class="order-details-header">
+        <div class="first-line">
+          <div class="in-line-value">
+            <app-label-value label="SHIPPER'S INSTRUCTIONS"></app-label-value>
+            <br>
+            <br>
+          </div>
+        </div>
+      </div>
+
+      <table class="tally-units-table">
+        <thead>
+          <th>NO. SHIPPING UNITS</th>
+          <th class="text-left">ITEM/DESCRIPTION</th>
+          <th>UOM</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let unit of billOfLadingData.availableTallyUnits">
+            <td>{{unit.qty}}</td>
+            <td class="text-left">{{unit.specShorthand}}</td>
+            <td>{{unit.unitMeasure * unit.qty | number:'1.3'}} {{unit.measureLabel}}</td>
+          </tr>
+          <tr class="spacer-row" [style.height.px]="spacerRowHeight()">
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="order-details-header">
+        <div class="first-bottom-line">
+          <div>
+            <app-label-value label="DELIVERING PURCHASE ORDER">{{billOfLadingData.purchaseOrderNumber}}</app-label-value>
+          </div>
+          <div>
+            <!-- <app-label-value label="WEIGHT">{{transaction.tallyTotalWeight}} (lbs)</app-label-value> -->
+          </div>
+          <div>
+            <app-label-value label="TOTAL">{{billOfLadingData.tallyTotalMeasure}} ({{billOfLadingData.measureLabel}})</app-label-value>
+          </div>
+        </div>
+        <div class="second-bottom-line">
+          RECEIVED subject to the classifications and tariffs in effect n the date of the issue of this Bill of Lading, the
+          property described above in apparent good order, except as noted (contents and conditions of packages unknown), marked
+          consigned and destined as indicated above which said carrier (the word carrier being understood through this contract
+          as meaning any person or corporation in possession of the property under the contract) agrees to carry to its usual
+          place of delivery as said destination. If on it's route, otherwise to deliver to another carrier on the route ot said
+          destination. It is mutually agreed as to each carrier of all ot any of said property, over all ot any portion of said
+          route to destination and as to each party aat any time interested in all or any said property, that every service to
+          be performed hereunder shall be subject to all the Bill of Lading terms and conditions in the governing classification
+          on the date of shipment. Shipper hereby certifies that de is familiar with all the Bill of Lading terms and conditions
+          in the governing classification and the said terms and conditions.
+        </div>
+        <div class="third-bottom-line">
+          <div>
+            <app-label-value label="FRT TERM">{{billOfLadingData.trackingData.transportTerm | stringUnderscoreToSpaceTitleCase}}</app-label-value>
+            <app-label-value label="SHIP VIA">{{billOfLadingData.transportType}}</app-label-value>
+            <app-label-value label="NOTES">{{billOfLadingData.transportNotes}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="DATE"></app-label-value>
+          </div>
+        </div>
+        <div class="third-bottom-line">
+          <div>
+            <app-label-value label="PICKED BY"></app-label-value>
+          </div>
+          <div>
+            <app-label-value label="DATE"></app-label-value>
+          </div>
+        </div>
+
+        <div class="third-bottom-line">
+          <div>
+            <app-label-value label="LOADED BY"></app-label-value>
+          </div>
+          <div>
+            <app-label-value label="DATE"></app-label-value>
+          </div>
+        </div>
+
+        <div class="third-bottom-line">
+          <div>
+            <app-label-value label="CHECKED BY"></app-label-value>
+          </div>
+          <div>
+            <app-label-value label="DATE"></app-label-value>
+          </div>
+        </div>
+
+        <div class="third-bottom-line">
+          <div>
+            <app-label-value label="RECEIVED BY"></app-label-value>
+          </div>
+          <div>
+            <app-label-value label="DATE"></app-label-value>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="shipping-notes-section">
+      <div class="header">
+        SHIPPING NOTES
+      </div>
+      <div class="section">
+          <div class="header">
+            OUTBOUND
+          </div>
+          <div class="row">
+            <app-label-value label="ADDRESS">{{buildAddress(shipFromFacility)}}</app-label-value>
+          </div>
+          <div class="row">
+            <app-label-value label="HOURS">{{loadingHours}}</app-label-value>
+          </div>
+          <div class="row">
+            <app-label-value label="NOTES">{{loadingNotes}}</app-label-value>
+          </div>
+          <div class="row" *ngIf="loadingPersonnel.length > 0">
+            <app-label-value label="KEY PERSONNEL"></app-label-value>
+            <div>
+              <app-loading-personnel-table [personnelList]="loadingPersonnel"></app-loading-personnel-table>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+            <div class="header">
+              INBOUND
+            </div>
+            <div class="row">
+              <app-label-value label="ADDRESS">
+                {{buildAddress(shipToLocation)}}
+              </app-label-value>
+            </div>
+            <div class="row">
+              <app-label-value label="HOURS">{{receivingHours}}</app-label-value>
+            </div>
+            <div class="row">
+              <app-label-value label="NOTES">{{receivingNotes}}</app-label-value>
+            </div>
+            <div class="row" *ngIf="receivingPersonnel.length > 0">
+              <app-label-value label="KEY PERSONNEL"></app-label-value>
+              <div>
+                <app-loading-personnel-table [personnelList]="receivingPersonnel"></app-loading-personnel-table>
+              </div>
+            </div>
+         </div>
+    </div>
+  </div>
+</div>

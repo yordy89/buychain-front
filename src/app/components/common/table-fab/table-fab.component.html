@@ -1,0 +1,19 @@
+<ng-container *ngIf="menuItems?.length">
+	<button mat-fab
+	        color="primary"
+	        [matMenuTriggerFor]="actionsMenu"
+	        (menuOpened)="menuOpened = true"
+	        (menuClosed)="menuOpened = false"
+	>
+		<mat-icon>{{menuOpened ? 'close' : 'more_horiz' }}</mat-icon>
+	</button>
+
+	<mat-menu #actionsMenu="matMenu">
+		<div class="menu">
+			<button *ngFor="let item of menuItems" mat-menu-item (click)="onActionClick($event, item.item)">
+				<mat-icon *ngIf="item" [color]="item.color">{{item.icon}}</mat-icon>
+				{{item.label}}
+			</button>
+		</div>
+	</mat-menu>
+</ng-container>

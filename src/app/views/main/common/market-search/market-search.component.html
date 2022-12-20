@@ -1,0 +1,314 @@
+<app-filter-grid-layout *ngIf="isLoaded && hasLinkedCrmAccounts"
+                        header="Market Search"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()"
+>
+
+	<ng-container left-side-button-section></ng-container>
+
+	<ng-container right-side-button-section>
+		<app-bookmark [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+		              (stateChanged)="onStateChanged($event)"></app-bookmark>
+	</ng-container>
+
+	<ng-container filter-section>
+		<div class="app-filters-container">
+			<div class="tree-section">
+				<app-filter-expander *ngIf="uiProducts" caption="Products"
+				                     [(isExpanded)]="viewState.filtersState.expandedProducts">
+					<mat-radio-group>
+						<div *ngFor="let productGroup of uiProducts" class="product-name-container">
+							<div class="product-name-header">
+								<mat-icon *ngIf="productGroup.isExpanded; else ProductsNotVisible"
+								          class="product-name-header-icon"
+								          (click)="productGroupExpansionToggled(productGroup, false)">arrow_drop_up
+								</mat-icon>
+								<ng-template #ProductsNotVisible>
+									<mat-icon (click)="productGroupExpansionToggled(productGroup, true)">arrow_right</mat-icon>
+								</ng-template>
+								<mat-radio-button color="primary" [value]="productGroup.name"
+								                  (change)="productNameSelectionToggled(productGroup)"
+								                  [checked]="productGroup.isSelected">
+									<span class="label">{{productGroup.name}}</span>
+								</mat-radio-button>
+							</div>
+							<div class="products" *ngIf="productGroup.isExpanded">
+								<mat-checkbox *ngFor="let product of productGroup.products"
+								              (change)="productSelectionToggled(productGroup)"
+								              [(ngModel)]="product.isSelected" color="primary">
+									<span class="label">{{product.name}}</span>
+								</mat-checkbox>
+							</div>
+						</div>
+					</mat-radio-group>
+				</app-filter-expander>
+
+				<div class="companies-filter-wrapper">
+					<form [formGroup]="company" class="company-autocomplete">
+						<app-autocomplete class="w-100"
+                              *ngIf="linkedCrmAccountList.length"
+						                  label="Company Name"
+						                  [data]="linkedCrmAccountList"
+						                  [isValid]="viewState?.filters?.organizationIds?.length > 0"
+						                  formControlName="companyControl"
+						                  keyName="id"
+						                  displayName="name"
+						                  placeholder="Company Name"
+						></app-autocomplete>
+					</form>
+					<div *ngIf="selectedAccounts.length > 0 && !fixedFilters" class="selected-companies-list">
+						<div *ngFor="let account of selectedAccounts">
+							<div class="company">
+								<div class="company-label text-ellipsis">{{account.name}}</div>
+								<mat-icon (click)="removeCompany(account)">close</mat-icon>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="fixedFilters?.shipFromId" class="companies-filter-wrapper">
+					<form [formGroup]="company" class="company-autocomplete">
+						<app-autocomplete [data]="shipFromOptions"
+						                  label="Ship From Facility"
+						                  formControlName="shipFromFacilityControl"
+						                  keyName="id"
+						                  displayName="name"
+						                  placeholder="Ship From Facility Name"
+						></app-autocomplete>
+					</form>
+				</div>
+			</div>
+
+			<div *ngIf="!fixedFilters">
+				<app-filter-expander caption="Delivered Pricing"
+				                     [(isExpanded)]="viewState.filtersState.expandedDeliveredPricing">
+
+					<app-select-with-search
+							label="Destination"
+							appearance="outline"
+							[form]="shipToFacility"
+							[optionList]="facilityList"
+              [allowClear]="true"
+							[displayField]="'shortName'">
+					</app-select-with-search>
+
+				</app-filter-expander>
+			</div>
+
+
+			<div class="btn-section"
+			     [matTooltip]="viewState.filters.organizationIds?.length ? '' : 'You need to select a Ship From Company to proceed'">
+				<app-button (clicked)="search()" [isDisabled]="!viewState.filters.organizationIds?.length" [isPrimary]="true"
+				            [isNarrow]="true">
+					Run Query
+				</app-button>
+			</div>
+		</div>
+	</ng-container>
+
+	<ng-container main-section>
+		<div class="grid-container">
+			<dx-data-grid #grid
+			              [dataSource]="marketSearchData"
+			              [showBorders]="true"
+			              [remoteOperations]="false"
+			              [allowColumnResizing]="true"
+			              columnResizingMode="widget"
+			              [columnAutoWidth]="true"
+			              [allowColumnReordering]="true"
+			              [rowAlternationEnabled]="true"
+			              [columnHidingEnabled]="true"
+			              [hoverStateEnabled]="true"
+			              [selectedRowKeys]="[]"
+			              [focusedRowEnabled]="true"
+			              [(focusedRowKey)]="focusedRowKey"
+			              keyExpr="lotId"
+			              (onRowClick)="onMarketSearchSelectionChanged($event)"
+			              (onToolbarPreparing)="onToolbarPreparing($event)"
+			              (onExporting)="onExporting($event)"
+			>
+				<dxo-paging [enabled]="false"></dxo-paging>
+				<dxo-export [enabled]="true"></dxo-export>
+				<dxo-sorting mode="multiple"></dxo-sorting>
+				<dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+				<dxo-search-panel [visible]="true"></dxo-search-panel>
+				<dxo-load-panel [enabled]="true"></dxo-load-panel>
+				<dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+				<dxo-column-chooser [enabled]="true" [height]="700"></dxo-column-chooser>
+				<dxo-selection mode="single"></dxo-selection>
+				<dxo-group-panel [visible]="true"></dxo-group-panel>
+				<dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+				                   [savingTimeout]="100"></dxo-state-storing>
+
+				<div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+					<app-table-results-text [visibleRows]="grid.instance.totalCount()"
+					                        [results]="marketSearchData?.length"></app-table-results-text>
+				</div>
+
+				<dxi-column dataField="specShorthand"
+                    caption="Spec"
+                    [calculateSortValue]="specSortingValue"
+                    [calculateGroupValue]="specSortingValue"
+                    [sortingMethod]="specSorting"
+                    groupCellTemplate="specGroupTemplate"
+                    headerCellTemplate="headerWithTooltip"
+        ></dxi-column>
+        <div *dxTemplate="let data of 'specGroupTemplate'">
+          {{data.column.caption}}: {{getSpecGroupValue(data.value)}}
+        </div>
+
+				<dxi-column dataField="size" name="cutShorthand" cellTemplate="displayValueBasedOnColumnName"
+				            groupCellTemplate="displayGroupValueBasedOnColumnName" [allowSearch]="false" [visible]="false"
+				            [groupIndex]="0"
+				            caption="Cut">
+				</dxi-column>
+				<dxi-column dataField="productGroupName" [visible]="false" caption="Product Group">
+				</dxi-column>
+				<dxi-column dataField="productName" [visible]="false" caption="Product"></dxi-column>
+
+				<ng-container *ngIf="selectedProduct === 'Lumber'">
+					<dxi-column dataField="lumberSeasoning" [visible]="false" caption="Lumber: Seasoning">
+					</dxi-column>
+					<dxi-column dataField="lumberPattern" [visible]="false" caption="Lumber: Pattern">
+					</dxi-column>
+					<dxi-column dataField="lumberSpecies" [visible]="false" caption="Lumber: Species">
+					</dxi-column>
+					<dxi-column dataField="lumberSubspecies" [visible]="false" caption="Lumber: Sub-Species">
+					</dxi-column>
+					<dxi-column dataField="lumberGrade" [visible]="false" caption="Lumber: Grade">
+					</dxi-column>
+					<dxi-column dataField="lumberSubGrade" [visible]="false" caption="Lumber: Sub-Grade">
+					</dxi-column>
+					<dxi-column dataField="lumberCutType" [visible]="false" caption="Lumber: CutType">
+					</dxi-column>
+					<dxi-column dataField="lumberThickness" name="lumberThicknessName"
+					            cellTemplate="displayValueBasedOnColumnName"
+					            groupCellTemplate="displayGroupValueBasedOnColumnName" [visible]="false"
+					            caption="Lumber: Thickness">
+					</dxi-column>
+					<dxi-column dataField="lumberLength" [visible]="false" [sortingMethod]="lumberLengthSorting"
+					            caption="Lumber: Length">
+					</dxi-column>
+					<dxi-column dataField="lumberWidth" name="lumberWidthName" cellTemplate="displayValueBasedOnColumnName"
+					            groupCellTemplate="displayGroupValueBasedOnColumnName" [visible]="false"
+					            caption="Lumber: Width">
+					</dxi-column>
+				</ng-container>
+
+				<ng-container *ngIf="selectedProduct === 'Panel'">
+					<dxi-column dataField="panelType" [visible]="false" caption="Panel: Type"></dxi-column>
+					<dxi-column dataField="panelSpecies" [visible]="false" caption="Panel: Species">
+					</dxi-column>
+					<dxi-column dataField="panelSeasoning" [visible]="false" caption="Panel: Seasoning">
+					</dxi-column>
+					<dxi-column dataField="panelSeasoningChemical" [visible]="false"
+					            caption="Panel: Seasoning Chemical"></dxi-column>
+					<dxi-column dataField="panelGrade" [visible]="false" caption="Panel: Grade">
+					</dxi-column>
+					<dxi-column dataField="panelFinish" [visible]="false" caption="Panel: Finish">
+					</dxi-column>
+					<dxi-column dataField="panelMfgProcess" [visible]="false"
+					            caption="Panel: Manufacturing Process"></dxi-column>
+					<dxi-column dataField="panelRating" [visible]="false" caption="Panel: Rating">
+					</dxi-column>
+					<dxi-column dataField="panelStandard" [visible]="false" caption="Panel: Standard">
+					</dxi-column>
+
+					<dxi-column dataField="panelThickness" name="panelThicknessName" cellTemplate="displayValueBasedOnColumnName"
+					            groupCellTemplate="displayGroupValueBasedOnColumnName" [visible]="false"
+					            caption="Panel: Thickness">
+					</dxi-column>
+					<dxi-column dataField="panelLength" name="panelLengthName" cellTemplate="displayValueBasedOnColumnName"
+					            groupCellTemplate="displayGroupValueBasedOnColumnName" [visible]="false"
+					            caption="Panel: Length">
+					</dxi-column>
+					<dxi-column dataField="panelWidth" name="panelWidthName" cellTemplate="displayValueBasedOnColumnName"
+					            groupCellTemplate="displayGroupValueBasedOnColumnName" [visible]="false"
+					            caption="Panel: Width">
+					</dxi-column>
+
+					<dxi-column dataField="panelPatternWidth" [visible]="false"
+					            caption="Panel: Pattern Width">
+					</dxi-column>
+				</ng-container>
+
+				<ng-container *ngIf="selectedProduct === 'Engineered'">
+					<dxi-column dataField="engineeredGrade" [visible]="false" caption="Engineered: Grade">
+					</dxi-column>
+					<dxi-column dataField="engineeredDepth" [visible]="false" caption="Engineered: Depth">
+					</dxi-column>
+					<dxi-column dataField="engineeredType" [visible]="false" caption="Engineered: Type">
+					</dxi-column>
+					<dxi-column dataField="engineeredSeasoning" [visible]="false"
+					            caption="Engineered: Seasoning">
+					</dxi-column>
+					<dxi-column dataField="engineeredCertification" [visible]="false"
+					            caption="Engineered: Certification"></dxi-column>
+					<dxi-column dataField="engineeredClassification" [visible]="false"
+					            caption="Engineered: Classification"></dxi-column>
+
+					<dxi-column dataField="engineeredThickness" name="engineeredThicknessName"
+					            cellTemplate="displayValueBasedOnColumnName" groupCellTemplate="displayGroupValueBasedOnColumnName"
+					            [visible]="false" caption="Engineered: Thickness">
+					</dxi-column>
+					<dxi-column dataField="engineeredLength" name="engineeredLengthName"
+					            cellTemplate="displayValueBasedOnColumnName" groupCellTemplate="displayGroupValueBasedOnColumnName"
+					            [visible]="false" caption="Engineered: Length">
+					</dxi-column>
+					<dxi-column dataField="engineeredWidth" name="engineeredWidthName"
+					            cellTemplate="displayValueBasedOnColumnName"
+					            groupCellTemplate="displayGroupValueBasedOnColumnName" [visible]="false"
+					            caption="Engineered: Width">
+					</dxi-column>
+				</ng-container>
+
+				<dxi-column dataField="unitPieceCount" caption="Piece Count" headerCellTemplate="headerWithTooltip"></dxi-column>
+
+        <ng-container *ngIf="shipToFacility.value">
+          <dxi-column dataField="deliveryPricing.bestEstimate" [visible]="false"
+                      cssClass="align-right" format="currency" [allowGrouping]="false"
+                      caption="Best Estimate Shipping Cost" headerCellTemplate="headerWithTooltip">
+          </dxi-column>
+          <dxi-column dataField="deliveryPricing.mbfCostPlusBestEstimate" cssClass="align-right"
+                      format="currency" [allowGrouping]="false" caption="Best Estimate Delivered Price" headerCellTemplate="headerWithTooltip"></dxi-column>
+          <dxi-column dataField="deliveryPricing.min" cssClass="align-right" [visible]="false"
+                      format="currency" [allowGrouping]="false" caption="Min Shipping Cost" headerCellTemplate="headerWithTooltip"></dxi-column>
+          <dxi-column dataField="deliveryPricing.max" cssClass="align-right" [visible]="false"
+                      format="currency" [allowGrouping]="false" caption="Max Shipping Cost" headerCellTemplate="headerWithTooltip"></dxi-column>
+          <dxi-column dataField="deliveryPricing.avg" cssClass="align-right" [visible]="false"
+                      format="currency" [allowGrouping]="false" caption="Avg Shipping Cost"></dxi-column>
+        </ng-container>
+				<dxi-column dataField="priceSystem" [visible]="false" caption="Price System" headerCellTemplate="headerWithTooltip"></dxi-column>
+
+
+				<dxi-column dataField="units" caption="Units" headerCellTemplate="headerWithTooltip"></dxi-column>
+				<dxi-column dataField="organizationName" caption="Selling Company"></dxi-column>
+				<dxi-column dataField="shipFromShortName" caption="Location" headerCellTemplate="headerWithTooltip"></dxi-column>
+				<dxi-column dataField="priceOfMerit" format="currency" caption="Price of Merit" headerCellTemplate="headerWithTooltip">
+					<dxo-format type="currency" [precision]="2"></dxo-format>
+				</dxi-column>
+				<dxi-column dataField="askPricePerUnit" format="currency" caption="Ask Price Per Unit" headerCellTemplate="headerWithTooltip"></dxi-column>
+				<dxi-column dataField="shipWeekEstimate" cssClass="align-right" dataType="date" caption="Ship Week Estimate" headerCellTemplate="headerWithTooltip">
+				</dxi-column>
+
+				<div *dxTemplate="let data of 'displayValueBasedOnColumnName'">
+					{{getDisplayValueBasedOnColumnName(data)}}
+				</div>
+				<div *dxTemplate="let data of 'displayGroupValueBasedOnColumnName'">
+					{{data.column.caption}}: {{getDisplayValueBasedOnColumnName(data)}}
+				</div>
+
+				<div *dxTemplate="let info of 'headerWithTooltip'">
+					<div [matTooltip]="tooltips[info.column.dataField]">{{info.column.caption}}</div>
+				</div>
+			</dx-data-grid>
+		</div>
+	</ng-container>
+
+</app-filter-grid-layout>
+
+<div *ngIf="isLoaded && !hasLinkedCrmAccounts" class="no-linked-crm-overlay">
+	<h3>Company has no linked CRM Accounts.</h3>
+	<h5>Create and link a company in the CRM before searching the inventory of other BuyChain companies.</h5>
+	<br>
+	<app-button [isPrimary]="true" (clicked)="goToCrm()">Go To CRM</app-button>
+</div>

@@ -1,0 +1,36 @@
+<div class="sales-section-wrapper">
+  <div class="sales-info-actions" *ngIf="crmPermissions?.canUpdate">
+
+    <div *ngIf="readonlyMode; else DoneButton">
+      <mat-icon color="primary" *ngIf="salesInfo?.notes; else NoNotesButton" (click)="edit()">edit</mat-icon>
+      <ng-template #NoNotesButton>
+        <app-button (clicked)="edit()" [isPrimary]="true" [isNarrow]="true" icon="add">Add Note</app-button>
+      </ng-template>
+    </div>
+    <ng-template #DoneButton>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateLocationSalesInfo()">Save</app-button>
+      <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+    </ng-template>
+  </div>
+
+  <div class="sales-info-wrapper">
+    <div class="readonly-mode" *ngIf="readonlyMode; else EditMode">
+      <div class="display-section" *ngIf="salesInfo?.notes">
+        <div class="unit"><p>Notes: {{salesInfo.notes}}</p></div>
+      </div>
+    </div>
+
+    <ng-template #EditMode>
+      <form [formGroup]="salesForm">
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Notes</mat-label>
+            <textarea matInput placeholder="Notes" [formControl]="notes"></textarea>
+            <mat-error>{{notes?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </form>
+    </ng-template>
+
+  </div>
+</div>

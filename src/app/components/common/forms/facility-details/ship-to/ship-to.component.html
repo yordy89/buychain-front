@@ -1,0 +1,85 @@
+<div class="ship-actions" *ngIf="facilityPermissions.canUpdate">
+  <app-button [isNarrow]="true" [isPrimary]="true" *ngIf="disabledMode; else DoneButton" (clicked)="edit()">Edit</app-button>
+  <ng-template #DoneButton>
+    <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="done()">Done</app-button>
+  </ng-template>
+</div>
+<div class="container-wrapper">
+  <div class="section-transport-method">
+    <div class="label">
+      <label>Truck Details</label>
+    </div>
+    <div class="truck-details">
+      <mat-checkbox *ngFor="let tMethod of transportMethods" [disabled]="disabledMode || (!facilityPermissions.canDelete && tMethod.isSelected)"
+                    (change)="toggleTruck($event, tMethod.value)"
+                    [(ngModel)]="tMethod.isSelected">
+        {{tMethod.value | stringUnderscoreToSpaceTitleCase}}
+      </mat-checkbox>
+    </div>
+    <div class="label">
+      <label>Rail Details</label>
+    </div>
+    <div class="rail-details">
+      <div class="actions-for-open mb-20">
+        <mat-checkbox color="primary" [disabled]="(disabledMode) || rails.length > 1" [(ngModel)]="isRailRestrictionOpen">Rail restriction set to Open</mat-checkbox>
+        <app-button [isNarrow]="true" *ngIf="!(disabledMode) && isRailRestrictionOpen && rails.length" (clicked)="addRailCarrier()">Add more</app-button>
+        <app-button [isNarrow]="true" *ngIf="!(disabledMode) && !rails.length" (clicked)="addRailCarrier()">Add</app-button>
+      </div>
+
+      <app-table-base *ngIf="rails.length" class="striped">
+        <ng-container header>
+          <tr class="header">
+            <th class="carrier">Carrier</th>
+            <th class="description">Restriction</th>
+            <th *ngIf="!disabledMode && facilityPermissions.canDelete"></th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr *ngFor="let rail of rails">
+            <td>{{rail.carrier}}</td>
+            <td>{{rail.railRestriction | stringUnderscoreToSpaceTitleCase}}</td>
+            <td *ngIf="!disabledMode && facilityPermissions.canDelete">
+              <app-table-actions [data]="rail"
+                                 [actions]="tableActions"
+                                 (action)="onTableAction($event, rail)"
+              ></app-table-actions>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+    </div>
+  </div>
+
+  <div class="section-notes">
+    <form [formGroup]="form">
+      <div class="active-hours">
+        <mat-form-field appearance="outline">
+          <mat-label>Active hours</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty [appDisableControl]="disabledMode" [formControl]="receivingHours" rows="5"></textarea>
+          <mat-error>{{receivingHours?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="comments">
+        <mat-form-field appearance="outline">
+          <mat-label>Comments</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty [appDisableControl]="disabledMode" [formControl]="receivingNotes" rows="5"></textarea>
+          <mat-error>{{receivingNotes?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <div class="section-personnel">
+
+    <div class="label">
+      <label>Receiving Personnel</label>
+    </div>
+    <div class="personnel-table">
+      <app-facility-personnel
+        [facility]="facility"
+        [type]="FacilityPersonnelType.Receiving"
+        [disabled]="disabledMode"
+      ></app-facility-personnel>
+  </div>
+</div>

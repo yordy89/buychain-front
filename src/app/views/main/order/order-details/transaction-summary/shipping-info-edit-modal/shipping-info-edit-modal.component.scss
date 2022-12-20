@@ -1,0 +1,59 @@
+.no-crm-unit-text {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ship-to-section {
+  display: flex;
+  grid-gap: 4px;
+  flex-wrap: wrap;
+}
+
+.editable {
+  .mat-form-field {
+    width: 100%;
+  }
+}
+
+.no-entries-text {
+  font-size: 16px;
+  color: rgba(var(--palette-warn-500), 1);
+}
+
+.section {
+  padding-bottom: 15px;
+  flex-grow: 1;
+
+  .content-wrapper {
+    min-height: 100px;
+
+    .tx-online-switcher {
+      padding: 0 10px 10px 15px;
+    }
+  }
+}
+
+.table-base {
+  .body-row {
+    background-color: rgba(var(--palette-primary-50), 0.2);
+  }
+
+  .no-crm-wrapper-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    app-button {
+      margin-top: 10px;
+    }
+  }
+
+  .no-crm-wrapper-row {
+    display: flex;
+    align-items: center;
+
+    app-button {
+      margin-left: 10px;
+    }
+  }
+}

@@ -1,0 +1,78 @@
+@use '@angular/material' as mat;
+@use 'variables' as *;
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-primary {
+  color: rgba(var(--palette-primary-500), 1);
+}
+
+.text-danger {
+  color: rgba(var(--palette-warn-500), 1);
+}
+
+.text-secondary {
+  color: $text-2;
+}
+
+.text-nowrap {
+  white-space: nowrap;
+}
+
+.text-badge-primary {
+  color: rgba(#2f5c9d, 1);
+}
+
+.text-badge-success {
+  color: map-get(mat.$green-palette, 500);
+}
+
+.text-badge-warning {
+  color: map-get(mat.$amber-palette, 500);
+}
+
+.text-badge-danger {
+  color: map-get(mat.$red-palette, 500);
+}
+
+.text-badge-secondary {
+  color: map-get(mat.$grey-palette, 500);
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.text-font-size-inherited {
+  font-size: inherit;
+}
+
+.text-break {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.background-primary {
+  background-color: rgba(var(--palette-primary-100), 0.35) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

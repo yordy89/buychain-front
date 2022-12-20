@@ -1,0 +1,90 @@
+<app-modal-base header="Contract Products" (closed)="close()">
+  <ng-container content>
+    <dx-data-grid
+        [dataSource]="data.products"
+        [showBorders]="true"
+        [remoteOperations]="false"
+        [allowColumnResizing]="true"
+        columnResizingMode="widget"
+        [allowColumnReordering]="false"
+        [rowAlternationEnabled]="true"
+        [columnHidingEnabled]="true"
+        [hoverStateEnabled]="true"
+        [columnAutoWidth]="true"
+        [(selectedRowKeys)]="selectedIds"
+        keyExpr="id"
+        (onCellPrepared)="onCellPrepared($event)"
+    >
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-load-panel [enabled]="true"></dxo-load-panel>
+      <dxo-selection [allowSelectAll]="true" showCheckBoxesMode="always" mode="multiple"></dxo-selection>
+
+      <dxi-column type="selection" width="30px" [fixed]="true" [allowResizing]="false" fixedPosition="left"></dxi-column>
+
+      <dxi-column dataField="specShorthand" caption="Spec" dataType="string"></dxi-column>
+
+      <dxi-column dataField="contract.number" caption="Contract" alignment="right" width="150px" cellTemplate="numberTemplate" [allowGrouping]="false"></dxi-column>
+      <div *dxTemplate="let data of 'numberTemplate'">
+        <app-copy-text-button *ngIf="data.value"
+                              class="small"
+                              [text]="data.value"
+                              [valueToCopy]="data.value"
+                              successMessage="Contract number copied to clipboard"
+        ></app-copy-text-button>
+      </div>
+
+      <dxi-column dataField="contract.state" caption="Status" cellTemplate="stateTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'stateTemplate'">
+        <span class="badge" [ngClass]="data.data.badgeClass">{{data.value | stringUnderscoreToSpaceTitleCase}}</span>
+      </div>
+
+      <dxi-column dataField="contract.supplier" [calculateDisplayValue]="calculateDisplaySupplierValue" dataType="string"></dxi-column>
+      <dxi-column dataField="contract.broker" [calculateDisplayValue]="calculateDisplayBrokerValue" dataType="string"></dxi-column>
+      <dxi-column dataField="contract.openedDate" caption="Opened Date" dataType="date"></dxi-column>
+      <dxi-column dataField="contract.closedDate" caption="Closed Date" dataType="date"></dxi-column>
+      <dxi-column dataField="contract.expirationDate" caption="Exp. Date" dataType="date"></dxi-column>
+
+      <dxi-column dataField="contract.terms" width="300px" cellTemplate="termsTemplate" dataType="string"></dxi-column>
+      <div *dxTemplate="let data of 'termsTemplate'">
+        <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+          {{data.value}}
+        </div>
+      </div>
+
+      <dxi-column dataField="shipWeekEstimate" dataType="date" caption="Ship Date"></dxi-column>
+
+      <dxi-column dataField="priceHistory.purchasePrice" caption="Purchase Price" dataType="number">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+
+      <dxi-column dataField="priceHistory.soldPrice" caption="Sold Price" dataType="number">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+
+      <dxi-column dataField="salesData.priceOfMerit" caption="Price of Merit" dataType="number">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+
+      <dxi-column dataField="contractMargin" caption="Margin" dataType="number">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+
+      <dxi-column dataField="ageOfMaterials" cellTemplate="ageCellTemplate" dataType="number"></dxi-column>
+      <div *dxTemplate="let data of 'ageCellTemplate'">
+        {{data.value}} {{data.value === 1 ? 'Day' : 'Days'}}
+      </div>
+
+    </dx-data-grid>
+
+  </ng-container>
+
+  <ng-container actions>
+    <div class="d-flex flex-direction-column">
+      <div class="d-flex justify-content-end mt-15">
+        <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+        <app-button [isNarrow]="true" [isPrimary]="true" [isDisabled]="!selectedIds.length" (clicked)="onConvertToCash()" class="ml-20">Convert To Cash</app-button>
+      </div>
+    </div>
+  </ng-container>
+</app-modal-base>

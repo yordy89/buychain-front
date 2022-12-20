@@ -1,0 +1,29 @@
+<div class="payment-terms-wrapper">
+  <div class="payment-terms-actions" *ngIf="crmPermissions.canUpdate">
+    <mat-icon color="primary" *ngIf="readonlyMode; else DoneButton" (click)="edit()">edit</mat-icon>
+    <ng-template #DoneButton>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateCRMAccountPaymentTerms()">Save</app-button>
+      <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+    </ng-template>
+  </div>
+
+  <form [formGroup]="paymentForm">
+    <div class="payment-terms-wrapper">
+      <div *ngIf="readonlyMode; else PaymentTermsEditable">
+        <div class="unit"><p>Payment Terms: {{paymentInfo?.paymentTerms}}</p></div>
+      </div>
+      <ng-template #PaymentTermsEditable>
+        <div class="editable-terms-wrapper">
+          <div class="unit"><p>Payment Terms: </p></div>
+          <mat-form-field appearance="outline">
+            <textarea matInput placeholder="Payment Terms" appNullOnEmpty [formControl]="paymentTerms"></textarea>
+            <mat-error>{{paymentTerms?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </div>
+  </form>
+</div>
+
+
+

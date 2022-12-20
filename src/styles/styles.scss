@@ -1,0 +1,9 @@
+@use 'global' as *;
+@use '~material-icons/iconfont/material-icons' as *;
+@use 'components' as *;
+@use '~angular-material-css-vars/src/lib/main' as cssvars;
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// init theme
+@include cssvars.init-material-css-vars();

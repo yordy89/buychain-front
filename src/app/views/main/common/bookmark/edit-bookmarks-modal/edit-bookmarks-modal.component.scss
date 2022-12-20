@@ -1,0 +1,60 @@
+.sub-header {
+  margin-bottom: 15px;
+  color: var(--text-2);
+}
+
+.saved-header {
+  font-weight: 600;
+}
+
+.saved-bookmarks {
+  overflow-x: auto;
+  max-height: 520px;
+  user-select: none;
+  width: 55%;
+
+  .saved-bookmark-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+    margin: 3px 0;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: rgba(var(--palette-primary-500), 0.1);
+    }
+
+    &.selected {
+      background-color: rgba(var(--palette-primary-500), 0.3);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+}
+
+.new-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .name-field {
+    width: 55%;
+    position: relative;
+
+    .error {
+      position: absolute;
+      top: 30px;
+      color: rgba(var(--palette-warn-500), 1);
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}

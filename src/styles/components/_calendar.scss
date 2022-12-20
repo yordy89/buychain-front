@@ -1,0 +1,41 @@
+.dx-calendar {
+  .dx-calendar-cell {
+    font-size: 12px;
+    font-weight: bold;
+
+    &:first-of-type {
+      text-align: center !important;
+    }
+
+    &:not(.dx-calendar-other-month) {
+      font-weight: bold;
+    }
+
+    &.dx-state-active,
+    &.dx-state-hover,
+    &.dx-calendar-selected-date {
+      box-shadow: unset !important;
+      color: unset !important;
+    }
+  }
+
+  .dx-calendar-body {
+    thead {
+      text-transform: unset !important;
+
+      tr {
+        th {
+          box-shadow: unset !important;
+        }
+      }
+    }
+  }
+
+  .dx-widget {
+    &.dx-calendar-navigator {
+      .dx-button {
+        border-width: 0 !important;
+      }
+    }
+  }
+}

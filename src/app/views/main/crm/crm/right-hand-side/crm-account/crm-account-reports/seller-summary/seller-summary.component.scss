@@ -1,0 +1,22 @@
+.wrapper {
+  .general-summary-wrapper {
+    display: flex;
+
+    .summary-section {
+      width: 48%;
+      margin: 1%;
+
+      .unit {
+        padding: 10px 0;
+
+        .label {
+          width: 60%;
+        }
+
+        .value {
+          width: 40%;
+        }
+      }
+    }
+  }
+}

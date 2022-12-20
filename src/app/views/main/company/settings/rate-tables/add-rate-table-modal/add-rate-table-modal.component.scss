@@ -1,0 +1,14 @@
+mat-form-field {
+  width: 100%;
+}
+
+.form-with-error {
+  position: relative;
+
+  .error {
+    position: absolute;
+    top: 55px;
+    left: 10px;
+    color: rgba(var(--palette-warn-500), 1);
+  }
+}

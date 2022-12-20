@@ -1,0 +1,106 @@
+<div *ngIf="productLotData" class="product-lot-section flex-row">
+  <div class="flex-col">
+
+    <div class="flex-row equal-height-row">
+      <app-value-label class="flex-col" label="Spec" [value]="productLotData.specShorthand"></app-value-label>
+    </div>
+
+    <div class="flex-row equal-height-row">
+      <app-value-label class="flex-col" label="Current Location" [value]="productLotData.shipFromShortName"></app-value-label>
+    </div>
+
+    <div class="flex-row equal-height-row"></div>
+
+    <div class="flex-row align-items-end equal-height-row">
+      <app-value-label class="flex-col" label="Total Units" [value]="productsList?.length || 0"></app-value-label>
+      <app-value-label class="flex-col" label="Unit Measure" [value]="lotUnitMeasure | number :'1.3'" [unit]="lotUnitMeasureLabel"></app-value-label>
+      <app-value-label class="flex-col" label="Total Measure" [value]="lotTotalMeasureInUoM | number :'1.3'"
+                       [unit]="lotUnitMeasureLabel">
+      </app-value-label>
+    </div>
+  </div>
+
+
+  <div [formGroup]="lotForm" class="flex-col">
+
+    <div class="flex-row equal-height-row">
+
+      <div class="flex-col">
+        <mat-form-field [matTooltip]="tooltipHasAllocatedProducts">
+          <mat-label class="label-bold-uppercase">Price Of Merit</mat-label>
+          <input matInput type="number" placeholder="Price Of Merit" required [formControl]="priceOfMerit" min="0">
+          <mat-error>{{priceOfMerit?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-col">
+        <mat-form-field [matTooltip]="tooltipHasAllocatedProducts">
+          <mat-label class="label-bold-uppercase">Ship Week Estimate</mat-label>
+          <input matInput [formControl]="shipWeekEstimate" [min]="currentDate" [matDatepicker]="ShipWeekEstimate"
+                 placeholder="mm/dd/yyyy">
+          <mat-datepicker-toggle matSuffix [for]="ShipWeekEstimate"></mat-datepicker-toggle>
+          <mat-datepicker #ShipWeekEstimate></mat-datepicker>
+          <mat-error>{{shipWeekEstimate?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex-row equal-height-row">
+
+      <div class="flex-col">
+        <mat-form-field [matTooltip]="tooltipHasAllocatedProducts">
+          <mat-label class="label-bold-uppercase">Owner</mat-label>
+          <mat-select [formControl]="ownerId" placeholder="Select One" disableOptionCentering
+                      panelClass="visible-selected-value">
+            <mat-option *ngFor="let owner of membersList" [value]="owner.id">
+              {{owner.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{ownerId?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-col">
+        <mat-form-field [matTooltip]="tooltipHasAllocatedProducts">
+          <mat-label class="label-bold-uppercase">Permission</mat-label>
+          <mat-select [formControl]="permission" placeholder="Select One" disableOptionCentering
+                      panelClass="visible-selected-value">
+            <mat-option *ngFor="let unit of permissionsList" [value]="unit">
+              {{unit | stringUnderscoreToSpaceTitleCase}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{permission?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div class="flex-row equal-height-row">
+      <mat-form-field class="flex-col" appearance="outline" [matTooltip]="tooltipHasAllocatedProducts">
+        <mat-label class="label-bold-uppercase">Notes</mat-label>
+        <textarea style="resize: none;" matInput placeholder="Start Typing" [formControl]="salesNotes" rows="2"></textarea>
+        <mat-error>{{salesNotes?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="isRandomLengthProduct">
+
+  <app-random-length-product *ngIf="isRandomLengthProduct"
+                             [product]="productLotData.products[0]"
+                             (specChangedEmitter)="randomLengthProductChanged()"
+  ></app-random-length-product>
+  <hr>
+</div>
+
+<app-product-table [productsList]="productsList"
+                   [productLot]="productLotData"
+                   [companyMembers]="membersList"
+                   [crmAccounts]="crmAccounts"
+                   [canMoveProduct]="!!productLotAccessRoles?.canMove"
+                   [lotUnitMeasure]="lotUnitMeasure"
+                   [lotUnitMeasureLabel]="lotUnitMeasureLabel"
+                   (updated)="onProductUpdate()">
+</app-product-table>

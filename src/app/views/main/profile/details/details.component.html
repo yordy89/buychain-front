@@ -1,0 +1,41 @@
+<div class="wrap">
+
+  <mat-expansion-panel [disabled]="true" [expanded]="true">
+    <mat-expansion-panel-header class="styled">
+      <mat-panel-title>
+        Profile Information
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="profile-section">
+      <div class="actions-container">
+        <ng-template #ActionButtons>
+          <app-button [isPrimary]="true" (clicked)="updateUserProfile()">Save</app-button>
+          <app-button (clicked)="cancel()">Cancel</app-button>
+        </ng-template>
+        <mat-icon color="primary" *ngIf="readonlyMode$ | async; else ActionButtons" (click)="edit()" cdkFocusInitial>
+          edit
+        </mat-icon>
+      </div>
+      <app-profile-form [parentForm]="form" [initialData$]="initialData$" [readonlyMode$]="readonlyMode$">
+      </app-profile-form>
+    </div>
+
+    <div class="created-and-modified">
+      <p>Created: <span>{{user.createdAt | date}}</span>, Last Modified: <span>{{user.updatedAt | date}}</span></p>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header class="styled">
+      <mat-panel-title>
+        Look And Feel
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <div class="look-and-feel-content-section">
+        <app-look-and-feel></app-look-and-feel>
+      </div>
+    </ng-template>
+  </mat-expansion-panel>
+
+</div>

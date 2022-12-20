@@ -1,0 +1,107 @@
+<div class="main-wrapper">
+  <div class="content">
+
+    <div class="d-flex-between">
+      <img src="assets/images/buyChain-logo.png" crossorigin="anonymous" />
+      <div class="order-numbers">
+        <app-header-with-number header="ORDER ACKNOWLEDGMENT" [number]="orderConfirmation.transactionNumber"></app-header-with-number>
+      </div>
+    </div>
+
+    <div class="buyer-info">
+      <app-address
+        [Address1Header]="'SHIP FROM'"
+        [Address2Header]="'SHIP TO'"
+        [Address3Header]="'BILL TO'"
+        [Account1]="sellingCompany"
+        [Location1]="shipFromLocation"
+        [Contact1]="shipFromContact"
+        [Account2]="buyingCompany"
+        [Location2]="shipToLocation"
+        [Contact2]="shipToContact"
+        [Account3]="buyingCompany"
+        [Location3]="billToLocation"
+        [Contact3]="billToContact">
+      </app-address>
+    </div>
+
+    <div class="details-table-section">
+      <div class="order-details-header">
+        <div class="first-line">
+          <div class="in-line-value">
+            <app-label-value label="PO">{{orderConfirmation.purchaseOrderNumber}}</app-label-value>
+          </div>
+        </div>
+        <div class="second-line">
+          <div>
+            <app-label-value label="ORDER DATE">{{orderConfirmation.confirmedDate | date}}</app-label-value>
+            <app-label-value label="SHIP DATE">{{orderConfirmation.shipDate | date}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="SALES">{{orderConfirmation.sellerName}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="TYPE">{{orderConfirmation.market}}</app-label-value>
+            <app-label-value label="ORDERED BY">{{orderConfirmation.buyerName}}</app-label-value>
+            <app-label-value label="CREATED BY">{{orderConfirmation.creatorName}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="SHIP VIA">{{orderConfirmation.transportType}}</app-label-value>
+            <app-label-value label="FRT TERM">{{orderConfirmation.trackingData.transportTerm | stringUnderscoreToSpaceTitleCase}}</app-label-value>
+          </div>
+        </div>
+      </div>
+
+      <table class="tally-units-table">
+        <thead>
+          <th>QTY</th>
+          <th class="text-left">ITEM/DESCRIPTION</th>
+          <th>MEASURE</th>
+          <th>PRICE/UOM</th>
+          <th>AMOUNT</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let unit of orderConfirmation.availableTallyUnits">
+            <td>{{unit.qty}}</td>
+
+            <td class="text-left">{{unit.specShorthand}}</td>
+            <td>{{unit.unitTotalMeasure | number :'1.3'}} {{unit.measureLabel}}</td>
+
+            <ng-container *ngIf="unit.contract; else priceTpl">
+              <td></td>
+              <td></td>
+            </ng-container>
+
+            <ng-template #priceTpl>
+              <td>{{orderConfirmation.calcDeliveredPricePerUoM(unit) | currency}}/{{unit.measureLabel}}</td>
+              <td>{{orderConfirmation.calcDeliveredPricePerLineItem(unit) | currency}}</td>
+            </ng-template>
+
+          </tr>
+          <tr class="spacer-row" [style.height.px]="spacerRowHeight()">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="total-row">
+      <app-balance-box>
+        {{orderConfirmation.hasCashTallyItem ? (orderConfirmation.deliveredPriceTotal | currency) : '&nbsp;'}}
+      </app-balance-box>
+    </div>
+
+    <div class="sub-totals">
+      <app-label-value label="PRINTED">{{currentDate | date: 'medium'}}</app-label-value>
+      <app-label-value label="ESTIMATED WEIGHT">{{orderConfirmation.tallyTotalWeight}} lbs</app-label-value>
+      <app-label-value *ngIf="!orderConfirmation.hasMixedUomTallyItem" label="LOAD">
+        {{orderConfirmation.tallyTotalMeasureTemporary | number :'1.3'}} {{orderConfirmation.measureLabel}}
+      </app-label-value>
+      <app-label-value label="QTY">{{orderConfirmation.tallyTotalUnitsCount}}</app-label-value>
+    </div>
+  </div>
+</div>

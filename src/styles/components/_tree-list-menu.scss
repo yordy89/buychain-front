@@ -1,0 +1,15 @@
+.tree-list-menu {
+  .dx-row {
+    &.dx-selection {
+      td {
+        border: none !important;
+        background: none !important;
+      }
+
+      .mat-menu-item {
+        color: rgba(var(--palette-primary-500), 1);
+        background: rgba(var(--palette-background-hover), var(--palette-background-hover-alpha, 0.12));
+      }
+    }
+  }
+}

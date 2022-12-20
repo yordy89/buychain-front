@@ -1,0 +1,123 @@
+<div class="main-wrapper">
+  <div class="content">
+
+    <div class="d-flex-between">
+      <app-company-info [company]="sellerCompany"></app-company-info>
+      <div class="order-numbers">
+        <app-header-with-number header="INVOICE" [number]="invoice.transactionNumber">
+        </app-header-with-number>
+        <div class="accounts">
+          <div class="headers">
+            <div>Invoice Date:</div>
+          </div>
+          <div class="values">
+            <div>{{invoice.confirmedDate | date}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="buyer-info">
+      <app-address
+        [Address1Header]="'SHIP TO'"
+        [Address2Header]="'BILL TO'"
+        [Location1]="shipToLocation"
+        [Contact1]="shipToContact"
+        [Location2]="billToLocation"
+        [Contact2]="billToContact"></app-address>
+    </div>
+
+    <div class="details-table-section">
+      <div class="order-details-header">
+        <div class="first-line">
+          <div class="in-line-value">
+            <app-label-value label="PO">{{invoice.purchaseOrderNumber}}</app-label-value>
+          </div>
+        </div>
+        <div class="second-line">
+          <div>
+            <app-label-value label="ORDER DATE">{{invoice.confirmedDate | date}}</app-label-value>
+            <app-label-value label="SHIP DATE">{{invoice.shipDate | date}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="SALES">{{invoice.sellerName}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="TYPE">{{invoice.market}}</app-label-value>
+            <app-label-value label="ORDERED BY">{{invoice.buyerName}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="SHIP VIA">{{invoice.transportType}}</app-label-value>
+            <app-label-value label="FRT TERM">{{invoice.trackingData.transportTerm | stringUnderscoreToSpaceTitleCase}}</app-label-value>
+          </div>
+        </div>
+      </div>
+
+      <table class="tally-units-table">
+        <thead>
+          <th>QTY ORDERED</th>
+          <th>QTY SHIPPED</th>
+          <th class="text-left">ITEM/DESCRIPTION</th>
+          <th>CONVERTED QTY</th>
+          <th>PRICE/UOM</th>
+          <th>AMOUNT</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let unit of invoice.availableTallyUnits">
+            <td>{{unit.qty}}</td>
+            <td>{{unit.qty}}</td>
+            <td class="text-left">{{unit.specShorthand}}</td>
+            <td>{{unit.unitMeasure * unit.qty | number:'1.3'}} {{unit.measureLabel}}</td>
+
+            <ng-container *ngIf="unit.contract; else priceTpl">
+              <td></td>
+              <td></td>
+            </ng-container>
+
+            <ng-template #priceTpl>
+              <td>{{invoice.calcDeliveredPricePerUoM(unit) | currency}}/{{unit.measureLabel}}</td>
+              <td>{{invoice.calcDeliveredPricePerLineItem(unit) | currency}}</td>
+            </ng-template>
+
+          </tr>
+          <tr *ngIf="showShippingAsLineItem">
+            <td></td>
+            <td></td>
+            <td class="text-left">Shipping</td>
+            <td></td>
+            <td></td>
+            <td>{{invoice.costData.shippingCost | currency}}</td>
+          </tr>
+          <tr class="sub-total-row">
+            <td></td>
+            <td></td>
+            <td class="text-left">SUBTOTAL</td>
+            <td></td>
+            <td></td>
+            <td>
+              {{invoice.hasCashTallyItem ? (invoiceSubtotal | currency) : '&nbsp;'}}
+            </td>
+          </tr>
+          <tr class="spacer-row" [style.height.px]="spacerRowHeight()">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="total-row">
+      <app-balance-box>
+        {{invoice.hasCashTallyItem ? (invoiceSubtotal | currency) : '&nbsp;'}}
+      </app-balance-box>
+    </div>
+
+    <div class="sub-totals">
+      <app-label-value label="PAYMENT TERMS">{{shipToCompany.creditInfo?.creditTerms}}</app-label-value>
+    </div>
+  </div>
+</div>

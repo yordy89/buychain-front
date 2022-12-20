@@ -1,0 +1,35 @@
+.new-order-container {
+  overflow: auto;
+  padding: 2px;
+}
+
+.order-section {
+  margin-bottom: 10px;
+}
+
+.panel-title-text {
+  font-size: 22px;
+  align-items: center;
+  display: inline-flex;
+}
+
+.form-label-text {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+mat-expansion-panel-header {
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 10%) !important;
+  height: 68px !important;
+
+  .form-control {
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+    font-size: 14px;
+  }
+
+  mat-form-field {
+    margin-left: 10px;
+  }
+}

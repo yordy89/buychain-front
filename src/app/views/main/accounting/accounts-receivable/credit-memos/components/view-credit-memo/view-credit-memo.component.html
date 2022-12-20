@@ -1,0 +1,78 @@
+<ng-container *ngIf="data">
+  <div class="flex-row">
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">Number</div>
+      <div class="key-value-pair-value">
+        <app-copy-text-button
+          class="small"
+          [text]="data.number"
+          [valueToCopy]="entryUrl"
+          successMessage="Link to this Credit Memo copied to clipboard"
+        ></app-copy-text-button>
+      </div>
+    </div>
+
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">State</div>
+      <div class="key-value-pair-value">
+        <span class="badge" [ngClass]="data.stateBadgeClass">{{ data.state | stringUnderscoreToSpaceTitleCase }}</span>
+      </div>
+    </div>
+
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">Review State</div>
+      <div class="key-value-pair-value">
+        <span class="badge" [ngClass]="data.reviewStateBadgeClass">{{
+          data.reviewState | stringUnderscoreToSpaceTitleCase
+        }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-row">
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">Customer</div>
+      <div class="key-value-pair-value">
+        {{ data.customer.name }}
+      </div>
+    </div>
+
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">Amount</div>
+      <div class="key-value-pair-value">
+        {{ data.amount | currency }}
+      </div>
+    </div>
+
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">Account</div>
+      <div class="key-value-pair-value">{{ data.revenueAccount.number }} {{ data.revenueAccount.name }}</div>
+    </div>
+  </div>
+
+  <div class="flex-row">
+    <div class="flex-col key-value-pair description">
+      <div class="key-value-pair-label">Description</div>
+      <div class="key-value-pair-value">{{ data.description }}</div>
+    </div>
+    <div class="flex-col key-value-pair">
+      <div class="key-value-pair-label">Type</div>
+      <div class="key-value-pair-value">
+        {{ data.type }}
+      </div>
+    </div>
+    <div class="flex-col key-value-pair">
+    </div>
+  </div>
+  <div class="flex-row">
+    <div *ngIf="data?.attachments?.length" class="flex-col">
+      <app-accounting-file-upload [attachments]="data.attachments" [isEditable]="false"></app-accounting-file-upload>
+    </div>
+    <div class="flex-col">
+      <div *ngIf="data.internalNotes" class="key-value-pair notes">
+        <div class="key-value-pair-label">Internal Notes</div>
+        <div class="key-value-pair-value">{{ data.internalNotes }}</div>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,15 @@
+.order-details-header {
+  .second-line {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+.sub-totals {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr;
+}
+
+img {
+  height: 100px;
+}

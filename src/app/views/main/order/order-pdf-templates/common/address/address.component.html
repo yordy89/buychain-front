@@ -1,0 +1,48 @@
+<div class="wrapper">
+  <div class="address-section">
+    <div class="header">
+      {{Address1Header}}:
+    </div>
+    <div *ngIf="Account1">{{Account1.name}}</div>
+    <div>{{Location1.shortName}}</div>
+    <div *ngIf="Location1.streetAddress">
+       {{Location1.streetAddress}}
+    </div>
+    <div *ngIf="Location1.city || Location1.state || Location1.country || Location1.zipCode">
+      {{ buildAddressLine2(Location1) }}
+    </div>
+    <div *ngIf="Contact1.firstName">{{Contact1.firstName}} {{Contact1.lastName}}</div>
+    <div *ngIf="Contact1.username">{{Contact1.username}}</div>
+    <div *ngIf="Contact1.workPhone">{{Contact1.callingCode}} {{Contact1.workPhone}}</div>
+  </div>
+
+  <div class="address-section">
+    <div class="header">
+      {{Address2Header}}:
+    </div>
+    <div *ngIf="Account2">{{Account2.name}}</div>
+    <div>{{Location2.shortName}}</div>
+    <div *ngIf="Location2.streetAddress">{{Location2.streetAddress}}</div>
+    <div *ngIf="Location2.city || Location2.state || Location2.country || Location2.zipCode">
+      {{ buildAddressLine2(Location2) }}
+    </div>
+    <div *ngIf="Contact2.firstName">{{Contact2.firstName}} {{Contact2.lastName}}</div>
+    <div *ngIf="Contact2.username">{{Contact2.username}}</div>
+    <div *ngIf="Contact2.workPhone">{{Contact2.callingCode}} {{Contact2.workPhone}}</div>
+  </div>
+
+  <div *ngIf="Address3Header" class="address-section">
+    <div class="header">
+      {{Address3Header}}:
+    </div>
+    <div *ngIf="Account3">{{Account3.name}}</div>
+    <div>{{Location3.shortName}}</div>
+    <div *ngIf="Location3.streetAddress">{{Location3.streetAddress}}</div>
+    <div *ngIf="Location3.city || Location3.state || Location3.country || Location3.zipCode">
+      {{ buildAddressLine2(Location3) }}
+    </div>
+    <div *ngIf="Contact3.firstName">{{Contact3.firstName}} {{Contact3.lastName}}</div>
+    <div *ngIf="Contact3.username">{{Contact3.username}}</div>
+    <div *ngIf="Contact3.workPhone">{{Contact3.callingCode}} {{Contact3.workPhone}}</div>
+  </div>
+</div>

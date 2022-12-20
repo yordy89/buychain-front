@@ -1,0 +1,11 @@
+.invitation-link-wrapper {
+  padding-top: 10px;
+  padding-left: 10px;
+
+  span {
+    color: rgba(var(--palette-primary-500), 1);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}

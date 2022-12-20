@@ -1,0 +1,76 @@
+<app-table-base headingText="Transportation">
+  <ng-container header>
+    <tr class="header-row">
+      <th class="width-20p">Freight Terms</th>
+      <th class="width-20p">Transportation and Rate</th>
+      <th class="width-20p" *ngIf="transportMethod.type === transportTypes.Rail">Railcar Number</th>
+      <th class="width-20p" *ngIf="transactionData.tallyUnits.length || transactionData.inTransitDate">
+        {{transactionData.passedTheState(TransactionStateEnum.Confirmed) && !transactionData.isInInvalidState ? 'Shipped Date' : 'Estimated Ship Date'}}
+      </th>
+      <th class="width-20p">Notes</th>
+    </tr>
+  </ng-container>
+
+  <ng-container body>
+    <tr class="body-row">
+      <td class="width-20p" [ngStyle]="{'color': modifiedTransportData?.freightTerm?.isModified ? 'red' : 'black'}">
+        <div>
+          {{(isModified && modifiedTransportData.freightTerm.value ? modifiedTransportData.freightTerm.value : freightTerms) | transportTermsToDescription}}
+        </div>
+      </td>
+      <td class="width-20p" *ngIf="!isModified || (!modifiedTransportData?.transportation?.isModified && !modifiedTransportData?.shippingCost?.isModified); else ModifiedTransport">
+        <div *ngIf="transportMethod.type">
+          {{transportMethod.type | stringUnderscoreToSpaceTitleCase}}{{transportMethod?.carrier ? ', ' + transportMethod.carrier : ''}}{{transportMethod?.railRestriction ? ', ' + transportMethod.railRestriction : ''}}
+          - Rate {{transactionData?.costData?.shippingCost | currency}}
+        </div>
+      </td>
+      <ng-template #ModifiedTransport>
+        <td [ngStyle]="{'color': modifiedTransportData?.transportation?.isModified ? 'red' : 'black'}">
+          <div *ngIf="modifiedTransportData.transportation">
+            {{modifiedTransportData.transportation?.value?.type | stringUnderscoreToSpaceTitleCase}}
+            {{modifiedTransportData.transportation?.value?.carrier ? ', ' + modifiedTransportData.transportation?.value?.carrier : ''}}
+            {{modifiedTransportData.transportation?.value?.railRestriction ? ', ' + modifiedTransportData.transportation?.value?.railRestriction : ''}}
+            - <span [ngStyle]="{'color': modifiedTransportData?.shippingCost?.isModified ? 'red' : 'black'}">
+            Rate {{modifiedTransportData?.shippingCost?.isModified ? modifiedTransportData?.shippingCost?.value : transactionData?.costData?.shippingCost | currency}}
+            </span>
+          </div>
+        </td>
+      </ng-template>
+
+      <td class="width-20p" *ngIf="transportMethod.type === transportTypes.Rail">
+        <div class="railcar-input">
+          <app-in-place-editor
+              [editable]="!isModified"
+              [value]="transportMethod.railCarNumber"
+              [required]="true"
+              [maxLength]="100"
+              [saveAction]="updateRailCarNumber.bind(this)"></app-in-place-editor>
+        </div>
+      </td>
+
+      <td class="width-20p" *ngIf="transactionData.tallyUnits.length || transactionData.inTransitDate">
+        <div class="ship-data-input">
+          <app-in-place-editor [ngStyle]="{'color': modifiedTransportData?.estimatedShipDate?.isModified ? 'red' : 'black'}"
+                               [editable]="canEditShipDate"
+                               [editorType]="'date'"
+                               [value]="isModified ? modifiedTransportData?.estimatedShipDate?.value : transactionData.shipDate"
+                               [minValue]="minEstimatedShipDate"
+                               [required]="false"
+                               [saveAction]="updateShipDate.bind(this)">
+          </app-in-place-editor>
+        </div>
+      </td>
+
+      <td class="width-20p">
+        <app-in-place-editor
+          [matTooltip]="transportMethod?.notes?.length > 47 ? transportMethod.notes : ''"
+          [editable]="!isModified"
+          [value]="transportMethod.notes"
+          [required]="true"
+          [maxLength]="1000"
+          [saveAction]="updateNotes.bind(this)">
+        </app-in-place-editor>
+      </td>
+    </tr>
+  </ng-container>
+</app-table-base>

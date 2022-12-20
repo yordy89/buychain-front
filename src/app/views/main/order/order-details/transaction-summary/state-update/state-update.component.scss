@@ -1,0 +1,73 @@
+.state-transition-wrapper {
+  display: flex;
+  justify-content: flex-end;
+
+  .quote-state-wrapper,
+  .review-state-wrapper,
+  .confirmed-state-wrapper,
+  .in-transit-state-wrapper {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: flex-end;
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .change-pending-state-wrapper {
+    .warning-message {
+      padding: 5px 20px;
+      border-radius: 5px;
+      background-color: rgba(var(--palette-warn-700), 1);
+      justify-content: center;
+      height: 60px;
+
+      p {
+        text-align: center;
+        margin: 0;
+        padding: 10px 0;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        z-index: 3;
+      }
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+  }
+
+  .state-description-section {
+    padding: 5px;
+    display: flex;
+    justify-content: flex-end;
+
+    .icon-section {
+      position: relative;
+      width: 70px;
+
+      .own-state-icon {
+        font-size: 40px;
+        z-index: 3;
+        position: relative;
+      }
+
+      .others-state-icon {
+        position: absolute;
+        top: 0;
+        left: 18px;
+        font-size: 35px;
+        z-index: 2;
+      }
+    }
+  }
+
+  app-button {
+    margin: 0 10px;
+  }
+}

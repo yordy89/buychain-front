@@ -1,0 +1,318 @@
+<form *ngIf="!editMode || editMode && data"
+      [formGroup]="form"
+      novalidate
+      (keydown.enter)="onEnter($event)"
+>
+	<div class="flex-row top-section-row">
+		<div class="flex-col">
+			<mat-form-field *ngIf="editMode" appearance="outline">
+				<mat-label>Entry Number</mat-label>
+				<input matInput [value]="data.number" disabled>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline">
+				<mat-label>Posted Date</mat-label>
+				<input matInput
+				       formControlName="postDate"
+				       [matDatepicker]="postedDate"
+				       placeholder="mm/dd/yyyy"
+				       required
+				>
+				<mat-datepicker-toggle matSuffix [for]="postedDate"></mat-datepicker-toggle>
+				<mat-datepicker #postedDate></mat-datepicker>
+				<mat-error>{{form.get('postDate')?.errors | errorMessage}}</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="badge-select">
+				<mat-label>Status</mat-label>
+				<mat-select formControlName="status" required>
+					<mat-select-trigger>
+						<span class="badge" [ngClass]="[statusBadgeClass(form.get('status').value)]">{{form.get('status').value | stringUnderscoreToSpaceTitleCase}}</span>
+					</mat-select-trigger>
+					<mat-option *ngFor="let item of filteredStatuses" [value]="item">
+						<span class="badge" [ngClass]="[statusBadgeClass(item)]">{{item | stringUnderscoreToSpaceTitleCase}}</span>
+					</mat-option>
+				</mat-select>
+
+				<mat-error>{{form.get('type')?.errors | errorMessage}}</mat-error>
+			</mat-form-field>
+		</div>
+
+		<div class="flex-col">
+			<mat-form-field appearance="outline">
+				<mat-label>Type</mat-label>
+				<mat-select formControlName="type" required>
+					<mat-option *ngFor="let item of types" [value]="item">
+						{{item | stringUnderscoreToSpaceTitleCase}}
+					</mat-option>
+				</mat-select>
+				<mat-error>{{form.get('type')?.errors | errorMessage}}</mat-error>
+			</mat-form-field>
+
+			<mat-form-field *ngIf="type === typesEnum.REVERSING" appearance="outline">
+				<mat-label>Reverse Date</mat-label>
+				<input matInput
+				       formControlName="reverseDate"
+				       [matDatepicker]="reverseDate"
+				       placeholder="mm/dd/yyyy"
+				       required
+				       [min]="minReverseDate"
+				>
+				<mat-datepicker-toggle matSuffix [for]="reverseDate"></mat-datepicker-toggle>
+				<mat-datepicker #reverseDate></mat-datepicker>
+				<mat-error>{{form.get('reverseDate')?.errors | errorMessage}}</mat-error>
+			</mat-form-field>
+
+			<app-tree-selector label="Group"
+			                   [treeListData]="groups"
+			                   [control]="getControlFromGroup(form, 'group')"
+			                   [allowClear]="true"
+			                   [showRequiredMarker]="true"
+			                   appearance="outline"
+			                   keyExpr="id"
+			                   displayKey="name"
+			                   placeholder="Group"
+			                   parentExpr="parent"
+			                   (entered)="onEnter($event)"
+			></app-tree-selector>
+
+			<app-chip-list-input label="Dimensions"
+			                     [data]="dimensions"
+			                     appearance="outline"
+			                     formControlName="dimensions"
+			                     keyName="id"
+			                     displayName="name"
+			                     placeholder="Dimensions"
+			></app-chip-list-input>
+		</div>
+
+		<div class="flex-col">
+			<mat-form-field appearance="outline">
+				<mat-label>Source</mat-label>
+				<input matInput [value]="source" disabled>
+			</mat-form-field>
+
+			<mat-form-field *ngIf="editMode" appearance="outline">
+				<mat-label>Created By</mat-label>
+				<input matInput [value]="data.createdBy | displayItemFromList: members:'id':'name'" disabled>
+			</mat-form-field>
+
+			<mat-form-field *ngIf="editMode" appearance="outline">
+				<mat-label>Updated By</mat-label>
+				<input matInput [value]="data.lastModifiedBy | displayItemFromList: members:'id':'name'" disabled>
+			</mat-form-field>
+		</div>
+
+		<div *ngIf="isVisible4thColumn" class="flex-col">
+			<mat-form-field appearance="outline" class="text-break">
+				<mat-label>Reference</mat-label>
+				<a *ngIf="data.isValidReferenceUrl"
+				   target="_blank"
+				   [href]="data.reference"
+				   [title]="data.reference"
+				>
+					<span *ngIf="data.hexReferenceId; else refTpl">{{data.hexReferenceId | shortGuid}}</span>
+					<ng-template #refTpl>{{data.reference}}</ng-template>
+				</a>
+				<span *ngIf="!data.isValidReferenceUrl">{{data.reference}}</span>
+				<input matInput value=" " disabled hidden>
+			</mat-form-field>
+
+			<mat-form-field *ngIf="data.customer" appearance="outline">
+				<mat-label>Customer</mat-label>
+				<input matInput [value]="data.customer | displayItemFromList: crmAccounts:'id':'name'" disabled>
+			</mat-form-field>
+
+			<mat-form-field *ngIf="data.vendor" appearance="outline">
+				<mat-label>Vendor</mat-label>
+				<input matInput [value]="data.vendor | displayItemFromList: crmAccounts:'id':'name'" disabled>
+			</mat-form-field>
+		</div>
+	</div>
+
+	<div class="flex-row mt-15 description-row">
+		<mat-form-field appearance="outline" [ngClass]="{'flex-col-3': isVisible4thColumn, 'flex-col-2': !isVisible4thColumn}">
+			<mat-label>Description</mat-label>
+			<textarea rows="3" matInput placeholder="Description" formControlName="description" appNullOnEmpty required maxlength="280" (blur)="onBlurDescription()"></textarea>
+			<mat-error>{{form.get('description')?.errors | errorMessage}}</mat-error>
+		</mat-form-field>
+		<div *ngIf="(isTablet$ | async) !== true" class="flex-col"></div>
+	</div>
+
+	<div class="lines-container">
+		<h4>Journal Lines</h4>
+
+		<div class="lines-list journal-lines-section" formArrayName="lines">
+			<div *ngFor="let ctrl of lines.controls; let index = index;"
+			     class="flex-row form-field-width-auto"
+			     [formGroupName]="index"
+			>
+				<app-autocomplete label="Account"
+				                  [data]="filteredAccounts"
+				                  [isRequired]="isRequiredLineItems"
+				                  panelWidth="auto"
+				                  formControlName="account"
+				                  keyName="id"
+				                  displayName="numberAndName"
+				                  placeholder="Account"
+				                  class="flex-col"
+				></app-autocomplete>
+
+				<mat-form-field class="flex-col-2" appearance="outline">
+					<mat-label>Description</mat-label>
+					<input matInput appNullOnEmpty placeholder="Description" formControlName="description" type="text" [required]="isRequiredLineItems" maxlength="500">
+					<mat-error>{{ctrl.get('description').errors | errorMessage}}</mat-error>
+				</mat-form-field>
+
+				<mat-form-field class="flex-col" appearance="outline">
+					<mat-label>Debit</mat-label>
+					<input matInput
+					       placeholder="Debit"
+					       formControlName="debit"
+					       currencyMask
+					       (focus)="onFocusAmount(ctrl.get('debit'))"
+					       (blur)="onBlurDebitCredit(ctrl.get('debit'), ctrl.get('credit'))"
+					>
+					<mat-error>{{ctrl.get('debit').errors | errorMessage}}</mat-error>
+					<mat-error *ngIf="!(ctrl.get('debit').errors | errorMessage) && ctrl.get('debit').hasError('greater')">Each lines must have a zero credit or debit value, and the other field must be non-zero.</mat-error>
+				</mat-form-field>
+
+				<mat-form-field class="flex-col" appearance="outline">
+					<mat-label>Credit</mat-label>
+					<input matInput
+					       placeholder="Credit"
+					       formControlName="credit"
+					       currencyMask
+					       (focus)="onFocusAmount(ctrl.get('credit'))"
+					       (blur)="onBlurDebitCredit(ctrl.get('credit'), ctrl.get('debit'))"
+					>
+					<mat-error>{{ctrl.get('credit').errors | errorMessage}}</mat-error>
+				</mat-form-field>
+
+				<div class="delete-button-space align-items-center d-flex">
+					<button *ngIf="lines.length > 2" mat-icon-button (click)="onRemoveLine(index)" color="warn" class="mb-20">
+						<mat-icon>delete</mat-icon>
+					</button>
+				</div>
+			</div>
+
+			<div class="bottom-info-row flex-row">
+				<div class="flex-col-3">
+					<span *ngIf="lines.length < 30" class="add-line-btn" (click)="onAddLine()">
+						<mat-icon>add</mat-icon> Add Transaction Line
+					</span>
+				</div>
+
+				<ng-container *ngIf="!isAllowedInterCompanies" [ngTemplateOutlet]="totalsTpl"></ng-container>
+			</div>
+		</div>
+
+		<div *ngIf="isAllowedInterCompanies" class="lines-list ic-lines-section" formArrayName="interCompanies">
+			<div *ngFor="let ctrl of interCompanies.controls; let index = index;"
+			     class="flex-row form-field-width-auto"
+			     [formGroupName]="index"
+			>
+
+				<app-tree-selector label="Group"
+				                   [treeListData]="lineGroups"
+				                   [control]="getControlFromGroup(ctrl, 'group')"
+				                   [allowClear]="true"
+				                   keyExpr="id"
+				                   displayKey="name"
+				                   placeholder="Group"
+				                   parentExpr="parent"
+				                   class="flex-col"
+				                   (entered)="onEnter($event)"
+				></app-tree-selector>
+
+				<mat-form-field class="flex-col-2" appearance="outline">
+					<mat-label>Description</mat-label>
+					<input matInput appNullOnEmpty placeholder="Description" formControlName="description" type="text" required maxlength="280">
+					<mat-error>{{ctrl.get('description').errors | errorMessage}}</mat-error>
+				</mat-form-field>
+
+				<mat-form-field class="flex-col" appearance="outline">
+					<mat-label>Amount</mat-label>
+					<input matInput
+					       placeholder="Amount"
+					       formControlName="amount"
+					       required
+					       currencyMask
+					       (focus)="onFocusAmount(ctrl.get('amount'))"
+					       (blur)="onBlurAmount(ctrl.get('amount'))"
+					>
+					<mat-error>{{ctrl.get('amount').errors | errorMessage}}</mat-error>
+				</mat-form-field>
+
+				<div class="delete-button-space align-items-center d-flex">
+					<button *ngIf="!editMode" mat-icon-button (click)="onRemoveInterCompanyLine(index)" color="warn" class="mb-20">
+						<mat-icon>delete</mat-icon>
+					</button>
+				</div>
+
+				<div class="flex-col"></div>
+			</div>
+
+			<div class="bottom-info-row flex-row">
+				<div class="flex-col-3">
+					<span *ngIf="interCompanies.length < 30 && !editMode && lineGroups.length" class="add-line-btn" (click)="onAddInterCompanyLine()">
+						<mat-icon>add</mat-icon> Add Intercompany Line
+					</span>
+				</div>
+
+				<ng-container [ngTemplateOutlet]="totalsTpl"></ng-container>
+			</div>
+		</div>
+	</div>
+
+	<ng-template #totalsTpl>
+		<div class="flex-col-2">
+			<mat-divider></mat-divider>
+
+			<div class="flex-row">
+				<div class="flex-col">
+					<div class="info-item">
+						<span class="info-item-label">Totals</span>
+						<span class="info-item-value">{{totalDebit | currency}}</span>
+					</div>
+
+					<ng-container *ngIf="(totalDebit - totalCredit) as diff">
+						<div *ngIf="diff < 0" class="difference-text">Difference ({{diff | currency}})</div>
+					</ng-container>
+				</div>
+
+				<div class="flex-col">
+					<div class="info-item">
+						<span class="info-item-label"></span>
+						<span class="info-item-value">{{totalCredit | currency}}</span>
+					</div>
+
+					<ng-container *ngIf="(totalCredit - totalDebit) as diff">
+						<div *ngIf="diff < 0" class="difference-text">Difference ({{diff | currency}})</div>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+
+		<div class="delete-button-space"></div>
+	</ng-template>
+
+	<div class="flex-row">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload
+        [(attachments)]="attachments"
+        (removeAttachment)="removeAttachment($event)"
+      ></app-accounting-file-upload>
+    </div>
+    <mat-form-field appearance="outline" class="flex-col notes-row">
+      <mat-label>Notes</mat-label>
+      <textarea rows="3" matInput placeholder="Notes" formControlName="notes" appNullOnEmpty maxlength="500"></textarea>
+      <mat-error>{{form.get('notes')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+	</div>
+</form>
+
+<div class="d-flex justify-content-end">
+	<app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+	<app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">{{editMode ? 'Save' : 'Submit'}}</app-button>
+</div>

@@ -1,0 +1,40 @@
+<app-modal-base header="CRM Location Link">
+  <ng-container content>
+    <div class="content-wrapper">
+      <div class="linking-message">
+        <mat-icon color="primary" matPrefix>link_off</mat-icon>
+        <p>Location belongs to CRM account linked to BuyChain<sup>TH</sup> Customer {{location?.crmAccount?.link.name}}</p>
+        <p *ngIf="filteredLocationList?.length">This Location Is unlinked. Link it to a BuyChain<sup>TH</sup>
+          location to enhance communication and functionality</p>
+      </div>
+      <div class="selector-wrapper" *ngIf="locationList?.length; else NoLocationsAvailable">
+        <form [formGroup]="form" *ngIf="filteredLocationList?.length; else NoLocationsLeft">
+          <mat-form-field appearance="outline">
+            <mat-select [formControl]="selectedLocation" placeholder="Search Location">
+              <mat-option *ngFor="let location of filteredLocationList" [value]="location">
+                {{location.shortName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+        <ng-template #NoLocationsLeft>
+          <p class="no-data-plate">You already have CRM locations linked to all facilities in this company</p>
+        </ng-template>
+      </div>
+      <ng-template #NoLocationsAvailable>
+        <p class="no-data-plate">No locations are available from this company yet.</p>
+      </ng-template>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Close</app-button>
+    <app-button *ngIf="filteredLocationList?.length"
+                [isNarrow]="true"
+                [isPrimary]="true"
+                (clicked)="linkLocation()"
+    >
+      Save
+    </app-button>
+  </ng-container>
+</app-modal-base>

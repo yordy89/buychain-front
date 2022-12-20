@@ -1,0 +1,93 @@
+<div class="settings-wrapper">
+
+  <div class="information-container company-section">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.Company">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Company</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-company></app-company>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+
+  <div class="information-container">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.RateTables">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Rate Tables</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        <div class="content-section">
+          <app-rate-tables></app-rate-tables>
+        </div>
+      </ng-template>
+
+    </mat-expansion-panel>
+  </div>
+
+  <div class="information-container">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.Facilities">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Facilities</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="content-section">
+          <app-facilities></app-facilities>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+
+  <div class="information-container">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.UserManagement">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Manage Users</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="content-section">
+          <app-manage-users></app-manage-users>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+
+  <div class="information-container">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.LabelManagement">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Manage Labels</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="label-content-section">
+          <app-label-management></app-label-management>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+
+  <div class="information-container">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.Finance">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Financial Settings</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="finance-setting-content-section">
+          <app-finance></app-finance>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+  <div class="information-container">
+    <mat-expansion-panel [expanded]="expanded === CompanySettingsExpandableSection.Groups">
+      <mat-expansion-panel-header class="styled">
+        <mat-panel-title>Groups</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div class="groups-content-section">
+          <app-groups></app-groups>
+        </div>
+      </ng-template>
+    </mat-expansion-panel>
+  </div>
+
+</div>

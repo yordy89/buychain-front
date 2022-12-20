@@ -1,0 +1,10 @@
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+
+  .address-section {
+    .header {
+      font-weight: 700;
+    }
+  }
+}

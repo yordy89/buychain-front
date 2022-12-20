@@ -1,0 +1,33 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+dx-data-grid {
+  padding: 0 10px;
+}
+
+.lines-container {
+  background: #fff;
+  padding: 15px 16px 30px;
+  margin-bottom: 15px;
+  transform: translateX(-16px);
+  width: calc(100% + 32px);
+
+  @include mat_css_dark-theme {
+    background-color: #424242;
+  }
+
+  h4 {
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+
+  dx-data-grid {
+    padding: 0;
+  }
+}
+
+.key-value-pair {
+  &.description {
+    margin-right: 30px;
+  }
+}

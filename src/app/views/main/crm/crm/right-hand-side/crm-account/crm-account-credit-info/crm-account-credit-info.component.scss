@@ -1,0 +1,75 @@
+.credit-info-wrapper {
+  margin-top: 10px;
+
+  .credit-info-actions {
+    justify-content: flex-end;
+    flex-direction: row;
+    display: flex;
+    margin-right: 30px;
+
+    app-button {
+      padding: 10px;
+    }
+
+    mat-icon {
+      margin-top: 0;
+      cursor: pointer;
+    }
+  }
+
+  .credit-terms-wrapper {
+    .editable-terms-wrapper {
+      margin-top: 15px;
+      display: flex;
+
+      .unit {
+        margin: 23px 8px;
+      }
+
+      mat-form-field {
+        width: 50%;
+      }
+
+      textarea {
+        height: 50px;
+        width: 100%;
+      }
+    }
+  }
+
+  .credit-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    .max-credit-section,
+    .used-credit-section,
+    .remaining-credit-section {
+      width: 33.3%;
+
+      .credit-section-header {
+        background-color: rgba(var(--palette-primary-100), 0.5);
+        font-size: 17px;
+        font-weight: bold;
+        text-align: center;
+        height: 30px;
+        margin: 5px 1%;
+      }
+
+      .section-body {
+        .readonly-mode {
+          text-align: center;
+          height: 30px;
+          margin: 5px 1%;
+        }
+
+        .form-wrapper {
+          margin: 0 1%;
+
+          mat-form-field {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

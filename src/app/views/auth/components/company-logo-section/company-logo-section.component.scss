@@ -1,0 +1,54 @@
+@use 'mixins' as mixins;
+@use 'variables' as *;
+
+.logo-section {
+  display: flex;
+  justify-content: center;
+  height: 120px;
+  transition: $smooth-transition;
+
+  .logo {
+    height: 100px;
+    transition: $smooth-transition;
+  }
+}
+
+.alt-logo-section {
+  display: flex;
+  height: unset;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+
+  .company-name {
+    color: var(--main-color);
+    font-size: 36px;
+    font-weight: 600;
+    margin: 10px 0;
+  }
+
+  hr {
+    border: 1px solid $grey;
+    width: 99%;
+    margin: 10px 0;
+  }
+
+  .powered-by-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+
+    span {
+      font-size: 16px;
+      color: $dark-grey;
+      margin-right: 10px;
+    }
+
+    img {
+      height: 40px;
+    }
+  }
+}

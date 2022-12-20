@@ -1,0 +1,37 @@
+.mat-tab-group {
+  .mat-tab-body-wrapper {
+    width: 100%;
+  }
+
+  &.styled {
+    .mat-tab-body-wrapper {
+      border: 1px solid rgba(var(--palette-primary-900), 0.2);
+      border-top: 0;
+    }
+
+    .mat-tab-label {
+      margin: 0 2px;
+      color: var(--text-2);
+      font-weight: 500;
+
+      &-active {
+        background-color: rgba(var(--palette-primary-900), 0.2);
+        color: var(--text-1);
+        font-weight: 600;
+      }
+    }
+  }
+
+  &.padded-content {
+    .mat-tab-body-wrapper {
+      padding: 0 10px;
+    }
+  }
+
+  &.crm-account-tab-group {
+    .mat-tab-label {
+      min-width: 50px !important;
+      width: 19%;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<app-modal-base [header]="headerText()" (closed)="close()">
+  <ng-container content>
+    <div class="market-search-container">
+      <app-product-list *ngIf="transactionData.role === RoleInTransaction.Buyer" [onAction]="productActions"
+        [fixedFilters]="fixedFilters"></app-product-list>
+
+      <ng-container *ngIf="transactionData.role === RoleInTransaction.Seller">
+        <app-inventory-search *ngIf="inventoryView === InventoryViewEnum.MasterView"
+                              [inventoryView]="inventoryView"
+                              (inventoryViewChanged)="inventoryViewChanged($event)"
+                              [onAction]="productActions"
+                              [fixedFilters]="fixedFilters"
+                              [isFromModal]="true"
+        ></app-inventory-search>
+
+        <app-inventory-streamline *ngIf="inventoryView === InventoryViewEnum.ProductView"
+                                  [inventoryView]="inventoryView"
+                                  (inventoryViewChanged)="inventoryViewChanged($event)"
+                                  [fixedFilters]="fixedFilters"
+                                  (rowSelection)="streamlineRowSelected($event)"
+                                  [isFromModal]="true"
+        ></app-inventory-streamline>
+      </ng-container>
+
+    </div>
+
+    <hr>
+
+    <div class="tally-units-table-wrapper" *ngIf="transactionData">
+      <app-tally [transactionData]="transactionData" [lots]="lots" (noTallyUnitsLeft)="onNoTallyUnitsLeft()" (tallyChanged)="reloadTransaction()"></app-tally>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Done</app-button>
+  </ng-container>
+</app-modal-base>

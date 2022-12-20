@@ -1,0 +1,110 @@
+<div class="wrapper">
+  <form [formGroup]="transactionForm" class="form-wrapper">
+    <div class="section-header">State</div>
+    <app-transaction-state *ngIf="transactionData" [transactionData]="transactionData"></app-transaction-state>
+    <div class="description-notes-wrapper">
+      <div class="transaction-description-box">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty
+                    [formControl]="transactionDescription"
+                    (blur)="updateTransactionDescription()"
+                    rows="2"
+          ></textarea>
+          <mat-error>{{transactionDescription?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="transaction-internal-notes">
+        <mat-form-field appearance="outline">
+          <mat-label>Internal Notes</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty
+                    [formControl]="transactionInternalNotes"
+                    (blur)="updateInternalNotes()"
+                    rows="2"
+          ></textarea>
+          <mat-error>{{transactionInternalNotes?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="section-header">Products</div>
+    <div class="tally-wrapper">
+      <app-tally [transactionData]="transactionData" [lots]="lots" (tallyChanged)="updateTxOnTallyUpdate()"></app-tally>
+    </div>
+    <hr>
+
+    <div class="add-product-button" *ngIf="userPermissions.canUpdateTally">
+        <app-button
+          *ngIf="transactionData.isSales"
+          icon="add" (clicked)="openAddProductModal()">
+          Add From Inventory
+        </app-button>
+        <app-button
+          *ngIf="transactionData.isPurchase"
+          class="add-off-market-btn" icon="add" (clicked)="openAddOffMarketProductModal()">
+          Add Off-Market Product
+        </app-button>
+    </div>
+
+    <div class="transaction-transportation" *ngIf="transactionData.shipFrom">
+      <div class="original-transportation" [ngClass]="{'diff-mode': isModifyTransportState}">
+        <h3 class="header" *ngIf="isModifyTransportState">Current</h3>
+        <app-shipping-info [transactionData]="transactionData"></app-shipping-info>
+        <app-transportation-info [transactionData]="transactionData" [userPermissions]="userPermissions"></app-transportation-info>
+        <hr *ngIf="!isModifyTransportState">
+        <div class="button-section">
+          <app-button *ngIf="userPermissions.canUpdateTrackingData && !transactionData.passedTheState(TransactionStateEnum.Quote)"
+                      (clicked)="openShippingEditModal()" icon="edit">Edit
+          </app-button>
+        </div>
+      </div>
+
+      <div class="diff-arrow" *ngIf="isModifyTransportState">
+        <mat-icon >compare_arrows</mat-icon>
+      </div>
+
+      <div class="modified-transportation" *ngIf="isModifyTransportState">
+        <h3 class="header" *ngIf="isModifyTransportState">New</h3>
+        <app-shipping-info [isModified]="true" [transactionData]="transactionData"></app-shipping-info>
+        <app-transportation-info [isModified]="true" [transactionData]="transactionData" [userPermissions]="userPermissions"></app-transportation-info>
+      </div>
+    </div>
+
+    <div class="purchase-sales-numbers">
+      <app-purchase-sales-number
+        label="Purchase Order Number"
+        [value]="transactionData.trackingData.purchaseOrderNumber"
+        [saveAction]="updatePurchaseOrderNumber.bind(this)"></app-purchase-sales-number>
+      <app-purchase-sales-number
+        label="Sales Order Number"
+        [value]="transactionData.trackingData.salesOrderNumber"
+        [saveAction]="updateSalesOrderNumber.bind(this)"></app-purchase-sales-number>
+    </div>
+
+    <div class="milestones-and-shipping">
+      <div class="milestones-container">
+        <app-milestones [transactionData]="transactionData"></app-milestones>
+      </div>
+
+      <div class="shipping-information-container" *ngIf="transactionData?.costData?.cogs || transactionData?.costData?.cogp">
+        <app-cost-info [transactionData]="transactionData" [actions]="actions"></app-cost-info>
+      </div>
+    </div>
+  </form>
+
+  <div class="actions-row">
+    <div>
+      <app-button *ngIf="userPermissions.canDeleteTransaction" icon="delete_forever" (clicked)="deleteTransaction()">Delete Transaction</app-button>
+    </div>
+    <app-state-update [transactionData]="transactionData" [lots]="lots" [actions]="actions"></app-state-update>
+  </div>
+</div>
+
+<div *ngIf="isLoaded && transactionData.tallyUnits.length > 0">
+    <app-order-confirmation *ngIf="orderConfirmationMode" [orderConfirmation]="orderConfirmationData"></app-order-confirmation>
+
+    <app-bill-of-lading *ngIf="billOfLadingMode" [billOfLadingData]="billOfLadingData"></app-bill-of-lading>
+
+    <app-invoice *ngIf="invoiceMode" [invoice]="invoiceData"></app-invoice>
+
+    <app-pick-sheet *ngIf="pickSheetMode" [pickTicket]="pickTicketData"></app-pick-sheet>
+</div>

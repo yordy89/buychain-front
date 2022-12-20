@@ -1,0 +1,65 @@
+<div class="content">
+
+  <app-table-base *ngIf="rateTables && rateTables.length; else NoRateTables" class="striped">
+    <ng-container header>
+      <tr>
+        <th class="name" (click)="sort('name')">
+          Rate Table
+          <mat-icon *ngIf="sorted?.by === 'name'">
+            <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+            <ng-template #arrowUp>
+              <mat-icon>arrow_upward</mat-icon>
+            </ng-template>
+          </mat-icon>
+        </th>
+        <th class="description">Description</th>
+        <th class="entries" (click)="sort('numberEntries')">
+          Entries
+          <mat-icon *ngIf="sorted?.by === 'numberEntries'">
+            <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+            <ng-template #arrowUp>
+              <mat-icon>arrow_upward</mat-icon>
+            </ng-template>
+          </mat-icon>
+        </th>
+        <th class="last-modified" (click)="sort('updatedAt')">
+          Last Modified
+          <mat-icon *ngIf="sorted?.by === 'updatedAt'">
+            <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+            <ng-template #arrowUp>
+              <mat-icon>arrow_upward</mat-icon>
+            </ng-template>
+          </mat-icon>
+        </th>
+        <th></th>
+      </tr>
+    </ng-container>
+
+    <ng-container body>
+      <tr *ngFor="let rateTableItem of rateTables; let i = index">
+        <td class="name">{{rateTableItem.name}}</td>
+        <td class="description">{{rateTableItem.description}}</td>
+        <td class="entries">{{rateTableItem.numberEntries}}</td>
+        <td class="last-modified">{{rateTableItem.updatedAt | date}}</td>
+
+        <td *ngIf="rateTableItem">
+          <app-table-actions [data]="rateTableItem"
+                             [actions]="actions"
+                             (action)="onTableAction($event, rateTableItem)"
+          ></app-table-actions>
+        </td>
+      </tr>
+    </ng-container>
+  </app-table-base>
+
+  <ng-template #NoRateTables>
+    <div class="no-data-plate">
+      <h3>Company Does not have any rate tables defined</h3>
+      <h4 *ngIf="currentUser.canAdd">You can add new rate table using the button below</h4>
+    </div>
+  </ng-template>
+</div>
+
+<mat-action-row *ngIf="currentUser.canAdd">
+  <app-button (clicked)="addNewRateTable()">Add new Rate Table</app-button>
+</mat-action-row>

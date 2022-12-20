@@ -1,0 +1,22 @@
+<app-modal-base header="Update Company Information" (closed)="close()">
+  <ng-container content>
+    <app-company-form [parentForm]="form" [initialData$]="companyData$" [readonlyMode$]="readonlyMode$"></app-company-form>
+  </ng-container>
+
+  <ng-container actions-top>
+    <ng-container *ngIf="readonlyMode$ | async; else ActionButtons">
+      <app-button [isNarrow]="true" (clicked)="close()">Close</app-button>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="edit()">Edit</app-button>
+    </ng-container>
+
+    <ng-template #ActionButtons>
+      <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateCompany()">Save</app-button>
+    </ng-template>
+  </ng-container>
+
+  <ng-container created>
+    <div>Created: {{data.createdAt | date}}</div>
+    <div>Last Modified: {{data.updatedAt | date}}</div>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,31 @@
+<div class="modal-base-wrapper">
+
+  <div mat-dialog-title>
+    <h2 class="header">{{header}}</h2>
+    <h5 *ngIf="subHeader" class="sub-header">{{subHeader}}</h5>
+  </div>
+
+  <div class="header-actions">
+    <ng-content select="[header-actions]"></ng-content>
+
+    <button color="primary" mat-icon-button (click)="close()" tabindex="-1">
+      <mat-icon class="close-icon">close</mat-icon>
+    </button>
+  </div>
+
+  <div mat-dialog-content class="content">
+    <div mat-dialog-actions class="actions actions-top">
+      <ng-content select="[actions-top]"></ng-content>
+    </div>
+
+    <ng-content select="[content]"></ng-content>
+  </div>
+
+  <div mat-dialog-actions class="actions">
+    <ng-content select="[actions]"></ng-content>
+  </div>
+
+  <div class="created-and-modified">
+    <ng-content select=[created]></ng-content>
+  </div>
+</div>

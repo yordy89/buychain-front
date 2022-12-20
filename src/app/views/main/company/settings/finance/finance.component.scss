@@ -1,0 +1,109 @@
+.content {
+  padding: 5px 0 0 20px;
+}
+
+.default-accounts-section {
+  .table-base {
+    font-size: 14px;
+  }
+}
+
+.status {
+  margin-top: 10px;
+
+  .content {
+    display: flex;
+    align-items: center;
+
+    .info {
+      span {
+        margin: 0 10px;
+      }
+    }
+  }
+}
+
+.main-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: stretch;
+
+  .section {
+    flex-grow: 1;
+    margin: 0 0.5vw;
+
+    .section-header {
+      background-color: rgba(var(--palette-primary-100), 0.35);
+      height: 40px;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+
+      mat-icon {
+        cursor: pointer;
+      }
+    }
+
+    .section-content {
+      padding: 10px;
+    }
+  }
+
+  .disabled-property {
+    display: flex;
+    font-size: 15px;
+    margin: 7px 0;
+    align-items: baseline;
+
+    .label {
+      padding: 0 3px;
+    }
+
+    .value {
+      font-weight: 700;
+    }
+  }
+
+  .third-party-plugins {
+    .section-content {
+      .plugin-selection-section {
+        display: flex;
+        align-items: baseline;
+
+        > * {
+          margin: 0 20px 0 0;
+        }
+      }
+    }
+  }
+
+  .form-group {
+    margin-top: 10px;
+  }
+
+  .defaults {
+    margin-top: 10px;
+
+    .content {
+      display: flex;
+
+      .accounts {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+      }
+
+      .setting {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+.divider {
+  margin: 0 40px;
+  border-right-width: 2px;
+}

@@ -1,0 +1,47 @@
+<app-modal-base [header]="currentState.headerText" (closed)="close()">
+  <div content [ngSwitch]="currentState.state" class="content">
+
+    <div *ngSwitchCase="'selection'" class="selection-state">
+      <div>
+        Select a file to import. If you choose to replace the current entry, select the checkbox.
+      </div>
+      <div>
+        <app-file-select
+            buttonText="Import Entries"
+            hintText="You may import CSV files."
+            icon="attachment"
+            accept=".csv"
+            (changed)="onFileChange($event)"></app-file-select>
+      </div>
+      <div>
+        <mat-checkbox color="primary" [(ngModel)]="replace">Replace Entries</mat-checkbox>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'validation'">
+      <div class="progress-bar">
+          <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+          <span class="progress-text">{{progress}}%</span>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'results'">
+      <div>
+        <span class="text-bold">{{successCount}}</span> of <span class="text-bold">{{totalCount}}</span> entries
+        have been successfully validated. <span class="text-danger text-bold">{{errorCount}} Error<span *ngIf="errorCount > 1">s</span></span>
+        have been identified.
+      </div>
+      <div class="error-list">
+        <p *ngFor="let entry of getInvalidEntries()" class="m-0 text-danger">
+          Line: {{entry.index+1}} - {{entry.errorMessage}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">{{currentState.state !== 'results' ? 'Cancel' : 'Close'}}</app-button>
+    <app-button [isNarrow]="true" [isDisabled]="!selectedFile" (clicked)="import()" [isPrimary]="true" [ngClass]="{'hide' : currentState.state !== 'selection'}">Import</app-button>
+  </ng-container>
+
+</app-modal-base>

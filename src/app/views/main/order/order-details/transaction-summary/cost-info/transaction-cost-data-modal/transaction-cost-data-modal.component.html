@@ -1,0 +1,55 @@
+<app-modal-base
+    [header]="title"
+>
+  <ng-container content>
+    <form [formGroup]="costsForm">
+      <div class="cogs-data" *ngFor="let cog of cogArray">
+        <div class="cog-container">
+          <div class="label-col text-ellipsis">
+            <span *ngIf="cog.type !== CogTypeEnum.Other || cog.type === CogTypeEnum.Other && cog.createdAt">{{cog.label}}</span>
+            <div *ngIf="cog.type === CogTypeEnum.Other && !cog.createdAt">
+              <mat-form-field>
+                <input matInput appNullOnEmpty placeholder="Label" autocomplete="off" [formControl]="getControl(cog.id+'label')">
+                <mat-error>{{getControl(cog.id + 'label').errors | errorMessage}}</mat-error>
+              </mat-form-field>
+              <app-icon-button icon="cancel" (clicked)="onRemoveClick(cog.id)"></app-icon-button>
+            </div>
+          </div>
+          <div class="value-col">
+            <mat-form-field appearance="outline" class="no-padding">
+              <span matPrefix>$</span>
+              <input matInput type="number" max="9999999" required [formControl]="getControl(cog.id)" autocomplete="off">
+              <span class="cog-error">{{getControl(cog.id).errors | errorMessage}}</span>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="add-new-section" *ngIf="haveAccessToEdit">
+        <app-button [isNarrow]="true" icon="add" (clicked)="onAddClick()">Add</app-button>
+      </div>
+      <div class="buy-chain-tx-fee-container">
+        <span>Buy Chain Transaction Fee</span>
+        <div class="subtotal">{{buyChainTxFee | currency}}</div>
+      </div>
+
+      <div class="sticky-subtotal-container">
+        <hr>
+        <div class="subtotal-container">
+          <span>Subtotal</span>
+          <div class="subtotal">{{subtotal | currency}}</div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close(false)">Cancel</app-button>
+    <app-button [isNarrow]="true"
+                [isDisabled]="this.costsForm.invalid"
+                [isPrimary]="true"
+                (clicked)="updateAllChangedCogs()"
+    >
+      Save
+    </app-button>
+  </ng-container>
+</app-modal-base>

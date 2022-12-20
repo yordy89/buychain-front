@@ -1,0 +1,103 @@
+<div class="fab-container">
+  <dx-data-grid
+      [dataSource]="productsList"
+      [showBorders]="true"
+      [remoteOperations]="false"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [allowColumnReordering]="false"
+      [rowAlternationEnabled]="true"
+      [columnHidingEnabled]="true"
+      [hoverStateEnabled]="true"
+      [columnAutoWidth]="true"
+      [(selectedRowKeys)]="selectedProductsIds"
+      keyExpr="id"
+      height="calc(26vh + 210px)"
+      (onCellPrepared)="onCellPrepared($event)"
+  >
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-load-panel [enabled]="true"></dxo-load-panel>
+    <dxo-selection [allowSelectAll]="true" showCheckBoxesMode="always" mode="multiple"></dxo-selection>
+
+    <dxi-column [visible]="!allDisabled" type="selection" width="30px" [fixed]="true" [allowResizing]="false" fixedPosition="left"></dxi-column>
+
+    <dxi-column dataField="trackingNumber" alignment="right" width="150px" cellTemplate="trackingNumberTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'trackingNumberTemplate'">
+      <app-copy-text-button *ngIf="data.value"
+                            class="small"
+                            [hexText]="data.value"
+                            [valueToCopy]="data.value"
+                            successMessage="Tracking number copied to clipboard"
+      ></app-copy-text-button>
+    </div>
+
+    <dxi-column *appShowViewCost dataField="costBasis">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+
+    <dxi-column *appShowViewCost caption="Cost Basis/{{lotUnitMeasureLabel}}" name="costBasisUoM" alignment="right" [calculateCellValue]="calculateCostBasisUoMValue">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+
+    <dxi-column dataField="purchaseDate" dataType="date"></dxi-column>
+    <dxi-column dataField="landedDate" dataType="date"></dxi-column>
+    <dxi-column dataField="custodyDate" dataType="date"></dxi-column>
+
+    <dxi-column *appShowContract dataField="inventoryType" cellTemplate="inventoryTypeTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'inventoryTypeTemplate'">
+      <mat-icon class="small-icon" color="primary">{{data.data.isContractType ? 'description' : 'monetization_on'}}</mat-icon>
+      {{data.value | stringUnderscoreToSpaceTitleCase}}
+    </div>
+
+    <dxi-column *ngIf="hasClosedBrokerContract" dataField="brokerContract.closedDate" caption="Broker Contract Conversion Date" dataType="date"></dxi-column>
+    <dxi-column *ngIf="hasClosedSupplyContract" dataField="supplyContract.closedDate" caption="Supply Contract Conversion Date" dataType="date"></dxi-column>
+
+    <dxi-column dataField="acquiredTransactionId" caption="Acquired Transaction" cellTemplate="acquiredTransactionTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'acquiredTransactionTemplate'">
+      <a href="#" (click)="goToTransaction($event, data.value)">{{data.value | shortGuid}}</a>
+    </div>
+
+    <dxi-column dataField="isAllocated" dataType="boolean" caption="Allocated" cellTemplate="allocatedTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'allocatedTemplate'">
+      {{data.value | booleanYesNo}}
+      <a *ngIf="data.value" href="#" (click)="goToTransaction($event, data.data.allocatedTransactionId)">
+        {{' - ' + (data.data.allocatedTransactionId | shortGuid)}}
+      </a>
+    </div>
+
+    <dxi-column dataField="mfgFacilityShortName" caption="Mfg Facility"></dxi-column>
+
+    <dxi-column dataField="state" cellTemplate="stateTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'stateTemplate'">
+      {{data.value | stringUnderscoreToSpaceTitleCase }}
+    </div>
+
+    <dxi-column dataField="soldTransactionId" caption="Sold Transaction" cellTemplate="soldTransactionTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'soldTransactionTemplate'">
+      <a href="#" (click)="goToTransaction($event, data.value)">{{data.value | shortGuid}}</a>
+    </div>
+
+    <dxi-column dataField="soldDate" dataType="date"></dxi-column>
+
+    <dxi-column [fixed]="true" fixedPosition="right" [allowHiding]="false" [allowReordering]="false" cellTemplate="actionsTemplate" [allowGrouping]="false" [width]="55"></dxi-column>
+    <div *dxTemplate="let item of 'actionsTemplate'">
+      <app-icon-button *ngIf="item.data.log" icon="list_alt" (clicked)="showProductLog(item.data)"></app-icon-button>
+    </div>
+
+    <dxo-summary [calculateCustomSummary]="calculateSummaries">
+      <dxi-total-item *appShowViewCost column="costBasis" summaryType="sum" [valueFormat]="{type: 'currency', precision: 2}" displayFormat="Total: {0}" cssClass="summary-item-border-right summary-item-border-left"></dxi-total-item>
+      <dxi-total-item *appShowViewCost column="costBasisUoM" summaryType="avg" [valueFormat]="{type: 'currency', precision: 2}" displayFormat="Avg: {0} / {{lotUnitMeasureLabel}}" cssClass="summary-item-border-right"></dxi-total-item>
+      <dxi-total-item showInColumn="purchaseDate" summaryType="custom" name="averagePurchaseAge" [customizeText]="customizeAvgAcquiredAgeText" cssClass="summary-item-border-right"></dxi-total-item>
+      <dxi-total-item showInColumn="landedDate" summaryType="custom" name="averageLandedAge" [customizeText]="customizeAvgLandedAgeText" cssClass="summary-item-border-right"></dxi-total-item>
+    </dxo-summary>
+
+  </dx-data-grid>
+
+  <app-table-fab *ngIf="selectedProductsIds?.length && !allDisabled"
+                 [selectedItems]="selectedProductsIds"
+                 [actions]="fabActions"
+                 (action)="onFABAction($event)"
+                 style="bottom: 80px"
+  ></app-table-fab>
+</div>

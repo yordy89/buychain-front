@@ -1,0 +1,70 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.accounting-file-upload-wrapper {
+  height: 55px;
+  position: relative;
+  margin-top: 0.25em;
+}
+
+.accounting-file-upload-file-wrapper > :not(:first-child) {
+  border-top: 1px solid #ebebeb;
+}
+
+.accounting-file-upload-outline {
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.accounting-file-upload-outline-start {
+  width: 5.5px;
+  border: 1px solid rgba(var(--palette-foreground-divider), var(--palette-foreground-divider-alpha));
+  border-radius: 5px 0 0 5px;
+  border-right-style: none;
+}
+
+.accounting-file-upload-outline-gap {
+  width: 78px;
+  border: 1px none rgba(var(--palette-foreground-divider), var(--palette-foreground-divider-alpha));
+  border-bottom-style: solid;
+}
+
+.accounting-file-upload-outline-end {
+  border: 1px solid rgba(var(--palette-foreground-divider), var(--palette-foreground-divider-alpha));
+  border-radius: 0 5px 5px 0;
+  border-left-style: none;
+  flex-grow: 1;
+}
+
+.accounting-file-upload-file {
+  color: #408ed6;
+  padding: 10px 2px;
+  cursor: pointer;
+
+  .material-icons {
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.accounting-file-upload-remove-icon {
+  color: #ff7051;
+}
+
+.accounting-file-upload-label {
+  font-size: 12px;
+  line-height: 13px;
+  position: absolute;
+  top: -6px;
+  color: rgba(var(--palette-foreground-secondary-text), var(--palette-foreground-secondary-text-alpha));
+}
+
+.accounting-file-upload-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3571;
+}

@@ -1,0 +1,148 @@
+<app-modal-base header="Add Off-Market Product" (closed)="close()">
+  <ng-container content *ngIf="isLoaded">
+
+    <div *ngIf="pageState === ViewPage.SellerForm">
+      <div class="section">
+        <form [formGroup]="sellerCRMFormGroup">
+          <div *ngIf="crmAccounts?.length; else noCrmAccounts" class="origin-section">
+            <div class="origin-section-item">
+              <div class="header">Selling Company</div>
+              <app-select-with-search [form]="crmAccount" [optionList]="crmAccounts" [displayField]="'name'"></app-select-with-search>
+            </div>
+
+            <div class="origin-section-item">
+              <div class="header">Ship From Location</div>
+              <mat-form-field>
+                <mat-select [formControl]="crmLocation" required>
+                  <mat-option *ngFor="let location of selectedAccountLocations" [value]="location">
+                    {{location.shortName}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{crmLocation?.errors | errorMessage}}</mat-error>
+                <mat-error>
+                  {{crmAccount.value && !selectedAccountLocations?.length ? 'The selected Company has no locations. Please update in CRM before continuing.' : ''}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="origin-section-item">
+              <div class="header">Selling User</div>
+              <mat-form-field>
+                <mat-select [formControl]="crmContact" required>
+                  <mat-option *ngFor="let contact of selectedAccountContacts" [value]="contact">
+                    {{contact.firstName}} {{contact.lastName}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{crmContact?.errors | errorMessage}}</mat-error>
+                <mat-error>
+                  {{crmAccount.value && !selectedAccountContacts?.length ? 'The selected Company has no locations. Please update in CRM before continuing.' : ''}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+      </div>
+      <ng-template #noCrmAccounts>
+        <span class="no-crm-accounts-text">No listed accounts in CRM. Off-market transactions must be associated with a CRM entry.</span>
+      </ng-template>
+    </div>
+
+    <div *ngIf="pageState === ViewPage.ProductForm">
+      <div class="section">
+        <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onSelectedTabChanged()">
+          <mat-tab label="Templates">
+            <app-products-templates [templates]="productsTemplates"
+                                    [crmAccounts]="crmAccounts"
+                                    [crmLocations]="crmLocations"
+                                    [crmContacts]="crmContacts"
+                                    [priceSystemOverTally]="priceSystemOverTally"
+                                    [crmLocation]="crmLocation?.value?.id"
+                                    (refreshTemplates)="onRefreshTemplates()"
+                                    (create)="onCreateFromTemplate($event)"
+            ></app-products-templates>
+          </mat-tab>
+
+          <mat-tab label="My Products">
+            <app-favorite-products
+                *ngIf="isSellerFormPopulated"
+                [favoriteProductsList]="favoriteProductsList"
+                [priceSystemOverTally]="priceSystemOverTally"
+                [selectedProductGroup]="selectedProductGroup"
+                [specsTree]="specsTree"
+                (switchTab)="switchTabToSpecsSelection()"
+                (createProduct)="onCreateProduct($event)"
+                (reloadPreferences)="loadUserProductPreferences()"
+                (productGroup)="onOpenProductSpec($event)"
+            ></app-favorite-products>
+
+            <div *ngIf="!isSellerFormPopulated" style="height: 413px">
+              <div class="no-data-plate">Please specify Ship From Facility in order to see this section.</div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Create Product">
+            <app-product-spec-selection
+                *ngIf="isSellerFormPopulated"
+                [favoriteProductsList]="favoriteProductsList"
+                [selectedProductGroup]="selectedProductGroup"
+                [specsTree]="specsTree"
+                (createProduct)="onCreateProduct($event)"
+                (reloadPreferences)="loadUserProductPreferences()"
+                (initProductSpecs)="initializeProductSpecs()"
+            ></app-product-spec-selection>
+
+            <div *ngIf="!isSellerFormPopulated" style="height: 413px">
+              <div class="no-data-plate">Please specify Ship From Facility in order to see this section.</div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
+      <div><hr></div>
+
+      <div class="section">
+        <app-tally-grid [crmAccounts]="crmAccounts"
+                        [crmLocations]="crmLocations"
+                        (templates)="onCreateTemplates($event)"
+        ></app-tally-grid>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <div class="grow-1">
+      <app-button *ngIf="pageState === ViewPage.ProductForm && sellerCRMFormGroup?.enabled"
+                  [isNarrow]="true"
+                  (clicked)="onBackToSellerForm()"
+                  class="mr-20"
+      >
+        {{sellerCRMFormGroup.valid ? 'Change Ship From' : 'Select Ship From'}}
+      </app-button>
+
+      <app-button *ngIf="pageState === ViewPage.SellerForm"
+                  [isNarrow]="true"
+                  [isPrimary]="true"
+                  [isDisabled]="!productsTemplates?.length"
+                  (clicked)="onSelectTemplates()"
+      >Select Templates</app-button>
+    </div>
+
+    <app-button [isNarrow]="true"
+                (clicked)="close()"
+    >Cancel</app-button>
+
+    <app-button *ngIf="pageState === ViewPage.SellerForm"
+                [isNarrow]="true"
+                [isDisabled]="sellerCRMFormGroup?.invalid"
+                [isPrimary]="true"
+                (clicked)="moveToProductSelection()"
+    >Next</app-button>
+
+    <app-button *ngIf="pageState === ViewPage.ProductForm"
+                [isNarrow]="true"
+                [isDisabled]="!canSubmit()"
+                [isPrimary]="true"
+                (clicked)="submit()"
+    >Submit</app-button>
+
+  </ng-container>
+</app-modal-base>

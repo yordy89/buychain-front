@@ -1,0 +1,30 @@
+.ship-to-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 30px;
+  padding-top: 20px;
+}
+
+.container-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 10px 0;
+
+  .section-notes {
+    width: 100%;
+
+    .active-hours,
+    .comments {
+      padding: 10px 20px;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      textarea {
+        resize: none;
+      }
+    }
+  }
+}

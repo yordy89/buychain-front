@@ -1,0 +1,21 @@
+<ng-container *ngIf="menuItems?.length">
+	<mat-icon (click)="onMenuOpened($event)"
+	          class="menu-btn"
+	          color="primary"
+	          [class.inactive]="disabled"
+	          [matMenuTriggerFor]="actionsMenu"
+	>more_horiz</mat-icon>
+
+	<mat-menu #actionsMenu="matMenu" yPosition="below" xPosition="before">
+		<div class="menu">
+			<button *ngFor="let item of menuItems"
+			        mat-menu-item
+			        (click)="onActionClick($event, item.item)"
+			        [disabled]="item.disabled"
+			>
+				<mat-icon *ngIf="item" [color]="item.color">{{item.icon}}</mat-icon>
+				<span [ngClass]="item.labelClasses">{{item.label}}</span>
+			</button>
+		</div>
+	</mat-menu>
+</ng-container>

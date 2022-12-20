@@ -1,0 +1,20 @@
+color-swatches {
+  .raised-bg {
+    background: rgb(var(--palette-background-dialog), 1) !important;
+  }
+
+  .swatches-overflow {
+    overflow-y: unset !important;
+  }
+}
+
+.color-picker-menu {
+  .mat-menu-content {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+
+  &.mat-menu-panel {
+    max-width: unset !important;
+  }
+}

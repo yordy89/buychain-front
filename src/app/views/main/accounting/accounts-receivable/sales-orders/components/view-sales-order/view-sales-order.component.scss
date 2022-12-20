@@ -1,0 +1,60 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+@use 'variables' as *;
+
+.chart-container {
+  border: 1px solid lightgray;
+  padding: 20px;
+  max-width: 700px;
+
+  .charts-content {
+    display: flex;
+  }
+
+  dx-chart {
+    width: 220px;
+  }
+}
+
+.chart-title {
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.chart-legends {
+  margin-right: 20px;
+}
+
+.lines-container {
+  background: #fff;
+  padding: 15px 16px 0;
+  margin-bottom: 25px;
+  transform: translateX(-16px);
+  width: calc(100% + 42px);
+
+  @include mat_css_dark-theme {
+    background-color: #424242;
+  }
+
+  .lines-list {
+    margin-bottom: 15px;
+  }
+
+  .bottom-info-row {
+    padding: 5px 0 10px;
+
+    .mat-divider {
+      position: static;
+    }
+
+    > .flex-col {
+      margin: 0;
+    }
+  }
+}
+
+.view-sales-order-attachment {
+  color: #408ed6;
+  padding: 10px 2px;
+  cursor: pointer;
+}

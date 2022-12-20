@@ -1,0 +1,37 @@
+<div class="container-wrapper">
+
+  <app-table-base *ngIf="facilityPersonnel?.length; else NoPersonnel"
+                  class="striped"
+                  maxBodyHeight="170px"
+  >
+    <ng-container header>
+      <tr class="header">
+        <th class="name">Name</th>
+        <th class="description">Description</th>
+        <th *ngIf="!disabled && userPermission.canDeletePersonnel"></th>
+      </tr>
+    </ng-container>
+
+    <ng-container body>
+      <tr *ngFor="let member of facilityPersonnel">
+        <td>{{member.name}}</td>
+        <td>{{member.description}}</td>
+        <td *ngIf="!disabled && userPermission.canDeletePersonnel">
+          <app-table-actions [data]="member"
+                             [actions]="actions"
+                             (action)="onTableAction($event, member)"
+          ></app-table-actions>
+        </td>
+      </tr>
+    </ng-container>
+  </app-table-base>
+
+  <ng-template #NoPersonnel>
+    <div class="no-data">The department does not have personnel yet</div>
+  </ng-template>
+
+  <div class="pt-20 d-flex justify-content-flex-end">
+    <app-button *ngIf="!disabled" [isNarrow]="true" (clicked)="addPersonnel()">Add</app-button>
+  </div>
+
+</div>

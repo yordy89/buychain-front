@@ -1,0 +1,51 @@
+.number-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+
+  input {
+    width: 50px;
+    height: 20px;
+    text-align: center;
+    border: 1px solid rgba(var(--palette-primary-100), 1);
+    border-radius: 4px;
+    color: rgba(var(--palette-primary-900), 1);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .input-wrap {
+    position: relative;
+
+    &.prefix-dollar {
+      input {
+        width: 70px;
+        padding-left: 20px;
+      }
+
+      &::before {
+        content: '\$';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 24px;
+        width: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        color: rgba(var(--palette-primary-900), 0.2);
+      }
+    }
+  }
+}
+
+.updating {
+  color: rgba(var(--palette-accent-900), 1) !important;
+}
+
+.invalid {
+  border: 2px solid rgba(var(--palette-warn-500), 1) !important;
+  outline: none !important;
+}

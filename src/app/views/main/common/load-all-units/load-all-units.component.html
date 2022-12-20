@@ -1,0 +1,25 @@
+<div class="d-flex" *ngIf="!completed">
+  <div class="description-section">
+    <div *ngIf="isLoading" class="d-flex">
+      <div class="progress-text">Loading {{(loadedChunksCount / allChunksCount * 100) | number : '1.0-0' }} %</div>
+      <dx-progress-bar
+        class="progress-bar"
+        [min]="offset / 100"
+        [max]="allChunksCount"
+        [showStatus]="false"
+        [value]="loadedChunksCount">
+      </dx-progress-bar>
+    </div>
+    <div class="progress-text" *ngIf="!isLoading && !completed && !loadedUnits.length">
+      {{offset}} out of {{totalUnitsCount}} {{type === PageType.Inventory ? 'lots' : type === PageType.Orders ? 'transactions' : 'products'}} have loaded.
+    </div>
+  </div>
+  <div class="action-buttons" *ngIf="!isLoading && !completed && !loadedUnits.length">
+    <dx-button stylingMode="contained"
+               type="default"
+               text="Load All"
+               icon="download"
+               (onClick)="loadAllRemaining()">
+    </dx-button> |
+  </div>
+</div>

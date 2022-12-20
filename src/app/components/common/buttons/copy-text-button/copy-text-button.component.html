@@ -1,0 +1,6 @@
+<span [matTooltipDisabled]="!isFullText"
+      [matTooltip]="text"
+      [class.is-text]="!isFullText"
+      matTooltipClass="small-tooltip"
+>{{label}}</span>
+<app-icon-button icon="content_copy" (clicked)="onCopyToClipboard($event)"></app-icon-button>

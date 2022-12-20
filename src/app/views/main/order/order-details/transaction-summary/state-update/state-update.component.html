@@ -1,0 +1,77 @@
+<div class="state-transition-wrapper" *ngIf="transactionData">
+  <!--draft state-->
+  <app-button *ngIf="canUpdateState && transactionData.state === TransactionStateEnum.Draft"
+    [isDisabled]="!transitionToQuoteStateAllowed" [isPrimary]="true" [matTooltip]="draftStateTooltip"
+    matTooltipPosition="above" (clicked)="goToQuoteState()">Move to Quote
+  </app-button>
+
+  <!--quote state-->
+  <div *ngIf="transactionData.state === TransactionStateEnum.Quote" class="quote-state-wrapper">
+    <div class="state-description-section" *ngIf="transitionToReviewStateAllowed && canUpdateState">
+      Click Approve to move the Quote to Review.
+    </div>
+    <div class="actions">
+      <app-button *ngIf="canUpdateState"
+        [isDisabled]="!transitionToReviewStateAllowed" [isPrimary]="true"
+        [matTooltip]="quoteStateTooltip" matTooltipPosition="above" (clicked)="goToReviewState()">Approve
+      </app-button>
+    </div>
+  </div>
+
+  <!--review state-->
+  <div *ngIf="transactionData.state === TransactionStateEnum.Review" class="review-state-wrapper">
+    <div class="state-description-section" *ngIf="canUpdateStateReview">Please review this transaction and Confirm or Reject.</div>
+    <div class="actions">
+      <app-button [isPrimary]="true" (clicked)="openFinanceReview()">
+        Review {{transactionData.role === RoleInTransaction.Seller ? 'Customer' : 'Supplier'}} Finance Info
+      </app-button>
+      <app-button *ngIf="canUpdateStateReview" [isPrimary]="true" (clicked)="goBackToQuoteState()">Reject/Return to Quote</app-button>
+      <app-button *ngIf="canUpdateStateReview"
+                  [matTooltip]="reviewStateTooltip"
+                  matTooltipPosition="above"
+                  [isDisabled]="!transitionToConfirmedStateAllowed"
+                  [isPrimary]="true"
+                  (clicked)="goToConfirmState()"
+      >Approve</app-button>
+    </div>
+  </div>
+
+  <!--confirmed state-->
+  <div *ngIf="transactionData.state === TransactionStateEnum.Confirmed && canUpdateState" class="confirmed-state-wrapper">
+    <div class="state-description-section">Move the transaction to "In-Transit" once product has been shipped.</div>
+    <div class="actions">
+      <app-button [isPrimary]="true"
+                  [isDisabled]="!transitionToInTransitStateAllowed"
+                  [matTooltip]="confirmedStateTooltip"
+                  matTooltipPosition="above"
+                  (clicked)="goToInTransitState()">Move to In Transit
+      </app-button>
+      <app-button (clicked)="goToChangePending()">Edit</app-button>
+    </div>
+  </div>
+
+  <!--change pending state-->
+  <div *ngIf="transactionData.state === TransactionStateEnum.ChangePending" class="change-pending-state-wrapper">
+    <div class="warning-message">
+      <p *ngIf="transactionData.changePending?.type === ChangeTransactionTypesEnum.ModifyTransport">
+        Transaction Transportation has been modified. Review and click "Accept" to approve the changes <br>
+        OR "Reject" to return the Transaction to previous state without modifications.
+      </p>
+    </div>
+    <div class="actions">
+      <app-button [isPrimary]="true" *ngIf="canUpdateState" (clicked)="changePendingAccept()">Accept
+      </app-button>
+      <app-button [isPrimary]="true" *ngIf="canUpdateState" (clicked)="changePendingReject()">Reject
+      </app-button>
+    </div>
+  </div>
+
+
+  <!--in transit state-->
+  <div *ngIf="transactionData.state === TransactionStateEnum.InTransit && canUpdateState" class="in-transit-state-wrapper">
+    <div class="actions">
+      <app-button (clicked)="goToChangePending()">Edit</app-button>
+    </div>
+  </div>
+
+</div>

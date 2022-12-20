@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  width: 100%;
+
+  &::after {
+    content: '';
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+}
+
+.charts-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  column-gap: 30px;
+}
+
+.chart-container {
+  flex-basis: 0;
+  flex-grow: 1;
+}
+
+.chart-legends {
+  min-width: 245px;
+  margin-left: 10px;
+}
+
+.chart {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 48px;
+}
+
+.chart-title {
+  text-align: center;
+  font-weight: 700;
+  line-height: 23px;
+}

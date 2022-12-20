@@ -1,0 +1,50 @@
+<form [formGroup]="form" (keydown.enter)="onEnter($event)" class="address-form">
+	<div class="flex-row">
+    <app-autocomplete
+      [data]="countryList"
+      [isRequired]="isRequired || countryRequired"
+      label="Select Country"
+      formControlName="country"
+      keyName="name"
+      placeholder="Country"
+      class="flex-col"
+      [emptyValue]="null"
+    ></app-autocomplete>
+
+		<app-autocomplete
+      [data]="states"
+      [isRequired]="isRequired || stateRequired"
+      label="Select State"
+      formControlName="state"
+      keyName='name'
+      placeholder="State"
+      class="flex-col"
+      [emptyValue]="null"
+    ></app-autocomplete>
+	</div>
+
+	<div class="flex-row">
+    <app-autocomplete
+      [data]="cities"
+      [isRequired]="isRequired || cityRequired"
+      [isCustomAllowed]="true"
+      label="Select City"
+      formControlName="city"
+      keyName="name"
+      placeholder="City"
+      class="flex-col"
+      [emptyValue]="null"
+    ></app-autocomplete>
+
+    <app-autocomplete
+      [data]="zipCodes"
+      [isRequired]="isRequired || zipCodeRequired"
+      [isCustomAllowed]="true"
+      label="Select Zip Code"
+      formControlName="zipCode"
+      placeholder="Zip Code"
+      class="flex-col"
+      [emptyValue]="null"
+    ></app-autocomplete>
+	</div>
+</form>

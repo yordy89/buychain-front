@@ -1,0 +1,60 @@
+<div class="groups-wrapper">
+
+  <div *ngIf="groupsCompleteList?.length" class="show-inactive-slider">
+    <mat-slide-toggle
+      labelPosition="before"
+      color="primary"
+      class="text-secondary"
+      (change)="showInactiveSwitch($event)"
+    >Show Archived</mat-slide-toggle>
+  </div>
+
+  <dx-tree-list
+    class="tree-list"
+    *ngIf="groupsList?.length; else NoGroups"
+    [dataSource]="groupsList"
+    keyExpr="id"
+    parentIdExpr="parent"
+    [columnAutoWidth]="true"
+    [wordWrapEnabled]="true"
+    [allowColumnResizing]="true"
+    columnResizingMode="widget"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    [columnHidingEnabled]="true"
+    [hoverStateEnabled]="true"
+    [showColumnLines]="true"
+    [showRowLines]="false"
+    [autoExpandAll]="true"
+    [showBorders]="false">
+
+    <dxi-column dataField="name"></dxi-column>
+    <dxi-column dataField="description" [minWidth]="200"></dxi-column>
+    <dxi-column dataField="updatedAt" caption="Last Modified" dataType="date"></dxi-column>
+    <dxi-column cellTemplate="actionsTemplate" [width]="40"></dxi-column>
+    <div *dxTemplate="let item of 'actionsTemplate'">
+      <app-table-actions *ngIf="item.data && !item.data.archived"
+                         [data]="item.data"
+                         [actions]="actions"
+                         (action)="onTableAction($event, item.data)"
+      ></app-table-actions>
+    </div>
+  </dx-tree-list>
+
+  <ng-template #NoGroups>
+    <div *ngIf="userPermissions.canRead; else NoPermissions">
+      <div class="no-data-plate">
+        <h3>Company Does not have any groups yet</h3>
+        <h4 *ngIf="userPermissions.canCreate">You can add a new group using the button below</h4>
+      </div>
+    </div>
+
+    <ng-template #NoPermissions>
+      <div class="no-data-plate">You do not have enough permissions for this section</div>
+    </ng-template>
+  </ng-template>
+
+  <mat-action-row *ngIf="userPermissions.canCreate">
+    <app-button (clicked)="createGroup()">Add a new Group</app-button>
+  </mat-action-row>
+</div>

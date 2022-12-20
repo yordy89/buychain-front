@@ -1,0 +1,73 @@
+<app-modal-base header="Add Group" (closed)="close()">
+  <ng-container content>
+    <div [formGroup]="formGroup">
+      <div class="flex-row">
+        <div class="image-section">
+          <app-image-upload
+              class="image-control"
+              [imageResourceType]="ImageResourceType.Logo"
+              [formControl]="imageUrl"
+              [name]="'G'"
+              label='Select an Image'
+              description='*Maximum file size 2MB. PNG, JPG accepted'>
+          </app-image-upload>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Name</mat-label>
+          <input matInput appNullOnEmpty placeholder="Account Name" required [formControl]="name" type="text">
+          <mat-error>{{name?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Manager</mat-label>
+          <mat-select [formControl]="manager">
+            <mat-option *ngFor="let member of companyMembers" [value]="member.id">
+              {{member.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Description</mat-label>
+          <textarea rows="3" matInput appNullOnEmpty placeholder="Description" [formControl]="description" type="text"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Accounting Contact</mat-label>
+          <mat-select [formControl]="accountingContact">
+            <mat-option *ngFor="let member of companyMembers" [value]="member.id">
+              {{member.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <app-tree-selector
+          class="flex-col"
+          [control]="parent"
+          label="Parent"
+          [allowClear]="true"
+          appearance="outline"
+          keyExpr="id"
+          parentExpr="parent"
+          displayKey="name"
+          [nullValue]="''"
+          nullExpression="Global"
+          [treeListData]="groupsList">
+        </app-tree-selector>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="createGroup()">Submit</app-button>
+  </ng-container>
+</app-modal-base>

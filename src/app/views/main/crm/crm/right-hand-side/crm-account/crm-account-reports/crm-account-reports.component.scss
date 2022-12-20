@@ -1,0 +1,41 @@
+.wrapper {
+  .general-summary-wrapper {
+    display: flex;
+
+    .summary-section {
+      width: 48%;
+      margin: 1%;
+
+      .unit {
+        padding: 10px 0;
+
+        .label {
+          width: 60%;
+        }
+
+        .value {
+          width: 40%;
+        }
+      }
+    }
+  }
+
+  .charts-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+
+    .chart-container {
+      background-color: rgb(var(--palette-background-dialog), 1);
+      margin: 10px 5px;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    &.is-expanded {
+      .chart-container {
+        width: calc(50% - 10px) !important;
+      }
+    }
+  }
+}

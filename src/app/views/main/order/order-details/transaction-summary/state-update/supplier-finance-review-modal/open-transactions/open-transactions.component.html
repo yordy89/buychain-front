@@ -1,0 +1,48 @@
+<div class="open-tx-table-container">
+  <div class="section-header">Open Transactions</div><hr>
+  <div>
+    <dx-data-grid
+      id="transactionGridContainer"
+      class="open-transactions-grid"
+      [dataSource]="transactionsList"
+      [showBorders]="true"
+      [remoteOperations]="false"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [columnAutoWidth]="true"
+      [allowColumnReordering]="true"
+      [rowAlternationEnabled]="true"
+      [columnHidingEnabled]="true"
+      [hoverStateEnabled]="true"
+      (onExporting)="onExporting($event)"
+    >
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxo-search-panel [visible]="true"></dxo-search-panel>
+      <dxo-load-panel [enabled]="true"></dxo-load-panel>
+      <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+      <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+      <dxo-group-panel [visible]="true"></dxo-group-panel>
+
+      <dxi-column dataField="transactionNumber" [width]="150" [allowGrouping]="false"></dxi-column>
+      <dxi-column dataField="tally.contentDescription" caption="Description" [allowGrouping]="false" cssClass="width-restriction"></dxi-column>
+
+      <dxi-column dataField="confirmedDate" dataType="date" [allowGrouping]="false"></dxi-column>
+      <dxi-column dataField="inTransitDate" dataType="date" [allowGrouping]="false"></dxi-column>
+      <dxi-column dataField="state"></dxi-column>
+      <dxi-column dataField="type"></dxi-column>
+      <dxi-column dataField="totalPrice" [allowGrouping]="false" format="currency"></dxi-column>
+
+      <dxi-column [allowHiding]="false" cellTemplate="actionsTemplate" [allowGrouping]="false" [width]="40"></dxi-column>
+      <div *dxTemplate="let item of 'actionsTemplate'">
+        <app-table-actions *ngIf="item.data"
+                           [data]="item.data"
+                           [actions]="actions"
+                           (action)="onTableAction($event, item.data)"
+        ></app-table-actions>
+      </div>
+    </dx-data-grid>
+  </div>
+</div>

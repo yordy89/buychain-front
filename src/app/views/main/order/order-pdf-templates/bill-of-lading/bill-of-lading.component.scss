@@ -1,0 +1,92 @@
+.order-details-header {
+  .second-line {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  .first-bottom-line {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    /* stylelint-disable no-descending-specificity */
+    > div {
+      border: 2px solid black;
+      border-top: 0;
+      border-right: 0;
+      padding: 2px 3px;
+
+      &:last-child {
+        border-right: 2px solid black;
+      }
+    }
+
+    /* stylelint-enable no-descending-specificity */
+  }
+
+  .third-bottom-line {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+
+    /* stylelint-disable no-descending-specificity */
+    > div {
+      border: 2px solid black;
+      border-top: 0;
+      border-right: 0;
+      padding: 2px 3px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      &:last-child {
+        border-right: 2px solid black;
+      }
+
+      app-label-value {
+        margin-right: 20%;
+      }
+    }
+
+    /* stylelint-enable no-descending-specificity */
+  }
+
+  .second-bottom-line {
+    display: flex;
+    justify-content: stretch;
+    border: 2px solid black;
+    padding: 2px 3px;
+  }
+}
+
+.sub-totals {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+
+.shipping-notes-section {
+  margin-top: 10px;
+
+  /* stylelint-disable no-descending-specificity */
+  > div {
+    border: 2px solid black;
+    padding: 10px;
+  }
+
+  /* stylelint-enable no-descending-specificity */
+
+  .header {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .row {
+    padding: 0 20px;
+  }
+
+  .section {
+    .header {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+  }
+}

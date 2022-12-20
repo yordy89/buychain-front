@@ -1,0 +1,18 @@
+<app-modal-base header="Select Rail Carrier">
+	<ng-container content>
+    <form [formGroup]="form">
+      <app-select-with-search
+        [form]="railCarrier"
+        [label]="'Select rail carrier'"
+        [appearance]="'outline'"
+        [optionList]="carriersList"
+        [displayField]="'nameWithAbbreviation'">
+      </app-select-with-search>
+    </form>
+	</ng-container>
+
+	<ng-container actions>
+		<app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+		<app-button [isNarrow]="true" [isPrimary]="true" (clicked)="addRailCarrier()">Add</app-button>
+	</ng-container>
+</app-modal-base>

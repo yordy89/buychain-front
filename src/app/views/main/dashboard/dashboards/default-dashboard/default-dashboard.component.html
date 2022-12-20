@@ -1,0 +1,55 @@
+<div [ngStyle]="{'visibility': isSelectedRealData ? 'visible' : 'hidden'}" class="d-flex justify-content-center">{{lastUpdatedTimeString}}&nbsp;
+  <span class="link text-primary" (click)="onLoadFreshData()">Reload Data</span>
+</div>
+
+<div class="wrapper">
+  <div class="top-actions">
+
+    <mat-button-toggle-group  appearance="legacy" [(value)]="selectedCountryView" #group="matButtonToggleGroup">
+      <mat-button-toggle value="usa">USA</mat-button-toggle>
+      <mat-button-toggle value="usa,canada">USA + Canada</mat-button-toggle>
+      <mat-button-toggle value="world">World</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-button-toggle-group *ngIf="isSelectedRealData"
+                             appearance="legacy"
+                             [(ngModel)]="selectedDateRange"
+                             (ngModelChange)="onRangeChange()"
+    >
+      <mat-button-toggle value="lastWeek">Week</mat-button-toggle>
+      <mat-button-toggle value="lastMonth">Month</mat-button-toggle>
+    </mat-button-toggle-group>
+
+  </div>
+
+  <dx-vector-map
+    [center]="center"
+    [zoomFactor]="zoomFactor">
+    <dxo-tooltip [enabled]="true" [customizeTooltip]="customizeText" [zIndex]="5000"></dxo-tooltip>
+    <dxo-background color="transparent" borderColor="#EBECF0"></dxo-background>
+    <ng-container *ngFor="let layer of layers">
+      <dxi-layer *ngIf="layer.isVisible" [dataSource]="layer.mapData">
+      </dxi-layer>
+    </ng-container>
+    <dxi-layer
+      [dataSource]="markers"
+      [minSize]="bubbleSizeMin"
+      [maxSize]="bubbleSizeMax"
+      [opacity]="0.6"
+      name="bubbles"
+      elementType="bubble"
+      dataField="value"
+      colorGroupingField="productGroup"
+      [customize]="customizeBubbles">
+    </dxi-layer>
+    <dxo-size [height]="500" [width]="mapWidth"></dxo-size>
+  </dx-vector-map>
+
+
+  <div class="legends">
+    <div *ngFor="let group of productGroups" class="item">
+      <div class="marker" [ngStyle]="{'background-color': group.color }"></div>
+      <div class="name">{{group.name}}</div>
+    </div>
+  </div>
+</div>

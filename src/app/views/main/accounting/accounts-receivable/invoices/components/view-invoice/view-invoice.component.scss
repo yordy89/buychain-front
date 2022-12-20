@@ -1,0 +1,44 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.view-invoice-location-wrapper {
+  border-left: 1px solid #408ed6;
+  border-right: 1px solid #408ed6;
+  border-bottom: 1px solid #408ed6;
+  min-height: 150px;
+}
+
+.view-invoice-location-header {
+  background-color: rgba(var(--palette-primary-100), 0.35);
+  height: 40px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  border-top: solid 1px #408ed6;
+  border-bottom: solid 1px #408ed6;
+
+  mat-icon {
+    cursor: pointer;
+  }
+}
+
+.view-invoice-location {
+  padding: 14px;
+}
+
+.lines-data-grid-header {
+  height: 48px;
+  padding: 0 5px 5px;
+  display: flex;
+  align-items: center;
+
+  h4 {
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+[hidden] {
+  display: none;
+}

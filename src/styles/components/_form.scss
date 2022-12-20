@@ -1,0 +1,243 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.mat-form-field-disabled {
+  .mat-select-arrow-wrapper {
+    visibility: hidden;
+  }
+
+  &.mat-form-field-appearance-outline {
+    .mat-form-field-outline-start,
+    .mat-form-field-outline-gap,
+    .mat-form-field-outline-end {
+      background: rgba(#424242, 0.03);
+
+      @include mat_css-dark-theme-global {
+        background: rgba(#fff, 0.03);
+      }
+    }
+  }
+
+  &.mat-menu-trigger {
+    pointer-events: none;
+  }
+}
+
+.mat-form-field {
+  &:not(.no-padding) {
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+
+      .mat-form-field-underline {
+        position: static;
+        display: block;
+        margin-top: -1px;
+      }
+
+      .mat-form-field-subscript-wrapper,
+      .mat-form-field-ripple {
+        position: static;
+        display: table;
+      }
+
+      .mat-form-field-subscript-wrapper {
+        min-height: calc(1em + 1px);
+      }
+    }
+  }
+
+  &.no-padding {
+    .mat-form-field-wrapper {
+      padding: 0;
+    }
+  }
+
+  &.flex-col #{&}-infix,
+  &.field-width-auto #{&}-infix {
+    width: auto;
+  }
+
+  &.badge-select {
+    .mat-select {
+      height: 15px;
+    }
+
+    .mat-select-trigger {
+      margin-top: -4px;
+    }
+  }
+
+  &.small {
+    .mat-form-field-infix {
+      padding: 6px 0;
+    }
+  }
+
+  &.top-border-0 {
+    .mat-form-field-infix {
+      border-top: 0;
+    }
+  }
+}
+
+.mat-form-field:not(.mat-form-field-disabled) {
+  &.white-field-bg {
+    .mat-form-field-outline {
+      > div {
+        background-color: #fff;
+
+        @include mat_css-dark-theme-global {
+          background-color: #424242;
+        }
+      }
+    }
+
+    &.search-input {
+      background-color: #fff;
+
+      @include mat_css-dark-theme-global {
+        background-color: #424242;
+      }
+    }
+  }
+}
+
+.white-field-bg {
+  .mat-form-field:not(.mat-form-field-disabled) {
+    .mat-form-field-outline {
+      > div {
+        background-color: #fff;
+
+        @include mat_css-dark-theme-global {
+          background-color: #424242;
+        }
+      }
+    }
+  }
+}
+
+.flex-row {
+  &.form-field-width-auto {
+    .flex-col {
+      .mat-form-field {
+        &-infix {
+          width: auto;
+        }
+      }
+    }
+  }
+}
+
+/* stylelint-disable no-descending-specificity */
+app-in-place-editor {
+  .value-form {
+    .mat-form-field-infix {
+      width: 100px;
+      display: flex;
+      border-top: 0;
+    }
+  }
+}
+
+/* stylelint-enable no-descending-specificity */
+
+.mat-radio-button {
+  &.with-arrow-icon {
+    .mat-radio-label-content {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.mat-checkbox {
+  &.with-arrow-icon {
+    .mat-checkbox-layout {
+      display: flex;
+      align-items: center;
+    }
+
+    .mat-checkbox-inner-container {
+      margin: unset;
+      margin-right: 8px;
+    }
+
+    .mat-checkbox-label {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.small-control {
+  &.mat-select,
+  &.mat-input-element {
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid rgba(var(--palette-primary-100), 1);
+    border-radius: 4px;
+    padding: 1px 5px;
+    min-height: 24px;
+
+    &:disabled {
+      background: rgba(#424242, 0.03);
+
+      @include mat_css-dark-theme-global {
+        background: rgba(#fff, 0.03);
+      }
+    }
+  }
+}
+
+.small-control-container {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 15px;
+  position: relative;
+
+  .mat-error {
+    font-size: 75%;
+    position: absolute;
+    bottom: 3px;
+  }
+
+  &.static-error {
+    margin-top: 5px;
+    padding-bottom: 5px;
+
+    .mat-error {
+      position: static;
+      white-space: normal;
+      text-align: center;
+      line-height: 1;
+    }
+  }
+
+  textarea.mat-input-element {
+    overflow: hidden;
+  }
+
+  .mat-datepicker-toggle {
+    .mat-icon-button {
+      height: 20px;
+      line-height: 20px;
+      width: 30px;
+    }
+
+    .mat-datepicker-toggle-default-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.mat-select-panel-wrap {
+  .visible-selected-value {
+    margin-top: 30px;
+  }
+}

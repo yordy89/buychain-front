@@ -1,0 +1,83 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.mat-button,
+.mat-raised-button {
+  font-weight: 400 !important;
+}
+
+.mat-icon-button {
+  &.clear {
+    .mat-icon {
+      @include mat_css-light-theme-global {
+        color: dimgray;
+      }
+    }
+  }
+}
+
+.copy-text-button {
+  position: relative;
+  padding-right: 35px;
+
+  app-icon-button {
+    position: absolute;
+    top: -6px;
+
+    .mat-icon-button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      margin-left: 5px;
+    }
+  }
+
+  &.small {
+    app-icon-button {
+      .mat-icon {
+        height: 20px;
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+  }
+}
+
+.fab-container {
+  position: relative;
+
+  .table-fab {
+    position: absolute;
+    right: 65px;
+    bottom: 30px;
+    z-index: 2;
+  }
+}
+
+.link-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dx-button-mode-contained.dx-button-default {
+  background-color: rgba(var(--palette-primary-500), 1);
+  border-color: rgba(var(--palette-primary-500), 1);
+
+  &.dx-state-hover {
+    background-color: rgba(var(--palette-primary-600), 1);
+    border-color: rgba(var(--palette-primary-600), 1);
+  }
+
+  &.dx-state-active {
+    background-color: rgba(var(--palette-primary-600), 1);
+    border-color: rgba(var(--palette-primary-600), 1);
+  }
+
+  &.dx-state-focused {
+    background-color: rgba(var(--palette-primary-600), 1);
+    border-color: rgba(var(--palette-primary-600), 1);
+  }
+}

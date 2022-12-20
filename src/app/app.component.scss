@@ -1,0 +1,11 @@
+.fade-me {
+  &.full-mode {
+    left: 170px;
+    width: calc(100% - 170px);
+  }
+
+  &.icon-mode {
+    left: 80px;
+    width: calc(100% - 80px);
+  }
+}

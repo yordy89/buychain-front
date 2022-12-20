@@ -1,0 +1,23 @@
+<app-modal-base header="Please confirm that You want to delete the order"
+                (closed)="reject()"
+>
+  <ng-container content>
+    <p>You are about to permanently delete the order {{data?.id}}. IF you delete this order it will no longer be retrievable.
+      Additionally all transactions and their all notes, chat logs and milestones including attached documents will also be deleted.
+      If any of this information is important please click cancel and back it up manually now.
+      Otherwise, please type "delete" in the input below and confirm.
+    </p>
+
+    <form [formGroup]="formGroup">
+      <mat-form-field appearance="outline">
+        <input matInput required [formControl]="confirmDelete">
+        <mat-error>{{confirmDelete?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="reject()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="confirm()">Confirm</app-button>
+  </ng-container>
+</app-modal-base>

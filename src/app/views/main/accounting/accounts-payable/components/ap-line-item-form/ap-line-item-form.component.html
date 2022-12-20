@@ -1,0 +1,33 @@
+<form *ngIf="!editMode || editMode && lineItemData" [formGroup]="form" novalidate>
+  <div class="flex-row">
+    <div class="flex-col">
+      <app-autocomplete label="Account"
+                        [data]="accounts"
+                        [isRequired]="true"
+                        panelWidth="auto"
+                        formControlName="account"
+                        keyName="id"
+                        displayName="numberAndName"
+                        placeholder="Account"
+      ></app-autocomplete>
+    </div>
+
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Quantity</mat-label>
+      <input matInput placeholder="Quantity" formControlName="quantity" type="number" required>
+      <mat-error>{{form.get('quantity').errors | errorMessage}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Amount</mat-label>
+      <input matInput placeholder="Amount" formControlName="amount" currencyMask required>
+      <mat-error>{{form.get('amount')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Description</mat-label>
+    <textarea rows="4" matInput placeholder="Description" formControlName="description" appNullOnEmpty required></textarea>
+    <mat-error>{{form.get('description')?.errors | errorMessage}}</mat-error>
+  </mat-form-field>
+</form>

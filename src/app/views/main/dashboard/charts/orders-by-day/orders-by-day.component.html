@@ -1,0 +1,62 @@
+<div class="wrapper">
+  <div class="top-actions">
+    <mat-button-toggle-group [ngModel]="selectedDateRange"
+                             (ngModelChange)="onRangeChange($event)"
+                             [ngStyle]="{'visibility': isSelectedRealData ? 'visible' : 'hidden'}"
+    >
+      <mat-button-toggle value="lastWeek">Week</mat-button-toggle>
+      <mat-button-toggle value="lastMonth">Month</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class="chart" #chartContainer>
+    <div class="indicators">
+      <div class="indicator">
+        <div class="icon">
+          <mat-icon aria-hidden="false" aria-label="todays orders icon">assignment</mat-icon>
+        </div>
+        <div>
+          <div class="caption">Today's Orders</div>
+          <div class="value">{{todaysOrdersCount}}</div>
+        </div>
+      </div>
+      <div class="d-flex">
+        <div class="indicator">
+          <div class="marker marker-blue"></div>
+          <div>
+            <div class="caption">Quotes</div>
+            <div class="value">{{quotesCount}}</div>
+          </div>
+        </div>
+        <div class="indicator">
+          <div class="marker marker-orange"></div>
+          <div>
+            <div class="caption">Sales Orders</div>
+            <div class="value">{{salesCount}}</div>
+          </div>
+        </div>
+        </div>
+      </div>
+    <dx-chart [dataSource]="data" resolveLabelOverlapping="stack">
+      <dxo-argument-axis [tickInterval]="1" [minorTickInterval]="1" argumentType="string">
+        <dxo-label [customizeText]="customizeArgumentAxisText"></dxo-label>
+      </dxo-argument-axis>
+      <dxi-value-axis [tickInterval]="10000">
+        <dxi-constant-line [value]="avgOrdersPerDay" [label]="avgLabel"></dxi-constant-line>
+        <dxo-label [visible]="false"></dxo-label>
+        <dxo-tick [visible]="false"></dxo-tick>
+      </dxi-value-axis>
+      <dxi-series argumentField="date" valueField="quoteCount" type="bar">
+        <dxo-label [visible]="true" [backgroundColor]="'transparent'">
+          <dxo-font [color]="'var(--text-1)'"></dxo-font>
+        </dxo-label>
+      </dxi-series>
+      <dxi-series argumentField="date" valueField="confirmedCount" type="bar" color="orange">
+        <dxo-label [visible]="true" [backgroundColor]="'transparent'">
+          <dxo-font [color]="'var(--text-1)'"></dxo-font>
+        </dxo-label>
+      </dxi-series>
+      <dxo-legend [visible]="false"></dxo-legend>
+      <dxo-size [height]="270" [width]="chartWidth"></dxo-size>
+    </dx-chart>
+  </div>
+</div>

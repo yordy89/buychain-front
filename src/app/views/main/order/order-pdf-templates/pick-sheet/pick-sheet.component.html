@@ -1,0 +1,136 @@
+<div class="main-wrapper">
+  <div class="content">
+
+    <div class="d-flex-between">
+      <app-company-info [company]="sellerCompany"></app-company-info>
+      <div class="order-numbers">
+        <app-header-with-number header="PICK TICKET" [number]="pickTicket.transactionNumber">
+        </app-header-with-number>
+        <div class="accounts">
+          <div class="headers">
+          </div>
+          <div class="values">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="buyer-info">
+      <app-address
+        [Address1Header]="'SHIP TO'"
+        [Address2Header]="'BILL TO'"
+        [Location1]="shipToLocation"
+        [Contact1]="shipToContact"
+        [Location2]="billToLocation"
+        [Contact2]="billToContact">
+      </app-address>
+    </div>
+
+    <div class="details-table-section">
+      <div class="order-details-header">
+        <div class="first-line">
+          <div class="in-line-value">
+            <app-label-value label="PO">{{pickTicket.purchaseOrderNumber}}</app-label-value>
+          </div>
+        </div>
+        <div class="second-line">
+          <div>
+            <app-label-value label="ORDER DATE">{{pickTicket.confirmedDate | date}}</app-label-value>
+            <app-label-value label="ORDER TIME">{{pickTicket.confirmedDate | date:'shortTime'}}</app-label-value>
+            <app-label-value label="SHIP DATE">{{pickTicket.shipDate | date}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="SALES">{{pickTicket.sellerName}}</app-label-value>
+          </div>
+          <div>
+            <app-label-value label="TYPE">{{pickTicket.market}}</app-label-value>
+            <app-label-value label="ORDERED BY">{{pickTicket.buyerName}}</app-label-value>
+          </div>
+          <div class="d-flex-between">
+            <div class="value-group">
+              <app-label-value label="FRT TERM">{{pickTicket.trackingData.transportTerm | stringUnderscoreToSpaceTitleCase}}</app-label-value>
+            </div>
+            <div class="value-group">
+              <app-label-value label="SHIP VIA">{{pickTicket.transportType}}</app-label-value>
+              <app-label-value label="CUST SO">{{pickTicket.trackingData.salesOrderNumber}}</app-label-value>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="tally-units-table">
+        <thead>
+          <th>QTY ORDERED</th>
+          <th>QTY SHIPPED</th>
+          <th class="text-left">ITEM/DESCRIPTION</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let unit of pickTicket.availableTallyUnits">
+            <td>{{unit.qty}}</td>
+            <td></td>
+            <td class="text-left">{{unit.specShorthand}}</td>
+          </tr>
+          <tr class="spacer-row" [style.height.px]="spacerRowHeight()">
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="third-bottom-line">
+      <div class="line-cell">
+        <app-label-value label="PICKED BY"></app-label-value>
+      </div>
+      <div class="line-cell">
+        <app-label-value label="DATE"></app-label-value>
+      </div>
+    </div>
+
+    <div class="third-bottom-line">
+      <div class="line-cell">
+        <app-label-value label="LOADED BY"></app-label-value>
+      </div>
+      <div class="line-cell">
+        <app-label-value label="DATE"></app-label-value>
+      </div>
+    </div>
+
+    <div class="third-bottom-line">
+      <div class="line-cell">
+        <app-label-value label="CHECKED BY"></app-label-value>
+      </div>
+      <div class="line-cell">
+        <app-label-value label="DATE"></app-label-value>
+      </div>
+    </div>
+
+    <div class="third-bottom-line">
+      <div class="line-cell">
+        <app-label-value label="RECEIVED BY"></app-label-value>
+      </div>
+      <div class="line-cell">
+        <app-label-value label="DATE"></app-label-value>
+      </div>
+    </div>
+
+    <div class="sub-totals">
+      <div class="grid-2">
+        <app-label-value label="TRUCK NO">___________</app-label-value>
+        <app-label-value label="DRIVER">___________</app-label-value>
+      </div>
+    </div>
+
+    <div class="sub-totals">
+      <div class="grid-4">
+        <app-label-value label="PRINTED">{{currentDate | date: 'medium'}}</app-label-value>
+        <app-label-value label="ESTIMATED WEIGHT">{{pickTicket.tallyTotalWeight}} lbs</app-label-value>
+        <app-label-value *ngIf="!pickTicket.hasMixedUomTallyItem" label="LOAD">
+          {{pickTicket.tallyTotalMeasureTemporary | number :'1.3'}} {{pickTicket.measureLabel}}
+        </app-label-value>
+        <app-label-value label="QTY">{{pickTicket.tallyTotalUnitsCount}}</app-label-value>
+      </div>
+    </div>
+  </div>
+</div>

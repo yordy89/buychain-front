@@ -1,0 +1,98 @@
+<form *ngIf="!editMode || editMode && lineItemData" [formGroup]="form" novalidate>
+  <div class="flex-row">
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Entry Type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option
+          *ngFor="let item of types"
+          [value]="item"
+          [disabled]="!!typeOptionDisabledTooltip(item)"
+          [matTooltip]="typeOptionDisabledTooltip(item)"
+          matTooltipPosition="right">
+          {{item | stringUnderscoreToSpaceTitleCase}}
+        </mat-option>
+      </mat-select>
+      <mat-error>{{form.get('type')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Quantity</mat-label>
+      <input matInput placeholder="Quantity" formControlName="quantity" type="number" required>
+      <mat-error>{{form.get('quantity').errors | errorMessage}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>P.O. Reference</mat-label>
+      <input matInput placeholder="P.O. Reference" formControlName="poRef" type="number">
+      <mat-error>{{form.get('poRef').errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <ng-container [formGroup]="receivableFormGroup">
+    <h5>Receivable</h5>
+    <div class="flex-row">
+
+      <app-autocomplete label="Revenue Account"
+                        [data]="accounts"
+                        panelWidth="auto"
+                        formControlName="revenueAccount"
+                        keyName="id"
+                        displayName="numberAndName"
+                        placeholder="Revenue Account"
+                        class="flex-col"
+      ></app-autocomplete>
+      <app-autocomplete label="Wip Account"
+                        [data]="accounts"
+                        panelWidth="auto"
+                        formControlName="wipAccount"
+                        keyName="id"
+                        displayName="numberAndName"
+                        placeholder="Wip Account"
+                        class="flex-col"
+      ></app-autocomplete>
+      <mat-form-field appearance="outline" class="flex-col">
+        <mat-label>Revenue</mat-label>
+        <input matInput placeholder="Revenue" formControlName="amount" currencyMask required>
+        <mat-error>{{receivableAmount.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </div>
+  </ng-container>
+
+  <ng-container [formGroup]="costOfSaleFormGroup">
+    <h5>Cost of Sale</h5>
+    <div class="flex-row">
+      <app-autocomplete label="Cog Account"
+                        [data]="accounts"
+                        panelWidth="auto"
+                        formControlName="cogAccount"
+                        keyName="id"
+                        displayName="numberAndName"
+                        placeholder="Cog Account"
+                        class="flex-col"
+                        [isRequired]="true"
+      ></app-autocomplete>
+      <app-autocomplete label="Value Account"
+                        [data]="accounts"
+                        panelWidth="auto"
+                        formControlName="valueAccount"
+                        keyName="id"
+                        displayName="numberAndName"
+                        placeholder="Value Account"
+                        class="flex-col"
+                        [isRequired]="true"
+      ></app-autocomplete>
+
+      <mat-form-field appearance="outline" class="flex-col">
+        <mat-label>Expense</mat-label>
+        <input matInput placeholder="Expense" formControlName="amount" currencyMask required>
+        <mat-error>{{costOfSaleAmount.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </div>
+  </ng-container>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Description</mat-label>
+    <textarea rows="4" matInput placeholder="Description" formControlName="description" appNullOnEmpty required></textarea>
+    <mat-error>{{form.get('description')?.errors | errorMessage}}</mat-error>
+  </mat-form-field>
+</form>

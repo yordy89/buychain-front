@@ -1,0 +1,54 @@
+.content {
+  .show-inactive-slider {
+    display: flex;
+    justify-content: flex-end;
+    margin: 5px 20px;
+  }
+
+  .table-base {
+    .archived-facility {
+      background-color: #e2e2e2;
+      color: #7f7f7f;
+    }
+
+    .name {
+      width: 15%;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .description {
+      word-break: break-all;
+    }
+
+    .address {
+      width: 15%;
+    }
+
+    .city {
+      width: 10%;
+    }
+
+    .state {
+      width: 10%;
+    }
+
+    .facility-archived {
+      width: 5%;
+    }
+
+    .updated-at {
+      width: 10%;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .actions {
+      width: 50px;
+    }
+  }
+}

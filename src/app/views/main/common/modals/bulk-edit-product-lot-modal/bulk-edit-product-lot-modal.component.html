@@ -1,0 +1,80 @@
+<app-modal-base header="Bulk Edit Product Lots in Group" (closed)="onClose()">
+  <ng-container content>
+    <div class="non-editable-section">
+      <div class="plaintext-field" *ngIf="data?.groupKey">
+        <div class="label">Grouped By: </div>
+        <div class="value">{{data.groupKey}}</div>
+      </div>
+
+      <div class="plaintext-field mb-20">
+        <div class="label">Product Lots Count in Group: </div>
+        <div class="value">{{data?.productLots?.length}}</div>
+      </div>
+    </div>
+
+    <div class="editable-section">
+      <form [formGroup]="form">
+        <div *ngIf="data.editMode==='owner'" class="product-lot-owner">
+          <mat-form-field appearance="outline">
+            <mat-label>Owner</mat-label>
+            <mat-select [formControl]="ownerId" placeholder="Select Owner" disableOptionCentering>
+              <mat-option *ngFor="let owner of data.membersList" [value]="owner.id">
+                {{owner.firstName }} {{owner.lastName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="data.editMode==='shipWeekEstimate'" class="ship-week-estimate">
+          <mat-form-field appearance="outline">
+            <mat-label>Ship Week Estimate</mat-label>
+            <input matInput [formControl]="shipWeekEstimate" [min]="data.minShipWeekEstimate" [matDatepicker]="ShipWeekEstimate" placeholder="mm/dd/yyyy">
+            <mat-datepicker-toggle matSuffix [for]="ShipWeekEstimate"></mat-datepicker-toggle>
+            <mat-datepicker #ShipWeekEstimate></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div *ngIf="data.editMode==='priceOfMerit'" class="price-of-merit">
+          <div class="action">
+            <mat-radio-group color="primary" [formControl]="priceOfMeritAction">
+              <div class="radio-option" *ngFor="let option of priceOfMeritActions">
+                <mat-radio-button [value]="option" [checked]="option === priceOfMeritAction.value">
+                  {{ option }}
+                </mat-radio-button>
+              </div>
+            </mat-radio-group>
+          </div>
+          <div class="amount">
+            <mat-form-field appearance="outline">
+              <mat-label>Price Of Merit ({{priceOfMeritAction.value}})</mat-label>
+              <input matInput type="number" placeholder="Price Of Merit" [formControl]="priceOfMerit" [min]="0">
+            </mat-form-field>
+          </div>
+        </div>
+        <div *ngIf="data.editMode==='permission'" class="permission-list">
+          <mat-form-field appearance="outline">
+            <mat-label>Permission</mat-label>
+            <mat-select [formControl]="permission" placeholder="Select One" disableOptionCentering>
+              <mat-option *ngFor="let unit of data.permissionsList" [value]="unit">
+                {{unit | stringUnderscoreToSpaceTitleCase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="data.editMode==='notes'" class="static-textarea">
+          <mat-form-field appearance="outline">
+            <mat-label>Notes</mat-label>
+            <textarea matInput [formControl]="salesNotes" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <app-button [isNarrow]="true"
+                [isPrimary]="true"
+                [isDisabled]="!form.valid || !form.dirty"
+                (clicked)="submit()"
+    >
+      Update
+    </app-button>
+  </ng-container>
+</app-modal-base>

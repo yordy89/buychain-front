@@ -1,0 +1,14 @@
+<app-modal-base header="Add Open Line Item">
+  <ng-container content>
+    <app-ar-line-item-form [parentForm]="form"
+                           [lineItemData]="data.lineItem"
+                           [editMode]="data.editMode"
+                           [accounts]="data.accounts"
+    ></app-ar-line-item-form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">{{data.editMode ? 'Update' : 'Add'}}</app-button>
+  </ng-container>
+</app-modal-base>

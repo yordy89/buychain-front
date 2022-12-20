@@ -1,0 +1,14 @@
+<app-crm-account
+  [hidden]="visibleTab !== 'Account'"
+  [crmAccountData]="crmAccountData"
+></app-crm-account>
+<app-crm-contact
+  *ngIf="visibleTab === 'Contact'"
+  [crmAccountData]="crmAccountData"
+  [crmContactData]="crmContactData"
+></app-crm-contact>
+<app-crm-location
+  *ngIf="visibleTab === 'Location'"
+  [crmAccountData]="crmAccountData"
+  [crmLocationData]="crmLocationData"
+></app-crm-location>

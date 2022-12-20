@@ -1,0 +1,103 @@
+@use 'variables' as *;
+
+.actions-container > app-button {
+  margin-right: 20px;
+}
+
+.wrapper {
+  height: 100%;
+
+  .border {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(var(--palette-background-dialog), 1);
+    box-shadow: 0 0 6px 2px rgba(0, 0, 0, 10%);
+    padding: 20px;
+  }
+
+  .top-wrapper {
+    display: flex;
+
+    .rate-table-header {
+      width: 100%;
+      flex-direction: column;
+      padding-left: 10px;
+      overflow: auto;
+
+      .disabled-header-container {
+        .disabled-headers {
+          .name-txt {
+            font-family: Helvetica, sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 25px;
+          }
+
+          .description-txt {
+            font-family: Helvetica, sans-serif;
+            font-size: 20px;
+            line-height: 22px;
+            margin-top: 20px;
+          }
+        }
+      }
+
+      .header-edit-mode-container {
+        display: flex;
+        justify-content: space-between;
+
+        .input-field {
+          display: flex;
+          align-items: center;
+        }
+
+        .name-input {
+          width: 300px;
+          margin-right: 20px;
+        }
+
+        .description-input {
+          width: 500px;
+          margin-right: 20px;
+        }
+
+        .header-actions > app-button {
+          margin-right: 20px;
+        }
+
+        .error {
+          color: rgba(var(--palette-warn-500), 1);
+        }
+      }
+    }
+  }
+
+  .rate-table-entries {
+    overflow: auto;
+    margin-bottom: 18px;
+    flex: 1;
+    position: relative;
+
+    mat-icon {
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .entries-grid {
+      height: 100%;
+      width: 100%;
+    }
+
+    .no-rate-table-entries {
+      width: 100%;
+      color: rgba(var(--palette-primary-200), 1);
+      text-align: center;
+      padding-bottom: 30px;
+    }
+  }
+}
+
+.import-btn {
+  margin-left: 20px;
+}

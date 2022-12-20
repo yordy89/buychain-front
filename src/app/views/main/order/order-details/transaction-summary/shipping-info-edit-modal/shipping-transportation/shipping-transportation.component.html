@@ -1,0 +1,201 @@
+<div class="transportation-section" *ngIf="isLoaded">
+  <div>
+    <div class="table-heading">Transportation</div>
+    <div class="content-wrapper">
+      <div class="freight-terms-section">
+        <app-table-base>
+          <ng-container header>
+            <tr>
+              <th>
+                <div>
+                  Freight Terms
+                  <mat-icon (mouseenter)="isOpenFreightTooltip = true"
+                            cdkOverlayOrigin
+                            #trigger="cdkOverlayOrigin"
+                  >info</mat-icon>
+
+                  <ng-template
+                    cdkConnectedOverlay
+                    [cdkConnectedOverlayOrigin]="trigger"
+                    [cdkConnectedOverlayOpen]="isOpenFreightTooltip"
+                  >
+                    <div class="tooltip-content" (mouseleave)="isOpenFreightTooltip = false">
+                      <app-freight-tooltip></app-freight-tooltip>
+                    </div>
+                  </ng-template>
+
+                </div>
+              </th>
+            </tr>
+          </ng-container>
+
+          <ng-container body>
+            <tr>
+              <td class="editable">
+                <mat-form-field>
+                  <mat-select [formControl]="freightTermsFromControl">
+                    <mat-option *ngFor="let termKey of freightTerms" [value]="termKey">
+                      {{termKey | transportTermsToDescription}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>{{freightTermsFromControl?.errors | errorMessage}}</mat-error>
+                </mat-form-field>
+              </td>
+            </tr>
+          </ng-container>
+        </app-table-base>
+      </div>
+
+      <div>
+        <div class="rate-table-selection-wrapper" *ngIf="showFacilityRateTables; else CustomTransportation">
+          <app-table-base>
+            <ng-container header>
+              <tr>
+                <th>Rate Table Entries</th>
+              </tr>
+            </ng-container>
+
+            <ng-container body>
+              <tr>
+                <td>
+                  <mat-form-field class="rate-table-entry-dropdown" [formGroup]="transportationFormGroup"
+                                  *ngIf="rateTableFilteredEntries?.length; else noEntries">
+                    <mat-select formControlName="transportMethod">
+                      <mat-option *ngFor="let entry of rateTableFilteredEntries" [value]="entry">
+                        {{entry.destinationCity}},
+                        {{entry.destinationState}}
+                        -
+                        {{entry.transportMethod.type}}{{entry.transportMethod.carrier ? ', ' + entry.transportMethod.carrier : ''}}{{entry.transportMethod.railRestriction ? ', ' + entry.transportMethod.railRestriction : ''}}
+                        - Rate ${{(transactionData.canSetShippingCost(freightTermsFromControl.value) ? entry.cost : 0) | number : '1.0-2'}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error>{{transportMethod?.errors | errorMessage}}</mat-error>
+                  </mat-form-field>
+                  <ng-template #noEntries><span class="no-entries-text">No rate table entries are defined.</span></ng-template>
+                </td>
+              </tr>
+            </ng-container>
+          </app-table-base>
+
+        </div>
+        <ng-template #CustomTransportation>
+          <div class="transportation-selection-form-wrapper">
+
+            <app-table-base [formGroup]="transportationFormGroup">
+              <ng-container header>
+                <tr>
+                  <th>
+                    <div>Transport Type <mat-icon matTooltip="Select the vehicle that will transport the goods."
+                                                  matTooltipPosition="above">info</mat-icon>
+                    </div>
+                  </th>
+                  <th>
+                    <div>Carrier <mat-icon matTooltip="The rail line designated to carry the goods." matTooltipPosition="above">
+                      info</mat-icon>
+                    </div>
+                  </th>
+                  <th>
+                    <div>Status <mat-icon
+                      matTooltip="Open rails allow a variety of carriers, where as closed do not and may require a transfer."
+                      matTooltipPosition="above">info</mat-icon>
+                    </div>
+                  </th>
+                  <th>
+                    <div>Total Cost<mat-icon
+                      matTooltip="The total cost of shipping. This cost will be factored by the UOM to calculate delivered pricing."
+                      matTooltipPosition="above">info</mat-icon>
+                    </div>
+                  </th>
+                </tr>
+              </ng-container>
+
+              <ng-container body>
+                <tr>
+                  <td class="editable">
+                    <mat-form-field>
+                      <mat-select formControlName="transportType">
+                        <mat-option *ngFor="let type of transportTypes" [value]="type">
+                          {{type | stringUnderscoreToSpaceTitleCase}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error>{{transportType?.errors | errorMessage}}</mat-error>
+                    </mat-form-field>
+                  </td>
+                  <td class="editable">
+                    <mat-form-field class="carrier-input">
+                      <input type="text" matInput [matAutocomplete]="auto" formControlName="railCarrier">
+                      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                                        [displayWith]="railCarrierDisplayExpression">
+                        <mat-option *ngFor="let carrier of filteredCarriers | async" [value]="carrier">
+                          {{carrier.abbreviation}} ({{carrier.name}})
+                        </mat-option>
+                      </mat-autocomplete>
+                      <mat-error>{{railCarrier?.errors | errorMessage}}</mat-error>
+                    </mat-form-field>
+                  </td>
+                  <td class="editable">
+                    <mat-form-field>
+                      <mat-select formControlName="railRestriction">
+                        <mat-option *ngFor="let railRestriction of railRestrictions" [value]="railRestriction">
+                          {{railRestriction}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error>{{railRestriction?.errors | errorMessage}}</mat-error>
+                    </mat-form-field>
+                  </td>
+                  <td class="cost-column">
+                    <mat-form-field>
+                      <input matInput type="number" formControlName="cost">
+                      <mat-error>{{cost?.errors | errorMessage}}</mat-error>
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </ng-container>
+            </app-table-base>
+
+          </div>
+        </ng-template>
+
+        <div class="transportation-switcher" *ngIf="!transactionData.isSellerCrm">
+          <mat-slide-toggle color="primary" [checked]="!showFacilityRateTables"
+                            (change)="toggleTransportationSelection()">Custom
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="isModifyTransportMode && transactionData.state !== TransactionStateEnum.InTransit">
+    <div class="table-heading">Ship Date</div>
+    <div class="content-wrapper">
+      <app-table-base [formGroup]="transportationFormGroup" class="table-shipping-date">
+        <ng-container header>
+          <tr>
+            <th>
+              <div>Estimated Ship Date<mat-icon
+                matTooltip="The estimated date of shipping."
+                matTooltipPosition="above">info</mat-icon>
+              </div>
+            </th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr>
+            <td class="ship-date-estimate">
+              <div class="ship-data-input">
+                <mat-form-field class="value-form">
+                  <input matInput [formControl]="estimatedShipDateFormControl" [min]="transactionData.tallyShipDate" [matDatepicker]="DatePicker">
+                  <mat-datepicker-toggle matSuffix [for]="DatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #DatePicker></mat-datepicker>
+                  <mat-error>{{estimatedShipDateFormControl?.errors | errorMessage}}</mat-error>
+                </mat-form-field>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+    </div>
+  </div>
+</div>

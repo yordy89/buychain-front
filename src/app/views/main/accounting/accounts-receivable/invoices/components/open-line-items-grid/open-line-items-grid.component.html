@@ -1,0 +1,84 @@
+<ng-container>
+  <div class="open-lines-data-grid-header">
+    <h4>Open Line Items</h4>
+  </div>
+
+  <dx-data-grid
+    [dataSource]="salesOrder.openLineItems"
+    [showBorders]="true"
+    [remoteOperations]="false"
+    [allowColumnResizing]="true"
+    columnResizingMode="widget"
+    [allowColumnReordering]="false"
+    [rowAlternationEnabled]="true"
+    [columnHidingEnabled]="true"
+    [columnAutoWidth]="true"
+    (onInitialized)="onInitialized($event)"
+    (onSelectionChanged)="onSelectionChanged($event)"
+    [(selectedRowKeys)]="selectedRowKeys"
+  >
+    <dxo-selection
+      mode="multiple"
+      showCheckBoxesMode="always"
+    ></dxo-selection>
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+
+    <dxi-column dataField="type" cellTemplate="typeCellTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'typeCellTemplate'">
+      {{data.value | stringUnderscoreToSpaceTitleCase}}
+    </div>
+
+    <dxi-column dataField="description" width="20%" cellTemplate="descriptionTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'descriptionTemplate'">
+      <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+        {{data.value}}
+      </div>
+    </div>
+
+    <dxi-column dataField="quantity" caption="Qty"></dxi-column>
+    <dxi-column dataField="units" caption="Units Of Measure"></dxi-column>
+
+    <dxi-column dataField="perUnitAmount" caption="Per Unit Amount">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+    <dxi-column dataField="revenue" caption="Extended Price/Receivable">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+    <dxi-column dataField="expense" caption="Cost Of Sale">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+    <dxi-column dataField="profit" caption="Profit">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+
+    <dxo-summary>
+      <dxi-total-item column="units" alignment="right" displayFormat="Totals"></dxi-total-item>
+      <dxi-total-item column="perUnitAmount" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+      <dxi-total-item column="revenue" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+      <dxi-total-item column="expense" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+      <dxi-total-item column="profit" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+    </dxo-summary>
+
+    <dxi-column [allowReordering]="false"
+                [allowHiding]="false"
+                [allowGrouping]="false"
+                [width]="40"
+                cellTemplate="actionsTemplate"
+    ></dxi-column>
+    <div *dxTemplate="let item of 'actionsTemplate'">
+      <app-table-actions *ngIf="item.data"
+                         [data]="item.data"
+                         [actions]="actions"
+                         (action)="onAction($event, item.data)"
+      ></app-table-actions>
+    </div>
+  </dx-data-grid>
+  <span
+    *ngIf="permissions.canCreateOpenLineItem"
+    [ngClass]="{'add-line-btn': true, 'mt-15': true, 'ml-15': true}"
+    (click)="onAddEditOpenLineItem()">
+      <mat-icon>add</mat-icon> Add Open Line Item
+    </span>
+</ng-container>

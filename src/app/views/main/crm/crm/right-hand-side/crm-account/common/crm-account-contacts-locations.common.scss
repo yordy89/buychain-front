@@ -1,0 +1,22 @@
+.wrapper-container {
+  margin-top: 20px;
+
+  .contacts-table-wrapper,
+  .locations-table-wrapper {
+    .archived-crm {
+      background-color: #e2e2e2;
+      color: #7f7f7f;
+    }
+
+    th,
+    td {
+      .type {
+        width: 50px;
+      }
+    }
+  }
+
+  .add-contact-wrapper {
+    padding: 10px 0;
+  }
+}

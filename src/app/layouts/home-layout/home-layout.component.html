@@ -1,0 +1,38 @@
+<mat-sidenav-container class="home-sidenav-container sidenav-container">
+  <!-- Main side navigation -->
+  <mat-sidenav [opened]=true mode="side" class="sidebar-panel">
+    <!-- App Logo -->
+    <div class="branding default-bg">
+      <img routerLink="/dashboard" [src]="Environment.logoUrl" alt="" class="logo">
+    </div>
+
+
+    <mat-nav-list class="navbar-container bottom-align w-100" role="list">
+      <mat-list>
+        <!-- Profile -->
+        <button class="main-item"
+                matTooltipClass="small-tooltip"
+                [matTooltipPosition]="'above'"
+                [matTooltip]="user.username">
+          <span class="icon-wrapper"><mat-icon class="icon">account_circle</mat-icon></span>
+          <span class="text-wrapper">Profile</span>
+        </button>
+
+        <ul class="sub-items">
+          <li (click)="signOut()" class="sub-item">
+            Sign Out
+          </li>
+        </ul>
+
+      </mat-list>
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- App content -->
+    <div class="rightside-content-hold">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,38 @@
+@use 'mixins' as mixins;
+
+.accounting-info-wrapper {
+  padding: 0 5px;
+
+  .actions-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px;
+
+    app-button {
+      padding-left: 20px;
+    }
+
+    mat-icon {
+      cursor: pointer;
+    }
+  }
+
+  .accounting-info-details {
+    @include mixins.breakpoint(tablet) {
+      .information-section {
+        flex-direction: column;
+      }
+    }
+
+    .information-section {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+
+      .accounting-info-form {
+        flex: 1;
+        width: 100%;
+      }
+    }
+  }
+}

@@ -1,0 +1,211 @@
+<div class="wrapper">
+  <div class="header-section">
+    <div class="header-label">
+      <div class="name-section">
+        <mat-icon color="primary" matPrefix>store_mall_directory</mat-icon>
+        <h4>{{crmAccountData.name}}</h4>
+        <span class="badge badge-ui-warning ml-15" *ngIf="crmAccountData.archived">Archived</span>
+      </div>
+      <div class="linked-to-section" *ngIf="crmAccountData?.link">
+        <p>Linked to BuyChain<sup>TH</sup> Customer <span>{{crmAccountData.link.name}}</span></p>
+      </div>
+    </div>
+    <div class="actions" *ngIf="readonlyMode$ | async">
+      <span *ngIf="crmPermissions?.canUpdate">
+      <span *ngIf="!isOnlyOffline">
+        <mat-icon *ngIf="crmAccountData?.link; else UnlinkedIcon" color="primary" (click)="openLinkedCrmAccountModal()">link</mat-icon>
+        <ng-template #UnlinkedIcon>
+          <mat-icon color="primary" (click)="openUnlinkedCrmAccountModal()">link_off</mat-icon>
+        </ng-template>
+      </span>
+      <mat-icon color="primary" (click)="edit()">edit</mat-icon>
+      </span>
+      <app-tab-expansion-icon [isLeftPartVisible$]="crmStateService.isLeftPartVisible$"></app-tab-expansion-icon>
+    </div>
+  </div>
+  <div class="content-wrapper">
+    <div class="actions-container">
+      <div class="actions" *ngIf="(readonlyMode$ | async) !== true">
+        <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateCRMAccount()">Save</app-button>
+        <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+      </div>
+    </div>
+    <div [ngClass]="{'is-expanded': (crmStateService.isLeftPartVisible$ | async) !== true}">
+      <app-company-form [parentForm]="form" [initialData$]="crmAccountData$" [readonlyMode$]="readonlyMode$" [isCrm]="true"></app-company-form>
+    </div>
+    <div class="labels-section-wrapper">
+      <div class="labels-wrapper">
+        <div class="label-group">
+          <app-labels-group
+            [header]="'Categories'"
+            [crmType]="CRMType.ACCOUNT"
+            [labelGroup]="LabelKey.Categories"
+            [labelSection]="LabelGroupName.accountCategoryTags"
+            [crmAccountData]="crmAccountData"
+          ></app-labels-group>
+        </div>
+        <div class="label-group">
+          <app-labels-group
+            [header]="'Industry'"
+            [crmType]="CRMType.ACCOUNT"
+            [labelGroup]="LabelKey.Industry"
+            [labelSection]="LabelGroupName.accountIndustryTags"
+            [singleSelection]="true"
+            [crmAccountData]="crmAccountData"
+          ></app-labels-group>
+        </div>
+        <div class="label-group">
+          <app-labels-group
+            [header]="'Tags'"
+            [crmType]="CRMType.ACCOUNT"
+            [labelGroup]="LabelKey.Tags"
+            [labelSection]="LabelGroupName.accountTags"
+            [crmAccountData]="crmAccountData"
+          ></app-labels-group>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="bill-to-section">
+      <div class="header">Default Billing Contact/Location</div>
+      <div class="content">
+          <div class="input-section">
+            <div class="input-label">Contact:</div>
+            <mat-form-field>
+              <mat-select [formControl]="billToContactFormControl">
+                <mat-option *ngFor="let contact of getContacts()" [value]="contact.id">
+                  {{contact.displayName}}
+                </mat-option>
+              </mat-select>
+              <div matSuffix class="d-flex align-items-center">
+                <button *ngIf="billToContactFormControl.value" mat-icon-button (click)="resetCrmAccountField($event, billToContactFormControl)" class="clear">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </mat-form-field>
+          </div>
+
+          <div class="input-section">
+            <div class="input-label">Location:</div>
+            <mat-form-field>
+              <mat-select [formControl]="billToLocationFormControl">
+                <mat-option *ngFor="let location of getLocations()" [value]="location.id">
+                  {{location.shortName}}
+                </mat-option>
+              </mat-select>
+              <div matSuffix class="d-flex align-items-center">
+                <button *ngIf="billToLocationFormControl.value" mat-icon-button (click)="resetCrmAccountField($event, billToLocationFormControl)" class="clear">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </mat-form-field>
+          </div>
+      </div>
+    </div>
+    <hr>
+    <div class="sales-team-table-wrapper">
+      <div class="sales-team-header">Sales Team</div>
+
+      <app-table-base *ngIf="salesTeamList?.length; else NoSalesTeamMember" class="striped">
+        <ng-container header>
+          <tr class="header">
+            <th class="carrier">Name</th>
+            <th>Description</th>
+            <th *ngIf="(readonlyMode$ | async) !== true"></th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr *ngFor="let seller of salesTeamList">
+            <td>{{seller.name}}</td>
+            <td>{{seller.title}}</td>
+            <td *ngIf="(readonlyMode$ | async) !== true">
+              <app-table-actions [data]="seller"
+                                 [actions]="tableActions"
+                                 (action)="onTableAction($event, seller)"
+              ></app-table-actions>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+
+      <ng-template #NoSalesTeamMember>
+        <p class="no-data-plate">There is no member in this sales team</p>
+      </ng-template>
+      <div class="add-sales-team-container" *ngIf="(readonlyMode$ | async) !== true">
+        <div class="add-sales-team-input" *ngIf="isAddingSeller; else ButtonContainer">
+          <div class="input-section">
+            <mat-form-field appearance="outline">
+              <mat-select
+                [formControl]="salesTeamSelectorControl">
+                <mat-option *ngFor="let member of filteredMembersList" [value]="member">
+                  {{member.firstName}} {{member.lastName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="action-section">
+            <mat-icon style="color: green" (click)="addSalesTeamMember()">check_circle</mat-icon>
+            <mat-icon color="warn" (click)="toggleAddSellerMode(false)">cancel</mat-icon>
+          </div>
+        </div>
+        <ng-template #ButtonContainer>
+          <div class="add-sales-team-button" *ngIf="filteredMembersList?.length; else NoMembersLeft">
+            <app-button *ngIf="salesTeamList?.length < 100" [isNarrow]="true" icon="add" (clicked)="toggleAddSellerMode(true)">Add New</app-button>
+          </div>
+          <ng-template #NoMembersLeft>
+            <div class="no-members-left">
+              <mat-icon class="info-icon">error_outline</mat-icon>
+              <span class="no-members-left-message">All the members of the company are already added to the sales team</span>
+            </div>
+          </ng-template>
+        </ng-template>
+      </div>
+    </div>
+    <hr>
+    <mat-tab-group *ngIf="crmAccountData && crmPermissions" #tabGroup [(selectedIndex)]="tabIndex" class="styled padded-content crm-account-tab-group">
+      <mat-tab label="Info" *ngIf="crmPermissions.canReadSalesInfo">
+        <ng-template matTabContent>
+          <app-crm-account-sales-info [crmAccountData]="crmAccountData"></app-crm-account-sales-info>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Payment" *ngIf="crmPermissions.canReadPaymentInfo">
+        <ng-template matTabContent>
+          <app-crm-account-payment-info [crmAccountData]="crmAccountData"></app-crm-account-payment-info>
+        </ng-template>
+      </mat-tab>
+      <ng-container *appShowViewCost>
+        <mat-tab label="Credit" *ngIf="crmPermissions.canReadCreditInfo">
+          <ng-template matTabContent>
+            <app-crm-account-credit-info [crmAccountData]="crmAccountData"></app-crm-account-credit-info>
+          </ng-template>
+        </mat-tab>
+      </ng-container>
+      <mat-tab label="Credit Memos" *ngIf="showCreditMemosTab">
+        <ng-template matTabContent>
+          <app-crm-account-credit-memos [crmAccountData]="crmAccountData"></app-crm-account-credit-memos>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Contacts">
+        <app-crm-account-contacts [crmAccountData]="crmAccountData"></app-crm-account-contacts>
+      </mat-tab>
+      <mat-tab label="Locations">
+        <app-crm-account-locations [crmAccountData]="crmAccountData"></app-crm-account-locations>
+      </mat-tab>
+      <ng-container *appShowViewCost>
+        <mat-tab label="Reports" *ngIf="crmPermissions.canReadTransactions">
+          <ng-template matTabContent>
+            <app-crm-account-reports [isLeftPartVisible$]="crmStateService.isLeftPartVisible$" [crmAccountData]="crmAccountData"></app-crm-account-reports>
+          </ng-template>
+        </mat-tab>
+      </ng-container>
+      <ng-container *appShowViewCost>
+        <mat-tab label="Orders" *ngIf="crmPermissions.canReadTransactions">
+          <ng-template matTabContent>
+            <app-crm-account-orders [crmAccountData]="crmAccountData"></app-crm-account-orders>
+          </ng-template>
+        </mat-tab>
+      </ng-container>
+    </mat-tab-group>
+  </div>
+</div>

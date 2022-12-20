@@ -1,0 +1,31 @@
+.sales-section-wrapper {
+  margin-top: 10px;
+
+  .sales-info-actions {
+    justify-content: flex-end;
+    flex-direction: row;
+    display: flex;
+    margin: 10px 30px 20px 0;
+
+    app-button {
+      padding: 10px;
+    }
+
+    mat-icon {
+      margin-top: 0;
+      cursor: pointer;
+    }
+  }
+
+  .sales-info-wrapper {
+    mat-form-field {
+      width: 50%;
+      margin-top: 15px;
+    }
+
+    textarea {
+      height: 50px;
+      width: 100%;
+    }
+  }
+}

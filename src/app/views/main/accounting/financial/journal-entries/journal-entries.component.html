@@ -1,0 +1,220 @@
+<app-filter-grid-layout *ngIf="isLoaded && permissions.canRead"
+                        header="Journal Entries"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()"
+>
+	<ng-container right-side-button-section>
+		<app-bookmark [viewKey]="viewKey"
+		              [currentState]="viewState"
+		              [defaultState]="defaultState"
+		              (stateChanged)="onViewStateChanged($event)"
+		></app-bookmark>
+
+		<app-button *ngIf="permissions.canCreate"
+		            (clicked)="onAddJournalEntry()"
+		            [isPrimary]="true"
+		            icon="add"
+		>Add Journal Entry
+		</app-button>
+	</ng-container>
+
+	<ng-container filter-section>
+		<app-journal-entries-filters
+				[filters]="viewState.filters"
+				[filtersState]="viewState.filtersState"
+				[groupsList]="groupsList"
+				[accountsList]="accountsList"
+				[dimensionsList]="dimensionsList"
+				[members]="members"
+		></app-journal-entries-filters>
+
+		<div class="text-center">
+			<app-button
+					[matTooltip]="allLoaded && !isFiltersChanged() ? 'All the journal entries for the specified filters are loaded.' : ''"
+					[isNarrow]="true"
+					[isPrimary]="true"
+					[isDisabled]="isDisabledFiltering"
+					(clicked)="searchJournalEntries()">
+				{{isFiltersChanged() || allLoaded ? 'Run Query' : 'Load More'}}
+			</app-button>
+		</div>
+	</ng-container>
+
+	<ng-container main-section>
+		<div class="grid-container fab-container">
+			<dx-data-grid #grid
+										[dataSource]="journalsList"
+										[filterValue]="gridFilterValue"
+										[showBorders]="true"
+										[remoteOperations]="false"
+										[allowColumnResizing]="true"
+										columnResizingMode="widget"
+										[allowColumnReordering]="true"
+										[rowAlternationEnabled]="false"
+										[columnHidingEnabled]="true"
+										[hoverStateEnabled]="true"
+										[columnAutoWidth]="true"
+										[focusedRowEnabled]="true"
+										keyExpr="id"
+										[(selectedRowKeys)]="selectedRows"
+										(onCellPrepared)="onCellPrepared($event)"
+										(onToolbarPreparing)="onToolbarPreparing($event)"
+			              (onContentReady)="onContentReady()"
+                    (onExporting)="onExporting($event)"
+      >
+				<dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-export [enabled]="true"></dxo-export>
+				<dxo-sorting mode="multiple"></dxo-sorting>
+				<dxo-search-panel [visible]="true"></dxo-search-panel>
+				<dxo-load-panel [enabled]="true"></dxo-load-panel>
+				<dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+				<dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+				<dxo-master-detail [enabled]="true" template="entryLineTemplate"></dxo-master-detail>
+				<dxo-selection [allowSelectAll]="false" showCheckBoxesMode="always" mode="multiple"></dxo-selection>
+				<dxo-group-panel [visible]="true"></dxo-group-panel>
+				<dxo-state-storing [enabled]="true"
+				                   type="custom"
+				                   [customLoad]="loadGridState"
+				                   [customSave]="saveGridState"
+				                   [savingTimeout]="100"
+				></dxo-state-storing>
+
+				<dxi-column [allowHiding]="false" cellTemplate="actionsTemplate" [allowGrouping]="false" [width]="40"></dxi-column>
+				<div *dxTemplate="let item of 'actionsTemplate'">
+					<app-table-actions *ngIf="item.data"
+														 [disabled]="!!selectedRows.length"
+														 [data]="item.data"
+														 [actions]="actions"
+														 (action)="onAction($event, item.data)"
+					></app-table-actions>
+				</div>
+
+				<div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+					<app-table-results-text [visibleRows]="visibleRows" [results]="journalsList?.length"></app-table-results-text>
+					<span *ngIf="!allLoaded && journalsList?.length" class="load-more" (click)="loadJournalEntries()">Load More</span>
+				</div>
+
+
+				<div *dxTemplate="let details of 'entryLineTemplate'">
+					<dx-data-grid
+							[dataSource]="details.data?.lines || []"
+							[showBorders]="true"
+							[remoteOperations]="false"
+							[allowColumnResizing]="true"
+							columnResizingMode="widget"
+							[allowColumnReordering]="false"
+							[rowAlternationEnabled]="true"
+							[columnHidingEnabled]="true"
+							[hoverStateEnabled]="true"
+							[columnAutoWidth]="true"
+					>
+
+						<dxi-column dataField="account" caption="Account" alignment="left" [calculateDisplayValue]="calculateDisplayAccountNumberValue"></dxi-column>
+
+						<dxi-column dataField="description" width="150px" cellTemplate="descriptionTemplate" [allowGrouping]="false"></dxi-column>
+						<div *dxTemplate="let data of 'descriptionTemplate'">
+							<div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+								{{data.value}}
+							</div>
+						</div>
+
+						<dxi-column dataField="postedDate" dataType="date" caption="Posted Date"></dxi-column>
+
+						<dxi-column dataField="debit">
+							<dxo-format type="currency" [precision]="2"></dxo-format>
+						</dxi-column>
+
+						<dxi-column dataField="credit">
+							<dxo-format type="currency" [precision]="2"></dxo-format>
+						</dxi-column>
+
+						<dxo-summary>
+							<dxi-total-item column="postedDate" alignment="right" displayFormat="Totals"></dxi-total-item>
+							<dxi-total-item column="debit" summaryType="sum" [customizeText]="formatTotalCurrency"></dxi-total-item>
+							<dxi-total-item column="credit" summaryType="sum" [customizeText]="formatTotalCurrency"></dxi-total-item>
+						</dxo-summary>
+					</dx-data-grid>
+				</div>
+
+				<dxi-column type="detailExpand" width="30px" [fixed]="true" [allowResizing]="false" fixedPosition="left" headerCellTemplate="detailExpandHeaderCellTemplate"></dxi-column>
+				<div *dxTemplate="let data of 'detailExpandHeaderCellTemplate'" class="dx-command-expand dx-datagrid-group-space dx-datagrid-expand dx-selection-disabled" (click)="onToggleDetailRowsExpandState()">
+					<div [ngClass]="{
+						'dx-datagrid-group-closed': !isExpandedAllDetailRows,
+						'dx-datagrid-group-opened': isExpandedAllDetailRows
+					}"></div>
+				</div>
+
+				<dxi-column type="selection" width="30px" [fixed]="true" [allowResizing]="false" fixedPosition="left"></dxi-column>
+
+				<dxi-column dataField="number" alignment="left" width="100px" cellTemplate="numberTemplate" [allowGrouping]="false"></dxi-column>
+				<div *dxTemplate="let data of 'numberTemplate'">
+					<app-copy-text-button
+							class="small"
+							[text]="data.value"
+							[valueToCopy]="getJournalEntryUrl(data.data.id)"
+							successMessage="Link to this Journal Entry copied to clipboard"
+					></app-copy-text-button>
+				</div>
+
+				<dxi-column dataField="displaySource" caption="Source"></dxi-column>
+
+				<dxi-column dataField="type" cellTemplate="typeTemplate" groupCellTemplate="typeGroupTemplate"></dxi-column>
+				<div *dxTemplate="let data of 'typeTemplate'">{{data.value | stringUnderscoreToSpaceTitleCase}}</div>
+				<div *dxTemplate="let data of 'typeGroupTemplate'">
+					{{data.column.caption}}: {{data.value | stringUnderscoreToSpaceTitleCase}}
+				</div>
+
+				<dxi-column dataField="description" width="150px" cellTemplate="descriptionTemplate" [allowGrouping]="false"></dxi-column>
+				<div *dxTemplate="let data of 'descriptionTemplate'">
+					<div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+						{{data.value}}
+					</div>
+				</div>
+
+				<dxi-column dataField="group" [calculateDisplayValue]="calculateDisplayGroupValue"></dxi-column>
+				<dxi-column dataField="dimensions" caption="Dimensions" alignment="left" [calculateDisplayValue]="calculateDisplayDimensionsValue"></dxi-column>
+
+				<dxi-column dataField="status"
+				            cellTemplate="statusTemplate"
+				            [calculateGroupValue]="calculateStatusGroupValue"
+				            groupCellTemplate="groupStatusCellTemplate"
+				></dxi-column>
+				<div *dxTemplate="let data of 'statusTemplate'">
+					<span class="badge" [ngClass]="data.data.badgeClass">{{data.value | stringUnderscoreToSpaceTitleCase}}</span>
+				</div>
+				<div *dxTemplate="let data of 'groupStatusCellTemplate'">
+					{{data.column.caption}}:
+					<ng-container *ngIf="data.value.split(':')[1] as statusValue">
+						<span [ngClass]="[statusTextClass(statusValue)]">{{statusValue | stringUnderscoreToSpaceTitleCase}}</span>
+					</ng-container>
+				</div>
+
+				<dxi-column dataField="postDate" dataType="date" caption="Posted Date"></dxi-column>
+				<dxi-column dataField="createdAt" dataType="date" caption="Created Date" [visible]="false"></dxi-column>
+				<dxi-column dataField="updatedAt" dataType="date" caption="Last modified" [visible]="false"></dxi-column>
+				<dxi-column dataField="reverseDate" dataType="date" caption="Reverse Date" [visible]="false"></dxi-column>
+				<dxi-column dataField="approvalDate" dataType="date" caption="Approval Date" [visible]="false"></dxi-column>
+				<dxi-column dataField="createdBy" [calculateDisplayValue]="calculateDisplayCreatedByValue" [visible]="false"></dxi-column>
+				<dxi-column dataField="lastModifiedBy" [calculateDisplayValue]="calculateDisplayLastModifiedByValue" [visible]="false"></dxi-column>
+				<dxi-column dataField="customer" [calculateDisplayValue]="calculateDisplayCustomerValue" [visible]="false"></dxi-column>
+				<dxi-column dataField="vendor" [calculateDisplayValue]="calculateDisplayVendorValue" [visible]="false"></dxi-column>
+				<dxi-column dataField="approver" [calculateDisplayValue]="calculateDisplayApproverValue" [visible]="false"></dxi-column>
+				<dxi-column dataField="currency" [visible]="false"></dxi-column>
+
+				<dxi-column dataField="amount">
+					<dxo-format type="currency" [precision]="2"></dxo-format>
+				</dxi-column>
+
+			</dx-data-grid>
+
+			<app-table-fab *ngIf="selectedRows?.length && (permissions.canDelete || permissions.canUpdate)"
+			               [actions]="fabActions"
+			               (action)="onFABAction($event)"
+			></app-table-fab>
+		</div>
+	</ng-container>
+</app-filter-grid-layout>
+
+<ng-container *ngIf="!permissions.canRead">
+	<div class="no-data">You do not have enough permissions for this section</div>
+</ng-container>

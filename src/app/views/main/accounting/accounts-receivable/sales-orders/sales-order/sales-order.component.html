@@ -1,0 +1,47 @@
+<mat-card *ngIf="permissions.canRead; else NoReadAccess" class="mat-elevation-z2">
+  <mat-card-header>
+    <mat-card-title>{{title}}</mat-card-title>
+
+    <button *ngIf="isViewState && salesOrder?.isEditAllowed && permissions.canUpdate" color="primary" mat-icon-button title="Edit" (click)="onEdit()" tabindex="-1">
+      <mat-icon>mode_edit</mat-icon>
+    </button>
+
+    <button *ngIf="!isAddState" color="primary" mat-icon-button title="Log" (click)="onOpenLog()" tabindex="-1">
+      <mat-icon>list_alt</mat-icon>
+    </button>
+
+    <button color="primary" mat-icon-button title="Close" (click)="navigateToGridView()" tabindex="-1">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <app-view-sales-order *ngIf="isViewState && isLoaded"
+                          [data]="salesOrder"
+                          [groups]="groupsList"
+                          [dimensions]="dimensionsList"
+                          [members]="members"
+                          [transaction]="transaction"
+                          [crmAccounts]="crmAccountsList"
+                          [creditTerms]="creditTerms"
+                          (lineItemDeletedEvent)="loadData()"
+    ></app-view-sales-order>
+
+    <app-add-edit-sales-order *ngIf="isLoaded && ((isAddState && permissions.canCreate) || (permissions.canUpdate && isEditState && salesOrder))"
+                              [data]="salesOrder"
+                              [editMode]="isEditState"
+                              [crmAccounts]="crmAccountsList"
+                              [dimensions]="dimensionsList"
+                              [groups]="groupsList"
+                              (resultChange)="onResult($event)"
+                              (back)="navigateToGridView()"
+    ></app-add-edit-sales-order>
+
+  </mat-card-content>
+</mat-card>
+
+<ng-template #NoReadAccess>
+  <div class="no-data">You do not have enough permissions for this section</div>
+</ng-template>
+

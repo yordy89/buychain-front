@@ -1,0 +1,151 @@
+<form [formGroup]="form" novalidate (keydown.enter)="onEnter($event)">
+  <section class="flex-row add-edit-credit-memo-top-section-row">
+    <section class="flex-col-2">
+      <div class="flex-row">
+        <div class="flex-col">
+          <app-autocomplete
+            label="Customer"
+            [data]="crmAccounts"
+            [isRequired]="true"
+            panelWidth="auto"
+            formControlName="customer"
+            keyName="id"
+            displayName="name"
+            placeholder="Customer"
+          ></app-autocomplete>
+        </div>
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Amount</mat-label>
+            <input matInput placeholder="Amount" formControlName="amount" currencyMask required />
+            <mat-error>{{ form.get('amount')?.errors | errorMessage }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex-col">
+          <app-autocomplete
+            label="Account"
+            [data]="accounts"
+            panelWidth="auto"
+            formControlName="revenueAccount"
+            keyName="id"
+            displayName="numberAndName"
+            placeholder="Revenue Account"
+            [isRequired]="true"
+          ></app-autocomplete>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="badge-select">
+            <mat-label>State</mat-label>
+            <mat-select
+              formControlName="state"
+              [disabled]="data?.isSubmitted"
+              matTooltip="State can not manually change from SUBMITTED state"
+              [matTooltipDisabled]="!editMode || !data?.isSubmitted"
+              matTooltipPosition="right"
+            >
+              <mat-select-trigger>
+                <span class="badge" [ngClass]="[stateBadgeClass(form.get('state').value)]">{{
+                  form.get('state').value || '' | stringUnderscoreToSpaceTitleCase
+                }}</span>
+              </mat-select-trigger>
+              <mat-option
+                *ngFor="let item of states"
+                [value]="item"
+                [disabled]="!!stateOptionDisabledTooltip(item)"
+                [matTooltip]="stateOptionDisabledTooltip(item)"
+                matTooltipPosition="right"
+              >
+                <span class="badge" [ngClass]="[stateBadgeClass(item)]">{{
+                  item | stringUnderscoreToSpaceTitleCase
+                }}</span>
+              </mat-option>
+            </mat-select>
+
+            <mat-error>{{ form.get('state')?.errors | errorMessage }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex-col">
+          <mat-form-field appearance="outline" class="badge-select">
+            <mat-label>Review State</mat-label>
+            <mat-select
+              formControlName="reviewState"
+              [disabled]="data?.isDraft"
+              matTooltip="Review state can not manually change from DRAFT state"
+              [matTooltipDisabled]="!editMode || !data?.isDraft"
+              matTooltipPosition="right"
+            >
+              <mat-select-trigger>
+                <span class="badge" [ngClass]="[reviewStateBadgeClass(form.get('reviewState').value)]">{{
+                  form.get('reviewState').value | stringUnderscoreToSpaceTitleCase
+                }}</span>
+              </mat-select-trigger>
+              <mat-option
+                *ngFor="let item of reviewStates"
+                [value]="item"
+                [disabled]="!!reviewStateOptionDisabledTooltip(item)"
+                [matTooltip]="reviewStateOptionDisabledTooltip(item)"
+                matTooltipPosition="right"
+              >
+                <span class="badge" [ngClass]="[reviewStateBadgeClass(item)]">{{
+                  item | stringUnderscoreToSpaceTitleCase
+                }}</span>
+              </mat-option>
+            </mat-select>
+
+            <mat-error>{{ form.get('reviewState')?.errors | errorMessage }}</mat-error>
+          </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let item of types" [value]="item">
+              {{ item | stringUnderscoreToSpaceTitleCase }}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{ form.get('type')?.errors | errorMessage }}</mat-error>
+        </mat-form-field>
+      </div>
+    </section>
+  </section>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Description</mat-label>
+    <textarea
+      rows="3"
+      matInput
+      placeholder="Description"
+      formControlName="description"
+      appNullOnEmpty
+      maxlength="500"
+    ></textarea>
+    <mat-error>{{ form.get('description')?.errors | errorMessage }}</mat-error>
+  </mat-form-field>
+
+  <div class="flex-row mt-15">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload
+        [(attachments)]="attachments"
+        (removeAttachment)="removeAttachment($event)"
+      ></app-accounting-file-upload>
+    </div>
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Internal Notes</mat-label>
+      <textarea
+        rows="3"
+        matInput
+        placeholder="Internal Notes"
+        formControlName="internalNotes"
+        appNullOnEmpty
+        maxlength="500"
+      ></textarea>
+      <mat-error>{{ form.get('internalNotes')?.errors | errorMessage }}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end mt-15">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">Submit</app-button>
+</div>

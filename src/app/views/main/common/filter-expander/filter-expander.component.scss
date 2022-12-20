@@ -1,0 +1,15 @@
+.expander {
+  margin-bottom: 15px;
+}
+
+.header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+
+  p {
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 0;
+  }
+}

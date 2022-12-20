@@ -1,0 +1,13 @@
+<app-ap-line-item-form [parentForm]="form"
+                    [lineItemData]="data"
+                    [editMode]="editMode"
+                    [accounts]="accounts"
+                    [bill]="bill"
+                    ></app-ap-line-item-form>
+
+<div class="d-flex justify-content-end">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">{{editMode ? 'Update' : 'Add'}}</app-button>
+</div>
+
+

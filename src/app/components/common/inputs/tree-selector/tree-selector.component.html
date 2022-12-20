@@ -1,0 +1,53 @@
+<mat-form-field [appearance]="appearance" class="w-100">
+  <mat-label>{{label}} <ng-container *ngIf="showRequiredMarker">*</ng-container></mat-label>
+  <input matInput
+         type="text"
+         #inputElem
+         [placeholder]="placeholder"
+         [formControl]="control"
+         [matAutocomplete]="autocompleteSelect"
+         [matAutocompleteDisabled]="true"
+         (focus)="onFocus()"
+         [matMenuTriggerFor]="treeListMenu"
+  >
+  <div *ngIf="control && !control.disabled" matSuffix class="d-flex align-items-center">
+    <button *ngIf="allowClear && control.value" mat-icon-button (click)="resetParent($event)" class="clear">
+      <mat-icon>close</mat-icon>
+    </button>
+    <mat-icon class="pt-5">arrow_drop_down</mat-icon>
+  </div>
+
+  <mat-error>{{control?.errors | errorMessage}}</mat-error>
+</mat-form-field>
+
+<mat-autocomplete #autocompleteSelect="matAutocomplete" [displayWith]="getNameById.bind(this)">
+  <mat-option *ngFor="let item of treeListData" [value]="item.id"></mat-option>
+</mat-autocomplete>
+
+<mat-menu #treeListMenu="matMenu" (closed)="onClosedMenu()">
+  <div class="tree-list-menu" (click)="stopPropagation($event)">
+    <dx-tree-list
+      id="tasks"
+      [dataSource]="treeListData"
+      [showColumnHeaders]="false"
+      [autoExpandAll]="true"
+      [hoverStateEnabled]="false"
+      [showRowLines]="false"
+      [keyExpr]="keyExpr"
+      [parentIdExpr]="parentExpr"
+      [selectedRowKeys]="selectedRowKeys"
+      [repaintChangesOnly]="true"
+      [focusedRowEnabled]="true"
+      [focusedRowIndex]="focusedRowIndex"
+      (onKeyDown)="onKeyDown($event)"
+      (onFocusedRowChanged)="onFocusedRowChanged($event)"
+    >
+      <dxo-editing mode="cell" [allowAdding]="false" [allowUpdating]="false" [allowDeleting]="false"></dxo-editing>
+
+      <dxi-column dataField="name" cellTemplate="listItemTemplate"></dxi-column>
+      <div *dxTemplate="let options of 'listItemTemplate'">
+        <button mat-menu-item (click)="onItemSelection(options.data)">{{getDisplayName(options.data)}}</button>
+      </div>
+    </dx-tree-list>
+  </div>
+</mat-menu>

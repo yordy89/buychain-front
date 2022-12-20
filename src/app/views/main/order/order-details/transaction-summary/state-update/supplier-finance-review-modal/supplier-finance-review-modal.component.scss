@@ -1,0 +1,44 @@
+.section-header {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: dimgray;
+}
+
+.finance-tabs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1400px;
+  max-height: 60vh;
+}
+
+.summary-sections-container {
+  display: flex;
+  width: 100%;
+
+  .summary-section {
+    width: 50%;
+
+    .summary-container {
+      width: 100%;
+      min-height: 200px;
+      padding: 0 10px;
+
+      .section-content {
+        width: 100%;
+
+        .unit {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}
+
+.open-tx-table-container {
+  dx-data-grid {
+    max-height: 450px;
+  }
+}

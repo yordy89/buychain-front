@@ -1,0 +1,21 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.print {
+  .print-container {
+    width: 1250px;
+    margin: -1px;
+    padding: 15px;
+  }
+
+  &.isDarkTheme {
+    .print-container {
+      background-color: #424242;
+      color: #fff;
+
+      .lines-container {
+        color: #fff;
+        background-color: #424242;
+      }
+    }
+  }
+}

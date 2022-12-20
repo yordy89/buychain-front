@@ -1,0 +1,20 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.add-line-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  &.disabled {
+    color: rgba(var(--palette-primary-500), 0.6);
+
+    &:hover {
+      cursor: not-allowed;
+    }
+
+    &:active {
+      pointer-events: none;
+    }
+  }
+}

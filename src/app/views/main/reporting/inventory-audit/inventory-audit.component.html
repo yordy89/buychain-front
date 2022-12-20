@@ -1,0 +1,167 @@
+<div class="reports-wrapper">
+  <div class="header-container">
+    <div class="header-section">
+      <h4>Inventory Audit Report</h4>
+      <app-bookmark [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+                    (stateChanged)="onViewStateChanged($event)"></app-bookmark>
+    </div>
+  </div>
+
+  <div class="options-wrapper">
+
+    <div class="filters-and-options-container">
+      <div class="caption">Filter</div>
+      <div class="filter-container">
+        <dx-filter-builder
+          [fields]="filterFields"
+          [(value)]="viewState.advancedFilter"
+          [groupOperations]="['and', 'or']">
+        </dx-filter-builder>
+        <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="generateInventoryAuditReport()">Run</app-button>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="normalizedInventoryChartData?.length; else NoChartData" class="datagrid-wrapper">
+
+    <div class="summary-section">
+
+      <div class="summary-unit">
+        <div class="section-label">On Hand:</div>
+        <div class="subsection">
+          <div class="label">Count:</div>
+          <div class="value">{{inventoryAuditService.onHandCount}}</div>
+        </div>
+        <div class="subsection">
+          <div class="label">Cost Basis:</div>
+          <div class="value">{{inventoryAuditService.onHandCostBasis | currency}}</div>
+        </div>
+      </div>
+      <div class="summary-unit">
+        <div class="section-label">On Order:</div>
+        <div class="subsection">
+          <div class="label">Count:</div>
+          <div class="value">{{inventoryAuditService.onOrderCount}}</div>
+        </div>
+        <div class="subsection">
+          <div class="label">Cost Basis:</div>
+          <div class="value">{{inventoryAuditService.onOrderCostBasis | currency}}</div>
+        </div>
+      </div>
+      <div class="summary-unit">
+        <div class="section-label">In Transit:</div>
+        <div class="subsection">
+          <div class="label">Count:</div>
+          <div class="value">{{inventoryAuditService.inTransitCount}}</div>
+        </div>
+        <div class="subsection">
+          <div class="label">Cost Basis:</div>
+          <div class="value">{{inventoryAuditService.inTransitCostBasis | currency}}</div>
+        </div>
+      </div>
+    </div>
+
+    <dx-data-grid
+      #auditProductsGrid
+      id="gridContainer"
+      [dataSource]="normalizedInventoryChartData"
+      [showBorders]="true"
+      [remoteOperations]="false"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [columnAutoWidth]="true"
+      [allowColumnReordering]="true"
+      [rowAlternationEnabled]="true"
+      [columnHidingEnabled]="true"
+      [hoverStateEnabled]="true"
+      [focusedRowEnabled]="true"
+      [(focusedRowKey)]="focusedRowKey"
+      keyExpr="productId"
+      (onRowClick)="onProductRowClick($event)"
+      (onToolbarPreparing)="onToolbarPreparing($event)"
+      (onExporting)="onExporting($event)"
+    >
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxo-search-panel [visible]="true"></dxo-search-panel>
+      <dxo-load-panel [enabled]="true"></dxo-load-panel>
+      <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-column-chooser [enabled]="true" [height]="700"></dxo-column-chooser>
+      <dxo-selection mode="single"></dxo-selection>
+      <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+                         [savingTimeout]="100"></dxo-state-storing>
+      <dxo-group-panel [visible]="true"></dxo-group-panel>
+      <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
+
+      <dxi-column dataField="productLotId" caption="Product Lot #" [groupIndex]="1"></dxi-column>
+      <dxi-column dataField="trackingNumber" [width]="300" caption="Tracking Number"></dxi-column>
+      <dxi-column dataField="originMfg" caption="Origin Mfg"></dxi-column>
+      <dxi-column dataField="state" caption="State"></dxi-column>
+
+      <dxi-column dataField="specShorthand"
+                  caption="Spec"
+                  [calculateSortValue]="specSortingValue"
+                  [calculateGroupValue]="specSortingValue"
+                  [sortingMethod]="specSorting"
+                  groupCellTemplate="specGroupTemplate"
+      ></dxi-column>
+      <div *dxTemplate="let data of 'specGroupTemplate'">
+        {{data.column.caption}}: {{getSpecGroupValue(data.value)}}
+      </div>
+
+      <dxi-column *ngIf="inventoryAuditService.uniquePriceSystem" dataField="qty" caption="Qty" headerCellTemplate="qtyTooltip"></dxi-column>
+      <dxi-column dataField="allocated"></dxi-column>
+      <dxi-column dataField="costBasisPerUOM" caption="Cost Basis / UoM"></dxi-column>
+      <dxi-column dataField="value"></dxi-column>
+      <dxi-column dataField="purchaseDate" dataType="date"></dxi-column>
+      <dxi-column dataField="landedDate" [visible]="false" dataType="date"></dxi-column>
+      <dxi-column dataField="custodyDate" [visible]="false" dataType="date"></dxi-column>
+      <dxi-column dataField="soldDate" [visible]="false" dataType="date"></dxi-column>
+
+
+      <div *dxTemplate="let info of 'qtyTooltip'">
+        <div [matTooltip]="inventoryAuditService.uniquePriceSystem">{{info.column.caption}}</div>
+      </div>
+
+      <dxi-column dataField="seasoning" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="pattern" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="species" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="subspecies" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="grade" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="subGrade" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="cutType" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="thickness" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="length" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="lengthInInch" [allowSearch]="false" [visible]="false"></dxi-column>
+      <dxi-column dataField="width" [allowSearch]="false" [visible]="false"></dxi-column>
+
+    </dx-data-grid>
+
+  </div>
+
+  <ng-template #NoChartData>
+    <div class="no-data" *ngIf="normalizedInventoryChartData; else NotLoaded">
+      <h4>There are no Products in the Inventory matching your filter specifications.</h4>
+    </div>
+    <ng-template #NotLoaded>
+      <div class="no-data">
+        <h4>Please specify filters and press RUN to generate the report.</h4>
+      </div>
+    </ng-template>
+  </ng-template>
+
+</div>
+
+<span
+  style="visibility: hidden; position: fixed"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="inventoryMenu"></span>
+<mat-menu #inventoryMenu="matMenu" class="inventory-menu-wrapper" (closed)="onClosedMenu()">
+  <button mat-menu-item (click)="openProductLotDetails()">Open Lot Details</button>
+  <button mat-menu-item (click)="openLotInNewTab()">Open in new tab</button>
+  <button mat-menu-item (click)="openLotInNewWindow()" >Open in new window</button>
+</mat-menu>

@@ -1,0 +1,57 @@
+<table>
+  <thead>
+    <tr>
+      <th class="term">FOB Term</th>
+      <th class="payment">Who Pays Freight</th>
+      <th class="cost">Who Bears The Coast</th>
+      <th class="in-transit">Who Owns Freight In-Transit</th>
+      <th class="risk">Who Assumes Transit Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td class="term">FOB Destination, Freight Prepaid</td>
+    <td class="payment">Shipper</td>
+    <td class="cost">Shipper</td>
+    <td class="in-transit">Shipper</td>
+    <td class="risk">Shipper</td>
+  </tr>
+  <tr>
+    <td class="term">FOB Destination, Freight Collect</td>
+    <td class="payment">Receiver</td>
+    <td class="cost">Receiver</td>
+    <td class="in-transit">Shipper</td>
+    <td class="risk">Shipper</td>
+  </tr>
+  <tr>
+    <td class="term">FOB Origin, Freight Prepaid</td>
+    <td class="payment">Shipper</td>
+    <td class="cost">Shipper</td>
+    <td class="in-transit">Receiver</td>
+    <td class="risk">Receiver</td>
+  </tr>
+  <tr>
+    <td class="term">FOB Origin, Freight Collect</td>
+    <td class="payment">Receiver</td>
+    <td class="cost">Receiver</td>
+    <td class="in-transit">Receiver</td>
+    <td class="risk">Receiver</td>
+  </tr>
+  <tr>
+    <td class="term">FOB Origin, Freight Prepaid and Charged Back</td>
+    <td class="payment">Shipper (adds fee to invoice)</td>
+    <td class="cost">Receiver</td>
+    <td class="in-transit">Receiver</td>
+    <td class="risk">Receiver</td>
+  </tr>
+
+  <tr>
+    <td class="term">FOB Destination, Freight Prepaid and Charged Back</td>
+    <td class="payment">Shipper (adds fee to invoice)</td>
+    <td class="cost">Receiver</td>
+    <td class="in-transit">Shipper</td>
+    <td class="risk">Shipper</td>
+  </tr>
+
+  </tbody>
+</table>

@@ -1,0 +1,6 @@
+<div [ngClass]="{'text-danger': isModified}">
+  {{userData?.firstName}} {{userData?.lastName}}<br>
+  {{userData?.username}}<br>
+  {{userData?.workPhone ? userData.callingCode : ''}}
+  {{userData?.workPhone}}
+</div>

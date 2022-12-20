@@ -1,0 +1,42 @@
+<div class="wrapper">
+  <div class="header-wrapper">
+    <p>{{labelsHeader}}</p>
+  </div>
+
+  <app-table-base  *ngIf="labelsData?.length; else NoLabels" class="striped">
+    <ng-container header>
+      <tr class="header">
+        <th class="label-name">Label Name</th>
+        <th class="label-description">Description</th>
+        <th></th>
+      </tr>
+    </ng-container>
+
+    <ng-container body>
+      <tr *ngFor="let label of labelsData" class="body-row">
+        <td class="label-name"><div [ngStyle]="{'background-color': label.color}">{{label.name}}</div></td>
+        <td class="label-description">{{label.description}}</td>
+        <td>
+          <app-table-actions [data]="label"
+                             [actions]="actions"
+                             (action)="onTableAction($event, label)"
+          ></app-table-actions>
+        </td>
+      </tr>
+    </ng-container>
+  </app-table-base>
+
+  <ng-template #NoLabels>
+    <div class="no-data-plate">
+      <h3>There are no labels in this section</h3>
+      <h4 *ngIf="permissions.canCreate">You can add new label using the button below</h4>
+    </div>
+  </ng-template>
+
+  <mat-action-row *ngIf="permissions.canCreate">
+    <div *ngIf="labelsData?.length >= 100; else AddMoreLabels" class="max-labels-text">The maximum limit of 100 labels for this section is met. Please optimize already existing labels.</div>
+    <ng-template #AddMoreLabels>
+      <app-button icon="add" (clicked)="addLabel()">Add New</app-button>
+    </ng-template>
+  </mat-action-row>
+</div>

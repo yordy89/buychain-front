@@ -1,0 +1,48 @@
+<app-inventory-streamline *ngIf="inventoryView === InventoryViewEnum.ProductView"
+                          [inventoryView]="inventoryView"
+                          (inventoryViewChanged)="inventoryViewChanged($event)"
+></app-inventory-streamline>
+
+<app-inventory-search *ngIf="inventoryView === InventoryViewEnum.MasterView"
+                      [onAction]="productActions"
+                      [inventoryView]="inventoryView"
+                      (inventoryViewChanged)="inventoryViewChanged($event)"
+></app-inventory-search>
+
+<span
+  style="visibility: hidden; position: fixed"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="inventoryMenu"></span>
+<mat-menu #inventoryMenu="matMenu" (closed)="onClosedMenu()">
+  <div class="inventory-menu-wrapper">
+    <button mat-menu-item (click)="openProductLotDetails()">Open Details</button>
+    <button mat-menu-item (click)="openLotInNewTab()">Open in new tab</button>
+    <button mat-menu-item (click)="openLotInNewWindow()" >Open in new window</button>
+    <button *ngIf="isMarketDataEnabled" mat-menu-item (click)="openHistoricalPriceDetails()">Historical Price</button>
+    <button *ngIf="isVisibleShowContractItems" mat-menu-item (click)="onShowContractItems()">Show Contract Items</button>
+
+    <hr>
+
+    <button mat-menu-item (click)="onAddToCart()">Add To Cart</button>
+    <button mat-menu-item (click)="onAddToOrder()">Add to Order</button>
+
+    <ng-container *appShowContract>
+      <button *ngIf="isVisibleConvertToCash" mat-menu-item (click)="onCloseContract()">Convert To Cash</button>
+    </ng-container>
+
+    <hr>
+
+    <button *ngIf="userPermissions.canCreateTransactions" mat-menu-item (click)="createNewTransaction()">Create New Transaction</button>
+    <div *ngIf="userPermissions.canUpdateTally">
+      <p>Add Product Lot To Transaction</p>
+      <div class="transactions-wrapper">
+        <div class="tx-wrapper" *ngFor="let transaction of availableTransactions" (click)="addLotToTransactionTally(transaction)">
+          <button mat-menu-item>{{transaction.transactionNumber}}</button>
+          <span class="description">{{transaction.tally.contentDescription}}</span>
+        </div>
+      </div>
+      <p *ngIf="availableTransactions?.length === 0">No available Transactions</p>
+    </div>
+  </div>
+</mat-menu>

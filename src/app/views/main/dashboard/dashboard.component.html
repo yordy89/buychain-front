@@ -1,0 +1,15 @@
+<div class="wrapper">
+
+  <div class="top-actions" *ngIf="!isProduction">
+    <mat-button-toggle-group appearance="legacy" [value]="dataSource" (change)="onChangeSource($event)">
+      <mat-button-toggle [value]="dataSourceEnum.REAL">Real Data</mat-button-toggle>
+      <mat-button-toggle [value]="dataSourceEnum.MOCK">Mock Data</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <h4 class="text-center">{{title}}</h4>
+
+  <div class="dashboard-section">
+    <router-outlet></router-outlet>
+  </div>
+</div>

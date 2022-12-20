@@ -1,0 +1,109 @@
+.negative-state-container {
+  background-color: rgba(var(--palette-warn-700), 1);
+  justify-content: center;
+  margin-top: 5px;
+
+  p {
+    text-align: center;
+    margin: 0;
+    padding: 10px 0;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 3;
+  }
+
+  .change-details {
+    text-align: center;
+    padding-bottom: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+  }
+}
+
+.transaction-state-container {
+  display: flex;
+  flex-wrap: nowrap;
+
+  .state-box {
+    background: rgb(var(--palette-primary-100), 1);
+    height: 60px;
+    margin-right: 5px;
+    margin-top: 5px;
+    position: relative;
+    min-width: 80px;
+    width: 16.2%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    &::after {
+      z-index: 2;
+      border-left: 30px solid rgb(var(--palette-primary-100), 1);
+      border-top: 30px solid transparent;
+      border-bottom: 30px solid transparent;
+      content: '';
+      height: 0;
+      position: absolute;
+      right: -30px;
+      top: 0;
+      width: 0;
+    }
+
+    p {
+      margin: 0;
+      padding: 10px;
+      padding-left: 34px;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 3;
+      color: rgb(var(--palette-primary-500), 1);
+    }
+  }
+
+  .passed {
+    background: rgb(var(--palette-primary-500), 1);
+
+    p {
+      color: white;
+    }
+
+    &.state-box::after {
+      z-index: 2;
+      border-left: 30px solid rgb(var(--palette-primary-500), 1);
+      border-top: 30px solid transparent;
+      border-bottom: 30px solid transparent;
+      content: '';
+      height: 0;
+      position: absolute;
+      right: -30px;
+      top: 0;
+      width: 0;
+    }
+  }
+
+  .last {
+    &.state-box::after {
+      content: unset;
+    }
+
+    &.passed::after {
+      border-color: rgb(var(--palette-primary-500), 1) !important;
+    }
+  }
+
+  .not-first {
+    &.state-box::before {
+      z-index: 1;
+      border-left: 30px solid rgba(var(--palette-background-dialog), 1);
+      border-top: 30px solid transparent;
+      border-bottom: 30px solid transparent;
+      content: '';
+      height: 0;
+      position: absolute;
+      left: 0;
+      width: 0;
+    }
+  }
+}

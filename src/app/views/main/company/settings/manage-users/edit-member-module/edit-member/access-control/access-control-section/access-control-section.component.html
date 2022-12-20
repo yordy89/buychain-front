@@ -1,0 +1,36 @@
+<div class="header-section" *ngIf="accessControlSection.sectionName">
+  <div class="section-name">{{accessControlSection.sectionName}}</div>
+  <div class="scope">
+    <div class="scope-values-holder" *ngIf="limitedScope; else CompleteScope">
+      <div class="scope-value" *ngFor="let value of limitedScopeValues">{{value | stringUnderscoreToSpaceTitleCase}}</div>
+    </div>
+    <ng-template #CompleteScope>
+      <div class="scope-values-holder" [ngClass]="{'is-limited-owner': isLimitedOwner()}">
+        <div class="scope-value" *ngFor="let access of accessControlSection.sectionAllowedValues">
+          {{access.value | stringUnderscoreToSpaceTitleCase}}
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <div class="description">Description</div>
+</div>
+<hr *ngIf="accessControlSection.sectionName">
+<div class="content-section">
+  <div class="function-unit" *ngFor="let access of accessFunctions">
+    <div class="function-name">{{access.object.groupName}}</div>
+    <div class="scope">
+      <mat-radio-group
+        class="profile-radio-group"
+        (change)="updateAccessControlRoles(access.object, $event)"
+        [ngClass]="{'is-public': isPublic(), 'is-limited-owner': isLimitedOwner()}"
+        [disabled]="disabledMode"
+        [(ngModel)]="accessControlSection.sectionGroup[access.key].value">
+        <mat-radio-button
+          class="profile-radio-button"
+          color="primary" *ngFor="let scope of accessControlSection.sectionAllowedValues" [value]="scope.value">
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="description">{{access.object.description}}</div>
+  </div>
+</div>

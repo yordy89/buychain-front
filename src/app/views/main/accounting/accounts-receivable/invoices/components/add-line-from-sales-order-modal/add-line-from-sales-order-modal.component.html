@@ -1,0 +1,65 @@
+<app-modal-base header="Add Line Items From Sales Order">
+  <ng-container content>
+    <h4 class="mt-0">Line Items</h4>
+    <dx-data-grid
+      #lineItemsGrid
+      [dataSource]="data.openLineItems"
+      [showBorders]="true"
+      [remoteOperations]="false"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [allowColumnReordering]="false"
+      [rowAlternationEnabled]="true"
+      [columnHidingEnabled]="true"
+      [columnAutoWidth]="true"
+    >
+      <dxo-selection
+        mode="multiple"
+        showCheckBoxesMode="always"
+      ></dxo-selection>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-load-panel [enabled]="false"></dxo-load-panel>
+      <dxo-scrolling mode="standard" [useNative]="true"></dxo-scrolling>
+
+      <dxi-column dataField="type" cellTemplate="typeCellTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'typeCellTemplate'">
+        {{data.value | stringUnderscoreToSpaceTitleCase}}
+      </div>
+
+      <dxi-column dataField="description" cellTemplate="descriptionTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'descriptionTemplate'">
+        <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+          {{data.value}}
+        </div>
+      </div>
+
+      <dxi-column dataField="quantity" caption="Qty"></dxi-column>
+      <dxi-column dataField="units" caption="Units Of Measure"></dxi-column>
+
+      <dxi-column dataField="perUnitAmount" caption="Per Unit Amount">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+      <dxi-column dataField="revenue" caption="Extended Price/Receivable">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+      <dxi-column dataField="expense" caption="Cost Of Sale">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+      <dxi-column dataField="profit" width="100" caption="Profit">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+    </dx-data-grid>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button
+      [isDisabled]="!selectedLineItems?.length"
+      [isPrimary]="true"
+      [isNarrow]="true"
+      (clicked)="addLineItemsToInvoice()">
+      Add
+    </app-button>
+  </ng-container>
+</app-modal-base>

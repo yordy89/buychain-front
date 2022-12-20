@@ -1,0 +1,325 @@
+<app-filter-grid-layout *ngIf="isLoaded && permissions.canRead"
+                        header="Sales Orders"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()"
+>
+  <ng-container right-side-button-section>
+    <app-bookmark [viewKey]="viewKey"
+                  [currentState]="viewState"
+                  [defaultState]="defaultState"
+                  (stateChanged)="onViewStateChanged($event)"
+    ></app-bookmark>
+
+    <app-button *ngIf="permissions.canCreate"
+                (clicked)="onAddSalesOrder()"
+                [isPrimary]="true"
+                icon="add"
+    >New Sales Order
+    </app-button>
+  </ng-container>
+
+  <ng-container filter-section>
+    <app-sales-orders-filters
+      [filters]="viewState.filters"
+      [filtersState]="viewState.filtersState"
+      [crmAccounts]="crmAccountsList"
+      [members]="members"
+      [groupsList]="groupsList"
+    ></app-sales-orders-filters>
+
+    <div class="text-center">
+      <app-button
+        [matTooltip]="allLoaded && !isFiltersChanged() ? 'All the sales order for the specified filters are loaded.' : ''"
+        [isNarrow]="true"
+        [isPrimary]="true"
+        [isDisabled]="!isFiltersChanged()"
+        (clicked)="searchSalesOrders()">
+        {{isFiltersChanged() || allLoaded ? 'Run Query' : 'Load More'}}
+      </app-button>
+    </div>
+  </ng-container>
+
+  <ng-container main-section>
+    <div class="grid-container">
+      <app-sales-order-table-chart *ngIf="isChartVisible"
+                                   [items]="salesOrdersList"
+                                   (closed)="onCloseChart()"
+      ></app-sales-order-table-chart>
+
+      <dx-data-grid #grid
+                    [visible]="!isChartVisible"
+                    [dataSource]="salesOrdersList"
+                    [showBorders]="true"
+                    [remoteOperations]="false"
+                    [allowColumnResizing]="true"
+                    columnResizingMode="widget"
+                    [allowColumnReordering]="true"
+                    [rowAlternationEnabled]="false"
+                    [columnHidingEnabled]="true"
+                    [hoverStateEnabled]="true"
+                    [columnAutoWidth]="true"
+                    [focusedRowEnabled]="true"
+                    keyExpr="id"
+                    (onToolbarPreparing)="onToolbarPreparing($event)"
+                    (onContentReady)="onContentReady()"
+                    (onExporting)="onExporting($event)"
+      >
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-search-panel [visible]="true"></dxo-search-panel>
+        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+        <dxo-scrolling mode="standard" [useNative]="true"></dxo-scrolling>
+        <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+        <dxo-master-detail [enabled]="true" template="itemDetailsTemplate"></dxo-master-detail>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-state-storing [enabled]="true"
+                           type="custom"
+                           [customLoad]="loadGridState"
+                           [customSave]="saveGridState"
+                           [savingTimeout]="100"
+        ></dxo-state-storing>
+
+        <dxi-column
+                    [allowHiding]="false"
+                    [allowGrouping]="false"
+                    [width]="40"
+                    cellTemplate="actionsTemplate"
+        ></dxi-column>
+        <div *dxTemplate="let item of 'actionsTemplate'">
+          <app-table-actions *ngIf="item.data"
+                             [data]="item.data"
+                             [actions]="mainActions"
+                             (action)="onAction($event, item.data)"
+          ></app-table-actions>
+        </div>
+
+        <div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+          <app-table-results-text [visibleRows]="visibleRows" [results]="salesOrdersList?.length"></app-table-results-text>
+        </div>
+
+        <div *dxTemplate="let details of 'itemDetailsTemplate'">
+          <div class="section-header">Invoices</div>
+          <dx-data-grid
+            [dataSource]="details.data?.invoices || []"
+            [showBorders]="true"
+            [remoteOperations]="false"
+            [allowColumnResizing]="true"
+            columnResizingMode="widget"
+            [allowColumnReordering]="false"
+            [rowAlternationEnabled]="true"
+            [columnHidingEnabled]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+          >
+            <dxo-scrolling mode="standard" [useNative]="true"></dxo-scrolling>
+
+            <dxi-column [allowReordering]="false"
+                        [allowHiding]="false"
+                        [allowGrouping]="false"
+                        [width]="40"
+                        cellTemplate="actionsTemplate"
+                        ></dxi-column>
+            <div *dxTemplate="let item of 'actionsTemplate'">
+              <app-table-actions *ngIf="item.data"
+                                [data]="item.data"
+                                [actions]="invoiceActions"
+                                (action)="onInvoiceAction($event, {invoice: item.data, salesOrderId: details.data.id})"
+              ></app-table-actions>
+            </div>
+
+            <dxi-column dataField="number" alignment="left" width="100px" cellTemplate="numberTemplate"></dxi-column>
+            <div *dxTemplate="let data of 'numberTemplate'">
+              <app-copy-text-button
+                class="small"
+                [text]="data.value"
+                [valueToCopy]="getInvoiceUrl(data.data.id)"
+                successMessage="Link to Invoice copied to clipboard"
+              ></app-copy-text-button>
+            </div>
+
+            <dxi-column dataField="invoiceDate" dataType="date" caption="Invoice Date"></dxi-column>
+            <dxi-column dataField="dueDate" dataType="date" caption="Due Date"></dxi-column>
+
+            <dxi-column dataField="sinceIssue" caption="Since Issue (Days)"></dxi-column>
+            <dxi-column dataField="pastDue" caption="Past Due (Days)"></dxi-column>
+
+            <dxi-column dataField="state" caption="Status" cellTemplate="stateTemplate"></dxi-column>
+            <div *dxTemplate="let data of 'stateTemplate'">
+							<span class="badge" [ngClass]="data?.data?.stateBadgeClass">
+								{{data?.data?.isClosedWriteOff ? 'Written Off' : (data?.value || '' | stringUnderscoreToSpaceTitleCase) }}
+							</span>
+            </div>
+
+            <dxi-column dataField="age" caption="Age"></dxi-column>
+            <dxi-column dataField="unbilled" caption="Unbilled">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>
+            <dxi-column dataField="unpaid" caption="Billed/Unpaid">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>
+            <dxi-column dataField="paid" caption="Billed/Paid">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>
+            <dxi-column dataField="total" caption="Total">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>   
+
+          </dx-data-grid>
+
+
+          <div class="section-header">Unassigned Items</div>
+          <dx-data-grid
+            [dataSource]="details.data?.openLineItems || []"
+            [showBorders]="true"
+            [remoteOperations]="false"
+            [allowColumnResizing]="true"
+            columnResizingMode="widget"
+            [allowColumnReordering]="false"
+            [rowAlternationEnabled]="true"
+            [columnHidingEnabled]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+          >
+            <dxo-scrolling mode="standard" [useNative]="true"></dxo-scrolling>
+            <dxi-column [allowReordering]="false"
+                        [allowHiding]="false"
+                        [allowGrouping]="false"
+                        [width]="40"
+                        cellTemplate="actionsTemplate"
+                        ></dxi-column>
+            <div *dxTemplate="let item of 'actionsTemplate'">
+              <app-table-actions *ngIf="item.data"
+                                [data]="item.data"
+                                [actions]="unassignedItemActions[details.data.id]"
+                                (action)="onUnassignedItemAction($event, {lineItem: item.data, salesOrderId: details.data.id})"
+              ></app-table-actions>
+            </div>
+
+            <dxi-column dataField="type" cellTemplate="typeCellTemplate"></dxi-column>
+            <div *dxTemplate="let item of 'typeCellTemplate'">
+              {{item.value | stringUnderscoreToSpaceTitleCase}}
+            </div>
+
+            <dxi-column dataField="quantity" caption="Qty" dataType="number" alignment="left"></dxi-column>
+            <dxi-column dataField="units"></dxi-column>
+            <dxi-column dataField="salesPrice" caption="Sales Price/UoM">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>
+
+            <dxi-column dataField="description" width="300px" cellTemplate="descriptionTemplate"></dxi-column>
+            <div *dxTemplate="let data of 'descriptionTemplate'">
+              <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+                {{data.value}}
+              </div>
+            </div>
+
+            <dxi-column dataField="receivable.amount" caption="Receivable Amount">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>
+            <dxi-column dataField="costOfSale.amount" caption="Cost of Sale Amount">
+              <dxo-format type="currency" [precision]="2"></dxo-format>
+            </dxi-column>
+            
+          </dx-data-grid>
+        </div>
+
+        <dxi-column type="detailExpand" width="30px" [fixed]="true" [allowResizing]="false" fixedPosition="left" headerCellTemplate="detailExpandHeaderCellTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'detailExpandHeaderCellTemplate'" class="dx-command-expand dx-datagrid-group-space dx-datagrid-expand dx-selection-disabled" (click)="onToggleDetailRowsExpandState()">
+          <div [ngClass]="{
+						'dx-datagrid-group-closed': !isExpandedAllDetailRows,
+						'dx-datagrid-group-opened': isExpandedAllDetailRows
+					}"></div>
+        </div>
+
+        <dxi-column dataField="number" alignment="left" width="100px" cellTemplate="numberTemplate" [allowGrouping]="false"></dxi-column>
+        <div *dxTemplate="let data of 'numberTemplate'">
+          <app-copy-text-button
+            class="small"
+            [text]="data.value"
+            [valueToCopy]="getSalesOrderUrl(data.data.id)"
+            successMessage="Link to Sales Order copied to clipboard"
+          ></app-copy-text-button>
+        </div>
+
+        <dxi-column
+          dataField="state"
+          caption="Status"
+          cellTemplate="stateTemplate"
+          groupCellTemplate="groupStateCellTemplate"
+          [calculateGroupValue]="calculateStatusGroupValue"
+        ></dxi-column>
+        <div *dxTemplate="let data of 'stateTemplate'">
+          <span class="badge" [ngClass]="data.data.badgeClass">{{data.value | stringUnderscoreToSpaceTitleCase}}</span>
+        </div>
+        <div *dxTemplate="let data of 'groupStateCellTemplate'">
+          {{data.column.caption}}:
+          <ng-container *ngIf="data.value.split(':')[1] as stateValue">
+            <span [ngClass]="[stateTextClass(stateValue)]">{{stateValue | stringUnderscoreToSpaceTitleCase}}</span>
+          </ng-container>
+        </div>
+
+        <dxi-column dataField="customer.company" caption="Customer" [calculateDisplayValue]="calculateDisplayCustomerValue"></dxi-column>
+
+        <dxi-column dataField="description" width="150px" cellTemplate="descriptionTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'descriptionTemplate'">
+          <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+            {{data.value}}
+          </div>
+        </div>
+
+        <dxi-column dataField="owner" caption="Sales Rep" [calculateDisplayValue]="calculateDisplaySalesRepValue"></dxi-column>
+
+        <dxi-column dataField="unbilled" caption="Unbilled">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="unpaid" caption="Billed/Unpaid">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="paid" caption="Billed/Paid">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="total" caption="Total Sales Order">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="revenue" caption="Revenue" [visible]="false">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="expense" caption="Expense" [visible]="false">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="profit" caption="Estimated Profit" [visible]="false">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="transaction" width="100px" cellTemplate="transactionTemplate" [visible]="false" [allowGrouping]="false"></dxi-column>
+        <div *dxTemplate="let data of 'transactionTemplate'">
+          <app-copy-text-button
+            *ngIf="data.data.transaction"
+            class="small"
+            [hexText]="data.value"
+            [valueToCopy]="getTransactionUrl(data.data.transaction)"
+            successMessage="Link to this transaction copied to clipboard."
+          ></app-copy-text-button>
+        </div>
+
+        <dxi-column dataField="dimension" caption="Dimension" [calculateDisplayValue]="calculateDisplayDimensionValue" [visible]="false"></dxi-column>
+        <dxi-column dataField="createdBy" [calculateDisplayValue]="calculateDisplayCreatedByValue" [visible]="false"></dxi-column>
+        <dxi-column dataField="modifiedBy" [calculateDisplayValue]="calculateDisplayModifiedByValue" [visible]="false"></dxi-column>
+        <dxi-column dataField="createdAt" dataType="date" caption="Created On" [visible]="false"></dxi-column>
+        <dxi-column dataField="updatedAt" dataType="date" caption="Modified On" [visible]="false"></dxi-column>
+        <dxi-column dataField="group" caption="Group" [calculateDisplayValue]="calculateDisplayGroupValue" [visible]="false"></dxi-column>
+      </dx-data-grid>
+    </div>
+  </ng-container>
+</app-filter-grid-layout>
+
+<ng-container *ngIf="!permissions.canRead">
+  <div class="no-data">You do not have enough permissions for this section</div>
+</ng-container>

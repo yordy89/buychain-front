@@ -1,0 +1,48 @@
+<mat-card *ngIf="permissions.canRead; else NoReadAccess" class="mat-elevation-z2">
+  <mat-card-header>
+    <mat-card-title>{{title}}</mat-card-title>
+
+    <button *ngIf="isViewState && creditMemo?.isEditDeleteAllowed && permissions.canUpdate" color="primary" mat-icon-button title="Edit" (click)="onEdit()" tabindex="-1">
+      <mat-icon>mode_edit</mat-icon>
+    </button>
+
+    <button *ngIf="!isAddState && !isApplyState" color="primary" mat-icon-button title="Log" (click)="onOpenLog()" tabindex="-1">
+      <mat-icon>list_alt</mat-icon>
+    </button>
+
+    <button color="primary" mat-icon-button title="Close" (click)="onClose()" tabindex="-1">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <app-view-credit-memo *ngIf="isViewState && isLoaded"
+                          [data]="creditMemo"
+                          [crmAccounts]="crmAccountsList"
+    ></app-view-credit-memo>
+
+    <app-add-edit-credit-memo *ngIf="isLoaded && ((isAddState && permissions.canCreate) || (permissions.canUpdate && isEditState && creditMemo))"
+                              [data]="creditMemo"
+                              [crmAccounts]="crmAccountsList"
+                              [accounts]="accounts"
+                              [salesOrders]="salesOrders"
+                              (resultChange)="onResult($event)"
+                              (back)="onClose()"
+                              [editMode]="isEditState"
+    ></app-add-edit-credit-memo>
+
+    <app-apply-credit-memo *ngIf="isLoaded && (isApplyState && permissions.canApply)"
+                            [salesOrder]="salesOrder"
+                            [creditMemos]="creditMemosToApply"
+                            [crmAccounts]="crmAccountsList"
+                            [accounts]="accounts"
+                            (resultChange)="onResult($event)"
+                            (back)="onClose()"
+    ></app-apply-credit-memo>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #NoReadAccess>
+  <div class="no-data">You do not have enough permissions for this section</div>
+</ng-template>
+

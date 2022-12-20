@@ -1,0 +1,31 @@
+<div class="auth-container">
+
+  <div class="left-side">
+    <div class="d-flex justify-content-center flex-direction-column">
+      <app-company-logo-section></app-company-logo-section>
+
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <div class="right-side">
+    <app-marketing-content *ngIf="!isCustomDomain"></app-marketing-content>
+
+    <div class="glass-image" *ngIf="isCustomDomain"
+      [ngStyle]="{backgroundImage: 'url(/assets/images/alternative-session-glass.jpg)'}">
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="!isSupportedResolution" class="unsupported-overlay">
+  <img src="/assets/images/buyChain-logo.png">
+  <h3>BuyChain Mobile</h3>
+  <h4>Coming soon...</h4>
+</div>
+
+<div *ngIf="isSupportedResolution && requestToRotate" class="rotate-overlay">
+  <img src="/assets/images/ipad-landscape-portrait-256x256.png">
+  <h3>Please rotate your screen</h3>
+  <h4>We support landscape mode only</h4>
+</div>

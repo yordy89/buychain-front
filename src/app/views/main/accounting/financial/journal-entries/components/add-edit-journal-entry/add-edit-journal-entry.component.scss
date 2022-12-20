@@ -1,0 +1,94 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+form {
+  margin-right: 10px;
+}
+
+.mat-form-field {
+  a {
+    color: currentcolor;
+  }
+}
+
+.flex-col {
+  > .mat-form-field,
+  > app-autocomplete,
+  > app-tree-selector,
+  > app-chip-list-input {
+    &:not(app-chip-list-input) {
+      height: 80px;
+    }
+
+    width: 240px;
+    display: block;
+  }
+}
+
+.lines-container {
+  background: #fff;
+  padding: 15px 16px 0;
+  margin-bottom: 15px;
+  transform: translateX(-16px);
+  width: calc(100% + 42px);
+
+  @include mat_css_dark-theme {
+    background-color: #424242;
+  }
+
+  h4 {
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+
+  .lines-list {
+    margin-bottom: 15px;
+  }
+
+  .bottom-info-row {
+    padding: 5px 0 10px;
+
+    .mat-divider {
+      position: static;
+    }
+
+    > .flex-col {
+      margin: 0;
+    }
+  }
+}
+
+.add-line-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+
+  &-label {
+    display: inline-block;
+    opacity: 0.5;
+    font-weight: 700;
+    padding: 8px 15px 8px 0;
+  }
+
+  &-value {
+    display: inline-block;
+    padding: 8px 0;
+  }
+}
+
+.difference-text {
+  font-weight: bold;
+  color: rgba(var(--palette-warn-500), 1);
+  text-align: right;
+}
+
+.delete-button-space {
+  margin-left: 15px;
+  width: 40px;
+}

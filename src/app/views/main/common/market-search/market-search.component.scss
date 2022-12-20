@@ -1,0 +1,41 @@
+.companies-filter-wrapper {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+
+  .selected-companies-list {
+    margin-top: 10px;
+  }
+
+  .company {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 15px;
+    background-color: rgba(var(--palette-primary-400), 1);
+    margin-top: 5px;
+
+    .company-label {
+      color: white;
+      padding-top: 2px;
+      padding-left: 4px;
+    }
+
+    .mat-icon {
+      color: white;
+
+      &:hover {
+        cursor: pointer;
+        color: rgba(var(--palette-warn-300), 1);
+      }
+    }
+  }
+}
+
+.no-linked-crm-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}

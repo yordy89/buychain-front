@@ -1,0 +1,44 @@
+{
+  "compileOnSave": false,
+  "include": [
+    "src/**/*.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "module": "es2020",
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@views/*": ["./src/app/views/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
+      "@services/*": ["./src/app/services/*"],
+      "@directives/*": ["./src/app/directives/*"],
+      "@validators/*": ["./src/app/validators/*"],
+      "@env/*": ["./src/environments/*"],
+      "@assets/*": ["./src/assets/*"],
+      "stream": [
+        "./node_modules/stream-browserify"
+      ]
+    },
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "target": "es2020",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

@@ -1,0 +1,50 @@
+<app-modal-base header="Add Line Items From Purchase Order">
+  <ng-container content>
+    <h4 class="mt-0">Line Items</h4>
+    <dx-data-grid
+      #lineItemsGrid
+      [dataSource]="data.openLineItems"
+      [showBorders]="true"
+      [remoteOperations]="false"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [allowColumnReordering]="false"
+      [rowAlternationEnabled]="true"
+      [columnHidingEnabled]="true"
+      [columnAutoWidth]="true"
+    >
+      <dxo-selection
+        mode="multiple"
+        showCheckBoxesMode="always"
+      ></dxo-selection>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-load-panel [enabled]="false"></dxo-load-panel>
+      <dxo-scrolling mode="standard" [useNative]="true"></dxo-scrolling>
+
+      <dxi-column dataField="description" width="40%" cellTemplate="descriptionTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'descriptionTemplate'">
+        <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+          {{data.value}}
+        </div>
+      </div>
+
+      <dxi-column dataField="quantity" caption="Qty"></dxi-column>
+
+      <dxi-column dataField="amount" caption="Amount">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+    </dx-data-grid>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button
+      [isDisabled]="!selectedLineItems?.length"
+      [isPrimary]="true"
+      [isNarrow]="true"
+      (clicked)="addLineItemsToBill()">
+      Add
+    </app-button>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,171 @@
+<form *ngIf="!editMode || editMode && data"
+      [formGroup]="form"
+      novalidate
+      (keydown.enter)="onEnter($event)"
+>
+  <div class="vendor-section">
+    <div class="content-wrapper">
+      <app-table-base [formGroup]="vendorFormGroup" headingText="Vendor">
+        <ng-container header>
+          <tr>
+            <th>Company</th>
+            <th>Ship To Location</th>
+            <th>Ship To Contact</th>
+            <th>Bill To Location</th>
+            <th>Bill To Contact</th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr class="body-row">
+            <td class="editable">
+              <app-select-with-search
+                [form]="vendorCompany"
+                [optionList]="crmAccounts"
+                [displayField]="'name'"
+                [valueField]="'id'">
+              </app-select-with-search>
+            </td>
+            <td class="editable">
+              <mat-form-field
+                *ngIf="shipToLocation.disabled || locations?.length; else noLocations">
+                <mat-select formControlName="shipToLocation">
+                  <mat-option *ngFor="let location of locations" [value]="location.id">
+                    {{location.shortName}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{shipToLocation?.errors | errorMessage}}</mat-error>
+              </mat-form-field>
+              <ng-template #noLocations>
+                    <span class="no-entries-text">No facilities are defined for this company. Please go to the
+                      company settings and add a facility.</span>
+              </ng-template>
+            </td>
+            <td class="editable">
+              <mat-form-field *ngIf="shipToContact.disabled || contacts?.length; else noContacts">
+                <mat-select formControlName="shipToContact">
+                  <mat-option *ngFor="let contact of contacts" [value]="contact.id">
+                    <span *ngIf="contact.firstName">{{contact.firstName}} {{contact.lastName}}</span>
+                    <span *ngIf="!contact.firstName">{{contact.username}}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{shipToContact?.errors | errorMessage}}</mat-error>
+              </mat-form-field>
+              <ng-template #noContacts>
+                    <span class="no-entries-text">No users are defined for this company. Please go to the company and
+                      add a member.</span>
+              </ng-template>
+            </td>
+            <td class="editable">
+              <mat-form-field
+                *ngIf="billToLocation.disabled || locations?.length; else noLocations">
+                <mat-select formControlName="billToLocation">
+                  <mat-option *ngFor="let location of locations" [value]="location.id">
+                    {{location.shortName}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{billToLocation?.errors | errorMessage}}</mat-error>
+              </mat-form-field>
+              <ng-template #noLocations>
+                    <span class="no-entries-text">No facilities are defined for this company. Please go to the
+                      company settings and add a facility.</span>
+              </ng-template>
+            </td>
+            <td class="editable">
+              <mat-form-field *ngIf="billToContact.disabled || contacts?.length; else noContacts">
+                <mat-select formControlName="billToContact">
+                  <mat-option *ngFor="let contact of contacts" [value]="contact.id">
+                    <span *ngIf="contact.firstName">{{contact.firstName}} {{contact.lastName}}</span>
+                    <span *ngIf="!contact.firstName">{{contact.username}}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{billToContact?.errors | errorMessage}}</mat-error>
+              </mat-form-field>
+              <ng-template #noContacts>
+                    <span class="no-entries-text">No users are defined for this company. Please go to the company and
+                      add a member.</span>
+              </ng-template>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+    </div>
+  </div>
+
+  <div class="flex-row top-section-row">
+    <div class="flex-col">
+      <app-tree-selector
+        label="Group"
+        [treeListData]="groups"
+        [control]="getControlFromGroup(form, 'group')"
+        [allowClear]="true"
+        appearance="outline"
+        keyExpr="id"
+        displayKey="name"
+        placeholder="Group"
+        parentExpr="parent"
+        (entered)="onEnter($event)"
+      ></app-tree-selector>
+    </div>
+
+    <div class="flex-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Dimension</mat-label>
+        <mat-select formControlName="dimension">
+          <mat-option *ngFor="let dimension of dimensions" [value]="dimension.id">
+            {{dimension.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error>{{form.get('dimension')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex-row mt-15 description-row">
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Payment Terms</mat-label>
+      <textarea rows="3" matInput placeholder="Payment Terms" formControlName="terms" appNullOnEmpty maxlength="280"></textarea>
+      <mat-error>{{form.get('terms')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="flex-row mt-15 description-row">
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Description</mat-label>
+      <textarea rows="3" matInput placeholder="Description" formControlName="description" appNullOnEmpty required maxlength="280"></textarea>
+      <mat-error>{{form.get('description')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="lines-container flex-row" *ngIf="editMode">
+    <div class="flex-col-2">
+      <app-purchase-order-line-items-grid
+        [purchaseOrder]="data">
+      </app-purchase-order-line-items-grid>
+    </div>
+    <div class="flex-col">
+      <app-purchase-order-bills-grid
+        [purchaseOrder]="data">
+      </app-purchase-order-bills-grid>
+    </div>
+  </div>
+
+  <div class="flex-row mt-15">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload
+        [(attachments)]="attachments"
+        (removeAttachment)="removeAttachment($event)"
+      ></app-accounting-file-upload>
+    </div>
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Notes</mat-label>
+      <textarea rows="3" matInput placeholder="Notes" formControlName="notes" appNullOnEmpty maxlength="500"></textarea>
+      <mat-error>{{form.get('notes')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">Submit</app-button>
+</div>

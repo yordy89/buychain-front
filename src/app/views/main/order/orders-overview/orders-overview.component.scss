@@ -1,0 +1,16 @@
+.chat-column {
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  height: 20px;
+
+  .unread-update-red-dot {
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: rgba(var(--palette-warn-500), 1);
+    top: -2px;
+    right: 10px;
+  }
+}

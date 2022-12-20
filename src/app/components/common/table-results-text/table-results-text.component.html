@@ -1,0 +1,5 @@
+<span>
+  {{(isTablet$ | async) ? '' : 'Showing'}}
+  {{(visibleRows && visibleRows !== results) || visibleRows === 0 ? visibleRows + ' of ' : ''}}
+  {{results || 0}} results
+</span>

@@ -1,0 +1,12 @@
+.settings-wrapper {
+  .information-container {
+    width: 100%;
+    padding: 0 5px;
+    margin-bottom: 20px;
+
+    .content-section {
+      max-height: 500px;
+      overflow: auto;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<app-modal-base header="Comments">
+  <ng-container content>
+    <div class="messages-wrapper">
+      <div class="message-container">
+        <div *ngFor="let message of messages" class="message-item">
+          <app-letter-logo [value]="message.user.profilePictureUrl" [name]="message.user.firstName" [isSmall]="true"></app-letter-logo>
+          <div class="message">
+            <p>
+              <span class="name-field-container">{{message.user?.firstName}} {{message.user?.lastName}}</span>
+              <span class="created-date">{{message?.createdAt | date:'short'}}</span>
+            </p>
+            <p class="message-text">{{message.message}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container actions *ngIf="canAddMessage">
+    <form [formGroup]="messageForm" class="grow-1" (ngSubmit)="submitComment()">
+      <mat-form-field appearance="outline" class="w-100 no-padding">
+        <input matInput placeholder="Write a comment" [formControl]="newMessage">
+        <mat-error>{{newMessage?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </form>
+
+    <app-button
+        [matTooltip]="canAddMessage ? '' : 'You do not have enough permissions for this action'"
+        [isNarrow]="true"
+        [isPrimary]="true"
+        [isDisabled]="!canAddMessage"
+        (clicked)="submitComment()">Submit
+    </app-button>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,61 @@
+<ng-container *ngIf="invoices">
+  <div class="invoices-data-grid-header">
+    <h4>Invoices</h4>
+    <app-button
+      *ngIf="canAddNewInvoice"
+      (clicked)="onAddInvoice()"
+      [isPrimary]="true"
+      [isNarrow]="true"
+    >New Invoice
+    </app-button>
+  </div>
+
+  <dx-data-grid
+    [dataSource]="invoices"
+    [showBorders]="true"
+    [remoteOperations]="false"
+    [allowColumnResizing]="true"
+    columnResizingMode="widget"
+    [allowColumnReordering]="false"
+    [rowAlternationEnabled]="true"
+    [columnHidingEnabled]="true"
+    [columnAutoWidth]="true"
+  >
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+
+    <dxi-column [calculateCellValue]="getRowData" caption="Number" cellTemplate="assignedCellTemplate" alignment="left"></dxi-column>
+    <div *dxTemplate="let data of 'assignedCellTemplate'">
+      <a [href]="getInvoiceUrl(data.value.id)" target="_blank" class="link-btn">{{data.value.number}}</a>
+    </div>
+
+    <dxi-column dataField="description" width="30%" cellTemplate="descriptionTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'descriptionTemplate'">
+      <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+        {{data.value}}
+      </div>
+    </div>
+
+    <dxi-column dataField="state" caption="Status" cellTemplate="stateTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'stateTemplate'">
+						<span class="badge" [ngClass]="data.data.stateBadgeClass">
+							{{data.data.isClosedWriteOff ? 'Written Off' : (data.value | stringUnderscoreToSpaceTitleCase) }}
+						</span>
+    </div>
+
+    <dxi-column [allowReordering]="false"
+                [allowHiding]="false"
+                [allowGrouping]="false"
+                [width]="40"
+                cellTemplate="invoiceActionsTemplate"
+    ></dxi-column>
+    <div *dxTemplate="let item of 'invoiceActionsTemplate'">
+      <app-table-actions *ngIf="item.data"
+                         [data]="item.data"
+                         [actions]="actions"
+                         (action)="onInvoiceAction($event, item.data)"
+      ></app-table-actions>
+    </div>
+  </dx-data-grid>
+</ng-container>

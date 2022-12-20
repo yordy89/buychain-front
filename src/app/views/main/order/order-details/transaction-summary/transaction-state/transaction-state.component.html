@@ -1,0 +1,18 @@
+<div class="transaction-state-container" *ngIf="!isNegativeState; else NegativeState">
+  <div
+    *ngFor="let state of transactionStatesList; let i = index" class="state-box"
+    [ngClass]="{'passed': i <= transactionStateIndex, 'not-first': i !==0, 'last': i === transactionStatesList.length -1}">
+    <p>{{state | stringUnderscoreToSpaceTitleCase}}</p>
+  </div>
+</div>
+<ng-template #NegativeState>
+  <div class="negative-state-container">
+    <div *ngIf="transactionData.state === TransactionStateEnum.ChangePending">
+      <p>Change Order</p>
+      <div *ngIf="transactionData.changePending?.type === ChangeTransactionTypesEnum.ModifyTransport" class="change-details">Transport Change</div>
+    </div>
+    <div *ngIf="transactionData.state === TransactionStateEnum.Canceled">
+      <p>{{transactionData.state | stringUnderscoreToSpaceTitleCase}}</p>
+    </div>
+  </div>
+</ng-template>

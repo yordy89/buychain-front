@@ -1,0 +1,58 @@
+<div class="transaction-list-wrapper" *ngIf="orderNormalizedTransactions?.length">
+  <div class="row header" [ngClass]="{'sales': isSales}">
+    <div class="transaction-number">Transaction</div>
+    <div class="role">Type</div>
+    <div class="type">{{otherPartyRole | stringUnderscoreToSpaceTitleCase}} Status</div>
+    <div class="transport">Transport</div>
+    <div class="units">Units</div>
+    <div class="weight">Weight</div>
+    <div class="measure">Measure</div>
+    <div class="state">State</div>
+    <div class="ship-date">Ship Date</div>
+    <div class="price">Total</div>
+  </div>
+
+  <mat-expansion-panel *ngFor="let transaction of orderNormalizedTransactions; trackBy: trackByFn"
+                       [togglePosition]="'before'"
+                       [expanded]="expandedTransactionId === transaction.id"
+                       class="content-no-padding"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+          <div class="row">
+            <div class="transaction-number">
+              <app-copy-text-button
+                  class="small"
+                  [hexText]="transaction.id"
+                  [valueToCopy]="transactionUrl"
+                  successMessage="Link to this transaction copied to clipboard."
+              ></app-copy-text-button>
+            </div>
+            <div class="role">{{transaction.type || ''}}</div>
+            <div class="type">{{otherPartyStatus}}</div>
+            <div class="transport">{{transaction.transportType || '--'}}</div>
+            <div class="units">{{transaction.tallyTotalUnitsCount || '--'}}</div>
+            <div class="weight">{{(transaction.tallyTotalWeight | number : '1.0-0') || '--'}}lbs</div>
+            <div class="measure">
+              <ng-container *ngIf="!transaction.hasMixedUomTallyItem && transaction.tallyUnits.length; else blank">
+                {{transaction.tallyTotalMeasureTemporary | number : '1.3' }} {{transaction.measureLabel}}
+              </ng-container>
+              <ng-template #blank>
+                <span>--</span>
+              </ng-template>
+            </div>
+            <div class="state">{{transaction.state | stringUnderscoreToSpaceTitleCase}}</div>
+            <div class="ship-date">{{(transaction.shipDate) | date}}</div>
+            <div class="Total">${{((transaction.totalPrice) | number : '1.0-2') || '--'}}</div>
+          </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <app-transaction-summary
+        [transactionData]="transaction"
+        [currentOrderTransactions$]="currentOrderTransactions$"
+        (transactionDeleted)="onTransactionDelete($event)"
+      ></app-transaction-summary>
+    </ng-template>
+  </mat-expansion-panel>
+</div>

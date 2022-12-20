@@ -1,0 +1,17 @@
+.open-tx-table-container {
+  dx-data-grid {
+    max-height: 450px;
+  }
+
+  .section-header {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: dimgray;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

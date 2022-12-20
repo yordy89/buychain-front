@@ -1,0 +1,331 @@
+<div class="access-controls-wrapper">
+  <mat-tab-group class="styled">
+    <mat-tab label="Profiles">
+      <div class="profiles-wrapper">
+        <form [formGroup]="form">
+          <div class="profiles-selection-section">
+            <div class="header-section">
+              <p class="description-header">Profiles' Descriptions</p>
+              <span class="additional-clarification">Each profile has a set of permissions attached to it. Please select one, and if
+                needed, select Custom - Advanced Settings to add additional permissions to that profile by navigating through
+                tabs.</span>
+            </div>
+            <mat-radio-group
+              class="profile-radio-group"
+              formControlName="accessProfile">
+              <div class="list-item" *ngFor="let profile of accessControlProfiles">
+                <mat-radio-button [disabled]="profile.label === AccessControlProfile.Custom" class="profile-radio-button"
+                                  color="primary" [value]="profile.label">
+                  {{profile.label | stringUnderscoreToSpaceTitleCase}}
+                </mat-radio-button>
+
+                <div class="profile-unit">
+                  <span class="profile-name">{{profile.name}}</span> - <span class="profile-description">{{profile.description}}</span>
+                </div>
+              </div>
+            </mat-radio-group>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+    <mat-tab label="Products">
+      <div class="tab-wrapper">
+        <div class="product-lot-create-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'PRODUCT'"
+            [accessControlSection]="accessControlSystem.PRODUCT.createSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+        <div class="product-lot-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'PRODUCT'"
+            [accessControlSection]="accessControlSystem.PRODUCT.searchSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+        <div class="product-lot-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'PRODUCT'"
+            [accessControlSection]="accessControlSystem.PRODUCT.updateSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Company">
+      <div class="tab-wrapper">
+        <div class="company-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'COMPANY'"
+            [accessControlSection]="accessControlSystem.COMPANY.companySection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+        <div class="company-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'COMPANY'"
+            [accessControlSection]="accessControlSystem.COMPANY.readCompanySection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Group">
+      <div class="tab-wrapper">
+        <div class="groups-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'GROUP'"
+            [accessControlSection]="accessControlSystem.GROUP.groupSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="User">
+      <div class="tab-wrapper">
+        <div class="user-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'COMPANY'"
+            [accessControlSection]="accessControlSystem.COMPANY.userSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+        <div class="user-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'COMPANY'"
+            [accessControlSection]="accessControlSystem.COMPANY.readUsersSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Facility">
+      <div class="tab-wrapper">
+        <div class="facility-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'FACILITY'"
+            [accessControlSection]="accessControlSystem.FACILITY.facilitySection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Rate Table">
+      <div class="tab-wrapper">
+        <div class="rate-table-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'RATE_TABLE'"
+            [accessControlSection]="accessControlSystem.RATE_TABLE.rateTableSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+        <div class="rate-table-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'RATE_TABLE'"
+            [accessControlSection]="accessControlSystem.RATE_TABLE.readRateTableSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+
+      </div>
+    </mat-tab>
+    <mat-tab label="Orders/Transactions">
+      <div class="tab-wrapper">
+        <div class="transaction-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'TRANSACTION'"
+            [accessControlSection]="accessControlSystem.TRANSACTION.transactionSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="CRM">
+      <div class="tab-wrapper">
+        <div class="crm-create-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'CRM_ACCOUNT'"
+            [accessControlSection]="accessControlSystem.CRM_ACCOUNT.createCRMSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+        <div class="crm-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'CRM_ACCOUNT'"
+            [accessControlSection]="accessControlSystem.CRM_ACCOUNT.CRMSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Label">
+      <div class="tab-wrapper">
+        <div class="labels-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'LABEL'"
+            [accessControlSection]="accessControlSystem.LABEL.labelSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Accounting" *ngIf="accountingEnabled">
+      <div class="tab-wrapper">
+        <div class="accounting-section">
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'ACCOUNT'"
+            [accessControlSection]="accessControlSystem.ACCOUNT.accountSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+          <app-access-control-section
+            [userData]="userData"
+            [sectionName]="'DIMENSION'"
+            [accessControlSection]="accessControlSystem.DIMENSION.dimensionSection"
+            [disabledMode]="disabledMode"
+            (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+          <app-access-control-section
+              [userData]="userData"
+              [sectionName]="'JOURNAL_ENTRY'"
+              [accessControlSection]="accessControlSystem.JOURNAL_ENTRY.journalEntrySection"
+              [disabledMode]="disabledMode"
+              (update)="onUpdateSetAccessProfile()"
+          ></app-access-control-section>
+
+          <ng-container *appShowOnEnvs="['DEVELOPMENT', 'DEMO']">
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'INVOICE'"
+                                        [accessControlSection]="accessControlSystem.INVOICE.readInvoiceSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'INVOICE'"
+                                        [accessControlSection]="accessControlSystem.INVOICE.invoiceSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'INVOICE'"
+                                        [accessControlSection]="accessControlSystem.INVOICE.invoiceLineItemSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'INVOICE'"
+                                        [accessControlSection]="accessControlSystem.INVOICE.invoicePaymentSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'SALES_ORDER'"
+                                        [accessControlSection]="accessControlSystem.SALES_ORDER.readSalesOrderSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'SALES_ORDER'"
+                                        [accessControlSection]="accessControlSystem.SALES_ORDER.salesOrderSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'SALES_ORDER'"
+                                        [accessControlSection]="accessControlSystem.SALES_ORDER.salesOrderLineItemSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'BILL'"
+                                        [accessControlSection]="accessControlSystem.BILL.readBillSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'BILL'"
+                                        [accessControlSection]="accessControlSystem.BILL.billSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'BILL'"
+                                        [accessControlSection]="accessControlSystem.BILL.billLineItemSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'BILL'"
+                                        [accessControlSection]="accessControlSystem.BILL.billPaymentSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'PURCHASE_ORDER'"
+                                        [accessControlSection]="accessControlSystem.PURCHASE_ORDER.readPurchaseOrderSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'PURCHASE_ORDER'"
+                                        [accessControlSection]="accessControlSystem.PURCHASE_ORDER.purchaseOrderSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+
+            <app-access-control-section [userData]="userData"
+                                        [sectionName]="'PURCHASE_ORDER'"
+                                        [accessControlSection]="accessControlSystem.PURCHASE_ORDER.purchaseOrderLineItemSection"
+                                        [disabledMode]="disabledMode"
+                                        (update)="onUpdateSetAccessProfile()"
+            ></app-access-control-section>
+          </ng-container>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

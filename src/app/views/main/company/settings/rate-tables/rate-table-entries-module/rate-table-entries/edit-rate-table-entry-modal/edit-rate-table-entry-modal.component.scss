@@ -1,0 +1,22 @@
+.entry-details {
+  display: flex;
+  justify-content: space-between;
+
+  .non-editable-section {
+    width: 50%;
+  }
+
+  .editable-section {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .cost-form-field {
+      width: 100px;
+    }
+  }
+}

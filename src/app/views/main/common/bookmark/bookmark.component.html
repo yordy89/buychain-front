@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <div class="page-view-wrapper">
+    <div class="page-view-text">Page View</div>
+    <div class="icon-and-name"
+         [matMenuTriggerFor]="menu"
+         (menuOpened)="menuOpened = true"
+         (menuClosed)="menuOpened = false"
+    >
+      <app-icon-button [icon]="isAnyActive ? (isActiveModified ? 'star_half' : 'star') : 'star_border'"></app-icon-button>
+      <div class="name">{{activeState?.name || 'Default View State'}}</div>
+      <mat-icon>{{menuOpened ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+    </div>
+  </div>
+  <mat-menu #menu="matMenu" xPosition="before" class="no-max-width">
+    <button mat-menu-item class="saved-bookmark-item" *ngFor="let bookmark of savedBookmarks"
+            [ngClass]="{'selected': selected === bookmark}"
+            (click)="onActivate(bookmark)">
+      <div class="actions">
+        <app-icon-button *ngIf="bookmark.key === activeKey" icon="star" title="In Use"></app-icon-button>
+        <app-icon-button *ngIf="bookmark.key !== activeKey" icon="star_border" title="Load the bookmarks state"></app-icon-button>
+      </div>
+      {{bookmark.name}}
+    </button>
+    <hr>
+    <button mat-menu-item class="saved-bookmark-item" (click)="openEditBookmarksModal()">
+      <app-icon-button icon="edit"></app-icon-button>
+      Edit Page Views</button>
+    <hr>
+    <button mat-menu-item class="saved-bookmark-item" (click)="resetToDefault()">
+      <app-icon-button icon="replay"></app-icon-button>
+      Reset To Default</button>
+  </mat-menu>
+</div>

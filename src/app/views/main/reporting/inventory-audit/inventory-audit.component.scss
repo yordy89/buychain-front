@@ -1,0 +1,23 @@
+.summary-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 10px 100px;
+  margin: 5px 0 10px;
+
+  .summary-unit {
+    .section-label {
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .subsection {
+      width: 150px;
+      margin-left: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}

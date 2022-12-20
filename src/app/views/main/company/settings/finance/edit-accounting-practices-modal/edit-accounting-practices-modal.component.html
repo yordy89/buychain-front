@@ -1,0 +1,58 @@
+<app-modal-base header="Update Accounting Practices">
+  <ng-container content>
+    <form [formGroup]="form">
+      <div class="flex-row align-items-baseline">
+        <div class="flex-col">Inventory Management System: <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.INVENTORY_MANAGEMENT_SYSTEM"></app-tooltip-info-icon></div>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-select
+              [formControl]="inventoryMgmtSystem">
+            <mat-option *ngFor="let option of inventoryMgmtSystemOptions" [value]="option.key">
+              {{option.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row align-items-baseline">
+        <div class="flex-col">Fiscal Year Start: <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.FISCAL_YEAR_START"></app-tooltip-info-icon></div>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-select
+              [formControl]="fiscalYearStart">
+            <mat-option *ngFor="let option of fiscalYearStartOptions" [value]="option.key">
+              {{option.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row align-items-baseline">
+        <div class="flex-col">Revenue Recognition Method: <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.REVENUE_RECOGNITION_METHOD"></app-tooltip-info-icon></div>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-select
+              [formControl]="revenueRecognitionMethod">
+            <mat-option *ngFor="let system of revenueRecognitionMethodOptions" [value]="system.key">
+              {{system.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row align-items-baseline">
+        <div class="flex-col">Auto Invoice Generation: <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.AUTO_INVOICE_GENERATION"></app-tooltip-info-icon>
+        </div>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-select [formControl]="autoInvoicingMethod">
+            <mat-option *ngFor="let option of autoInvoicingMethodOptions" [value]="option.key">
+              {{option.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateAccountingPractices()">Save</app-button>
+  </ng-container>
+</app-modal-base>

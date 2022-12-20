@@ -1,0 +1,85 @@
+<div class="home-container" *ngIf="user">
+
+  <!--****************-->
+  <!--*** Company ****-->
+  <!--****************-->
+  <ng-template [ngIf]="profileCompletionState === ProfileCompletionState.INITIAL">
+    <!--*********************************-->
+    <!--*** Company Creation INITIAL ****-->
+    <!--*********************************-->
+    <div class="section-initial-selection" *ngIf="companyCreationState === CompanyCreationState.INITIAL">
+      <h1>Welcome to BuyChain</h1>
+      <h3>Choose an option below to get started.</h3>
+      <div>
+        <div class="company-select">
+          <button (click)="nextState(CompanyCreationState.COMPANY_JOIN)">Join an Existing Company</button>
+        </div>
+        <div class="company-join">
+          <button (click)="nextState(CompanyCreationState.COMPANY_CREATION)">Create a New Company</button>
+        </div>
+      </div>
+    </div>
+
+    <!--*************************-->
+    <!--*** Company Creation ****-->
+    <!--*************************-->
+    <div class="creation-layout" *ngIf="companyCreationState === CompanyCreationState.COMPANY_CREATION">
+      <div class="company-creation">
+        <h1>Create a New Company</h1>
+        <h3>Provide all of the information below to create a new company in BuyChain.</h3>
+        <app-company-form [parentForm]="form"></app-company-form>
+
+        <div class="action-btn">
+          <button (click)="create()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!--*****************-->
+    <!--**** Member *****-->
+    <!--*****************-->
+    <div class="join-layout" *ngIf="companyCreationState === CompanyCreationState.COMPANY_JOIN">
+      <h1>Join an Existing Company</h1>
+      <h3>Find your company using the search box below.</h3>
+
+      <app-company-join-form *ngIf="companiesSummaryList" [parentForm]="form" [companiesList]="companiesSummaryList"></app-company-join-form>
+
+      <div class="action-btn">
+        <button (click)="join()">Join Company</button>
+      </div>
+      <div class="action-btn">
+        <button (click)="backToInitialState()">Back</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <!--******************-->
+  <!--**** PENDING *****-->
+  <!--******************-->
+  <div class="pending-layout">
+    <div *ngIf="profileCompletionState === ProfileCompletionState.MEMBER">
+      <div class="message">{{CJPendingMsg}}</div>
+    </div>
+  </div>
+  <div class="pending-layout">
+    <div *ngIf="profileCompletionState === ProfileCompletionState.PENDING_COMPANY">
+      <div class="message">{{CCPendingMsg}}</div>
+    </div>
+  </div>
+
+
+  <!--*****************-->
+  <!--*** HOME PAGE ***-->
+  <!--*****************-->
+  <div class="profile-layout" *ngIf="profileCompletionState === ProfileCompletionState.PROFILE">
+
+    <h2>Tell us about yourself.</h2>
+    <app-profile-form [parentForm]="form" [initialData$]="initialData$"></app-profile-form>
+
+    <div class="action-btns-save-profile">
+      <app-button [isPrimary]="true" (clicked)="saveProfile()">Submit and Start Your First Order</app-button>
+    </div>
+
+  </div>
+
+</div>

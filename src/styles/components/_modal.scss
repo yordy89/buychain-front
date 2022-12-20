@@ -1,0 +1,56 @@
+.mat-dialog-container {
+  margin: 3vh 0;
+}
+
+.no-dialog-margin {
+  .mat-dialog-container {
+    margin: 0;
+  }
+}
+
+.mat-dialog-actions {
+  &:empty {
+    display: none;
+  }
+}
+
+.full-screen-dialog {
+  width: 100vw;
+  height: 100vh;
+  max-width: none !important;
+
+  .mat-dialog-container {
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .mat-dialog-content {
+    height: calc(100vh - 70px - 90px) !important;
+  }
+}
+
+.modal-base {
+  .header-actions {
+    .mat-icon-button {
+      margin-left: 10px;
+    }
+
+    .mat-icon {
+      height: 30px;
+      width: 30px;
+      font-size: 30px;
+      line-height: 30px;
+
+      &.close-icon {
+        font-size: 42px;
+        height: 42px;
+        width: 42px;
+        line-height: 42px;
+      }
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+}

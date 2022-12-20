@@ -1,0 +1,60 @@
+<div class="app-grid-container fab-container" *ngIf="templates?.length; else NoTemplates">
+	<dx-data-grid #grid
+	              [dataSource]="templates"
+	              [height]="413"
+	              [showBorders]="true"
+	              [remoteOperations]="false"
+	              [allowColumnResizing]="true"
+	              columnResizingMode="widget"
+	              [allowColumnReordering]="false"
+	              [rowAlternationEnabled]="true"
+	              [columnHidingEnabled]="true"
+	              [hoverStateEnabled]="true"
+	              [columnAutoWidth]="true"
+	              [(selectedRowKeys)]="selectedIds"
+	              (onCellPrepared)="onCellPrepared($event)"
+	              (onSelectionChanged)="selectionChangedHandler($event)"
+	              (onToolbarPreparing)="onToolbarPreparing($event)"
+	>
+		<dxo-paging [enabled]="false"></dxo-paging>
+		<dxo-sorting mode="multiple"></dxo-sorting>
+		<dxo-search-panel [visible]="true"></dxo-search-panel>
+		<dxo-load-panel [enabled]="true"></dxo-load-panel>
+		<dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+		<dxo-group-panel [visible]="true"></dxo-group-panel>
+		<dxo-selection [allowSelectAll]="false" showCheckBoxesMode="always" mode="multiple"></dxo-selection>
+
+		<div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+			<app-table-results-text [visibleRows]="grid.instance.totalCount()" [results]="templates.length"></app-table-results-text>
+		</div>
+
+		<dxi-column dataField="specShorthand" [allowHiding]="false"></dxi-column>
+		<dxi-column dataField="offlineData.organizationId" caption="Selling Company" [calculateCellValue]="calculateSellingCompanyCellValue"></dxi-column>
+		<dxi-column dataField="offlineData.shipFromId" caption="Ship From Location" [calculateCellValue]="calculateShipFromLocationCellValue"></dxi-column>
+		<dxi-column dataField="offlineData.sellingContactId" caption="Selling User" [calculateCellValue]="calculateSellingUserCellValue"></dxi-column>
+		<dxi-column dataField="unitPieceCount"></dxi-column>
+		<dxi-column dataField="listPricePerUoM" caption="List Price ($/UoM)"></dxi-column>
+		<dxi-column dataField="unitOfMeasure"></dxi-column>
+		<dxi-column dataField="priceSystem"></dxi-column>
+		<dxi-column dataField="shipWeek" dataType="date" caption="Est Ship Week"></dxi-column>
+		<dxi-column dataField="mfgFacilityShortName" caption="Mfg Company - Mfg Location"></dxi-column>
+
+		<dxi-column cellTemplate="actionsTemplate" [allowHiding]="false" [allowGrouping]="false" [width]="40"></dxi-column>
+		<div *dxTemplate="let item of 'actionsTemplate'">
+			<app-table-actions [disabled]="isRowSelected()"
+			                   [data]="item.data"
+			                   [actions]="actions"
+			                   (action)="onTableAction($event, item.data)"
+			></app-table-actions>
+		</div>
+	</dx-data-grid>
+
+	<app-table-fab *ngIf="isRowSelected()"
+	               [actions]="fabActions"
+	               (action)="onFABAction($event)"
+	></app-table-fab>
+</div>
+
+<ng-template #NoTemplates>
+	<div class="no-data-plate">You do not have any saved templates.</div>
+</ng-template>

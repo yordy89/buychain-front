@@ -1,0 +1,34 @@
+<div [ngStyle]="{'visibility': isSelectedRealData ? 'visible' : 'hidden'}" class="d-flex justify-content-center">{{lastUpdatedTimeString}}&nbsp;
+  <span class="link text-primary" (click)="onLoadFreshData()">Reload Data</span>
+</div>
+
+<app-orders-by-day [dashboardData]="tradersDashboardData"
+                   [(dateRange)]="selectedDateRange"
+                   [dataSource]="dataSource"
+                   (dateRangeChange)="onDateRangeChange()"
+></app-orders-by-day>
+
+<div class="row-section">
+
+  <app-numeric-indicator title="Total Margin $" [currentValue]="metrics.totalMargin.current"
+                         [previousValue]="metrics.totalMargin.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Avg Margin %" [currentValue]="metrics.averageMarginPercentage.current"
+                         [previousValue]="metrics.averageMarginPercentage.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Avg Margin $" [currentValue]="metrics.averageMargin.current"
+                         [previousValue]="metrics.averageMargin.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Today Margin $" [currentValue]="metrics.todayMargin.current"
+                         [previousValue]="metrics.todayMargin.previous"></app-numeric-indicator>
+</div>
+
+<div class="row-section">
+  <app-customer-mix [tradersTransactions]="tradersTransactions"></app-customer-mix>
+  <app-leaderboard [managersTransactions]="tradersTransactions"></app-leaderboard>
+</div>
+<div class="row-section">
+  <app-top-customers [tradersTransactions]="tradersTransactions"></app-top-customers>
+  <app-late-orders [tradersTransactions]="tradersTransactions"></app-late-orders>
+</div>
+<div class="row-section">
+  <app-shipping-calendar [tradersTransactions]="tradersTransactions" [medianOrdersPerDay]="metrics.medianOrdersPerDay"></app-shipping-calendar>
+  <app-orders-by-state [tradersTransactions]="tradersTransactions"></app-orders-by-state>
+</div>

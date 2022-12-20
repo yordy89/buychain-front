@@ -1,0 +1,9 @@
+<div class="select-grid-container">
+    <input type="file" [accept]="accept" #file (change)="onFileSelected($event)">
+    <app-button class="select-button" (clicked)="file.click()" [icon]="icon">{{buttonText}}</app-button>
+    <span *ngIf="selectedFile" class="selected-file-name">{{selectedFile.name}}</span>
+    <button *ngIf="selectedFile" class="delete-button" mat-icon-button (click)="onFileRemove()">
+      <mat-icon mat-icon-button color="primary">delete_forever</mat-icon>
+    </button>
+    <span class="hint-text">{{hintText}}</span>
+</div>

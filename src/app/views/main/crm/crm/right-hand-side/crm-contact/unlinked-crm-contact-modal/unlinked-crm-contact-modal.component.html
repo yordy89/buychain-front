@@ -1,0 +1,41 @@
+<app-modal-base header="CRM Contact Link">
+  <ng-container content>
+    <div class="content-wrapper">
+      <div class="linking-message">
+        <mat-icon color="primary" matPrefix>link_off</mat-icon>
+        <p>Contact belongs to CRM account linked to BuyChain<sup>TH</sup> Customer {{contact?.crmAccount?.link.name}}</p>
+        <p *ngIf="contactsFilteredList?.length">This Contact Is unlinked. Link it to a BuyChain<sup>TH</sup>
+          Customer to enhance communication and functionality</p>
+      </div>
+      <div class="selector-wrapper" *ngIf="contactsList?.length; else NoContactsAvailable">
+        <form [formGroup]="form" *ngIf="contactsFilteredList?.length; else NoContactsLeft">
+          <mat-form-field appearance="outline">
+            <mat-select [formControl]="selectedContact" placeholder="Search Contact">
+              <mat-option *ngFor="let contact of contactsFilteredList" [value]="contact">
+                {{contact.firstName}} {{contact.lastName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+        <ng-template #NoContactsLeft>
+          <p class="no-data-plate">You already have CRM contacts linked to all members in this company</p>
+        </ng-template>
+      </div>
+      <ng-template #NoContactsAvailable>
+        <p class="no-data-plate">No contacts are available from this company yet.</p>
+      </ng-template>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Close</app-button>
+    <app-button *ngIf="contactsFilteredList?.length"
+                [isNarrow]="true"
+                [isPrimary]="true"
+                (clicked)="linkContact()"
+    >
+      Save
+    </app-button>
+  </ng-container>
+
+</app-modal-base>

@@ -1,0 +1,104 @@
+<div class="main-wrapper">
+  <div *ngIf="canReadAccounts && defaultAccountsState; else baseSectionsTpl" class="flex-row w-100">
+    <div class="flex-col">
+      <ng-container [ngTemplateOutlet]="baseSectionsTpl"></ng-container>
+    </div>
+
+    <div class="flex-col">
+      <ng-container [ngTemplateOutlet]="defaultAccountsTpl"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #baseSectionsTpl>
+  <div class="section default-bill-to">
+    <div class="section-header">
+      <div class="header-label">Default Billing Contact/Location</div>
+      <mat-icon color="primary" *ngIf="canUpdateAccountingPractices" (click)="editBillingSettings()">edit</mat-icon>
+    </div>
+    <div class="section-content">
+      <div class="disabled-property">
+        <div class="label">Billing Contact:</div>
+        <div class="value">{{defaultBillToContact?.name || (company?.accountingPractices?.defaultBillToContact ? 'Not Available' : '')}}</div>
+      </div>
+      <div class="disabled-property">
+        <div class="label">Billing Location:</div>
+        <div class="value">{{defaultBillToLocation?.shortName}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="header-label">Accounting Practices</div>
+      <mat-icon color="primary" *ngIf="canUpdateAccountingPractices" (click)="editAccountingPractices()">edit
+      </mat-icon>
+    </div>
+    <div class="section-content">
+      <div class="disabled-property">
+        <div class="label">Inventory Management System:</div>
+        <div class="value">{{inventoryMgmtSystem}}
+          <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.INVENTORY_MANAGEMENT_SYSTEM"></app-tooltip-info-icon>
+        </div>
+      </div>
+      <div class="disabled-property">
+        <div class="label">Fiscal Year Start:</div>
+        <div class="value">{{fiscalYearStart}}
+          <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.FISCAL_YEAR_START"></app-tooltip-info-icon>
+        </div>
+      </div>
+      <div class="disabled-property">
+        <div class="label">Revenue Recognition Method:</div>
+        <div class="value">{{revenueRecognitionMethod}}
+          <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.REVENUE_RECOGNITION_METHOD"></app-tooltip-info-icon>
+        </div>
+      </div>
+      <div class="disabled-property">
+        <div class="label">Auto Invoice Generation:</div>
+        <div class="value">{{autoInvoiceGeneration}}
+          <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.AUTO_INVOICE_GENERATION"></app-tooltip-info-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #defaultAccountsTpl>
+  <div class="section">
+    <div class="section-header">
+      <div class="header-label">Default Accounts</div>
+      <mat-icon color="primary" *ngIf="canUpdateAccountingPractices" (click)="editDefaultAccounts()">edit</mat-icon>
+    </div>
+    <div class="default-accounts-section">
+      <app-table-base maxBodyHeight="285px">
+        <ng-container header>
+          <tr>
+            <th>Default Account Type</th>
+            <th>Account Number</th>
+            <th>Account Name</th>
+            <th>Status</th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr *ngFor="let item of accountsKeyTypeList">
+            <td>{{item.type}}
+              <app-tooltip-info-icon [tooltipText]="item.tooltip"></app-tooltip-info-icon>
+            </td>
+            <td>{{displayAccountValue(item.account, 'number')}}</td>
+            <td>{{displayAccountValue(item.account, 'name')}}</td>
+            <td>
+              <span
+                class="badge"
+                *ngIf="item.account"
+                [ngClass]="item.account?.archived ? 'badge-secondary' : 'badge-success'"
+              >
+                {{item.account?.archived ? 'Inactive' : 'Active'}}
+              </span>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+    </div>
+  </div>
+</ng-template>

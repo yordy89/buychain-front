@@ -1,0 +1,41 @@
+.select-grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 10px;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.select-button {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.selected-file-name {
+  grid-row: 1;
+  grid-column: 2;
+  margin-left: 20px;
+  font-family: Helvetica, sans-serif;
+  font-size: 18px;
+  text-decoration: underline;
+  line-height: 19px;
+}
+
+.delete-button {
+  grid-row: 1;
+  grid-column: 3;
+}
+
+.hint-text {
+  grid-row: 2;
+  grid-column: 1;
+  text-align: center;
+  font-family: Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+input {
+  display: none;
+}

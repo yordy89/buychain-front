@@ -1,0 +1,60 @@
+<div
+  *ngIf="isEditable"
+  id="accounting-file-upload-wrapper"
+  class="accounting-file-upload-wrapper"
+>
+  <div class="accounting-file-upload-outline">
+    <div class="accounting-file-upload-outline-start"></div>
+    <div class="accounting-file-upload-outline-gap"></div>
+    <div class="accounting-file-upload-outline-end"></div>
+  </div>
+  <div class="accounting-file-upload-input-wrapper">
+    <label
+      for="accounting-file-upload-wrapper"
+      class="accounting-file-upload-label">
+      Attachments
+    </label>
+    <span class="accounting-file-upload-text">Drop your file here or </span>
+    <dx-file-uploader
+      id="fileUploader"
+      [selectButtonText]="buttonText"
+      [labelText]="labelText"
+      [multiple]="multiple"
+      uploadMode="useForm"
+      (onValueChanged)="onAddFile($event)"
+      [maxFileSize]="maxFileSize"
+      [showFileList]="false"
+      [value]="[]"
+    ></dx-file-uploader>
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Attach icon">
+      attach_file
+    </mat-icon>
+  </div>
+</div>
+<div *ngIf="!isEditable" class="key-value-pair-label">Attachments</div>
+<div class="accounting-file-upload-file-wrapper">
+  <div
+    *ngFor="let attachment of attachments; index as i"
+    class="flex-row justify-content-between align-items-center accounting-file-upload-file">
+    <div class="flex-row align-items-center" (click)="onDownload(attachment)">
+      <mat-icon
+        aria-hidden="false"
+        aria-label="file icon"
+      >
+        insert_drive_file
+      </mat-icon>
+      <span>{{ attachment.name }}</span>
+    </div>
+    <mat-icon
+      *ngIf="isEditable"
+      class="accounting-file-upload-remove-icon"
+      aria-hidden="false"
+      aria-label="Attach icon"
+      (click)="onRemove(i)"
+    >
+      delete
+    </mat-icon>
+  </div>
+</div>

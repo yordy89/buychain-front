@@ -1,0 +1,64 @@
+@use 'mixins' as mixins;
+
+.wrapper {
+  .image-section {
+    .image-control {
+      margin: 25px;
+      display: inline-block;
+    }
+  }
+
+  .information-section {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+
+    &.is-crm {
+      flex-direction: column;
+    }
+
+    .map-section {
+      flex: 1;
+      max-width: 600px;
+      min-width: 300px;
+
+      .map {
+        max-width: 100%;
+        width: 600px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .facility-form {
+      flex: 1;
+    }
+  }
+
+  @include mixins.breakpoint(tablet) {
+    .information-section {
+      flex-direction: column;
+    }
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(var(--palette-primary-500), 1);
+    margin-bottom: 5px;
+  }
+
+  .hint {
+    color: rgba(var(--palette-accent-500), 1);
+  }
+
+  .general-info-editable {
+    margin-right: 20px;
+    margin-top: 7px;
+
+    .row {
+      textarea {
+        resize: none;
+      }
+    }
+  }
+}

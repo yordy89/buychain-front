@@ -1,0 +1,5 @@
+:host-context(.isLightTheme) {
+  .mat-card {
+    background-color: rgba(var(--palette-primary-50), 0.1);
+  }
+}

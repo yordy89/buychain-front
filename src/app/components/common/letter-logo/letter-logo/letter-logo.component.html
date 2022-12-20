@@ -1,0 +1,7 @@
+<img *ngIf="value; else LetterLogo" [src]="value" alt="" [ngClass]="{'is-small': isSmall}">
+<ng-template #LetterLogo>
+  <div class="letter-image"  [ngClass]="{'is-small': isSmall}" *ngIf="nameLetter; else UnknownFace">{{nameLetter}}</div>
+  <ng-template #UnknownFace>
+    <img src="/assets/images/unknown-face.png" alt="" [ngClass]="{'is-small': isSmall}">
+  </ng-template>
+</ng-template>

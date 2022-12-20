@@ -1,0 +1,40 @@
+<app-modal-base header="Update Default Billing Settings">
+  <ng-container content>
+    <div class="flex-row align-items-baseline">
+      <div class="flex-col">Billing Contact:</div>
+      <mat-form-field class="flex-col">
+        <mat-select [formControl]="memberFormControl">
+          <mat-option *ngFor="let member of members" [value]="member.id">
+            {{member.name}}
+          </mat-option>
+        </mat-select>
+        <div matSuffix class="d-flex align-items-center">
+          <button *ngIf="memberFormControl.value" mat-icon-button (click)="resetControl($event, memberFormControl)" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </div>
+
+    <div class="flex-row align-items-baseline">
+      <div class="flex-col">Billing Location:</div>
+      <mat-form-field class="flex-col">
+        <mat-select [formControl]="facilityFormControl">
+          <mat-option *ngFor="let facility of facilities" [value]="facility.id">
+            {{facility.shortName}}
+          </mat-option>
+        </mat-select>
+        <div matSuffix class="d-flex align-items-center">
+          <button *ngIf="facilityFormControl.value" mat-icon-button (click)="resetControl($event, facilityFormControl)" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="save()">Save</app-button>
+  </ng-container>
+</app-modal-base>

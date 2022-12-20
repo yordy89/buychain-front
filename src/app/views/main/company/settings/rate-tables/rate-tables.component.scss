@@ -1,0 +1,40 @@
+@use 'variables' as *;
+
+.content {
+  display: flex;
+  max-height: 300px;
+  min-height: 200px;
+  overflow-y: auto;
+  align-items: center;
+
+  .table-base {
+    width: 100%;
+    min-width: 800px;
+
+    .name {
+      width: 20%;
+      min-width: 160px;
+    }
+
+    .description {
+      word-break: break-all;
+      min-width: 320px;
+    }
+
+    .entries {
+      width: 10%;
+      min-width: 80px;
+    }
+
+    .last-modified {
+      width: 15%;
+      min-width: 120px;
+    }
+
+    td {
+      &.last-modified {
+        font-style: italic;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<div class="wrapper">
+  <div class="header h4">
+    Orders by Product Type
+  </div>
+  <dx-chart [rotated]="true" [dataSource]="data">
+    <dxi-series argumentField="name" valueField="value" type="bar">
+      <dxo-label [visible]="true" position="inside" [backgroundColor]="'transparent'">
+      </dxo-label>
+    </dxi-series>
+    <dxo-legend [visible]="false"></dxo-legend>
+    <dxo-size [height]="400" [width]="400">
+    </dxo-size>
+  </dx-chart>
+</div>

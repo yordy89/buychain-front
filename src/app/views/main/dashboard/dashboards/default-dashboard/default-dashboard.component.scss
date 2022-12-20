@@ -1,0 +1,40 @@
+.wrapper {
+  display: inline-block;
+  position: relative;
+  margin: 10px;
+  padding: 5px;
+  max-width: 1000px;
+}
+
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+
+  .mat-button-toggle-group,
+  .mat-button-toggle-standalone {
+    box-shadow: unset;
+  }
+}
+
+.legends {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .item {
+    display: flex;
+    align-items: center;
+    margin: 2px;
+  }
+
+  .marker {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 7px;
+  }
+}

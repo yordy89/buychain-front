@@ -1,0 +1,201 @@
+<ng-container *ngIf="data">
+  <div id="view-journal-entry" class="print-container">
+    <div class="flex-row">
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Entry Number</div>
+          <div class="key-value-pair-value">
+            <app-copy-text-button
+              class="small"
+              [text]="data.number"
+              [valueToCopy]="journalEntryUrl"
+              successMessage="Link to this Journal Entry copied to clipboard"
+            ></app-copy-text-button>
+          </div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Posted Date</div>
+          <div class="key-value-pair-value">
+            {{data.postDate | date:'shortDate'}}
+          </div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Status</div>
+          <div class="key-value-pair-value">
+            <span class="badge" [ngClass]="data.badgeClass">{{data.status | stringUnderscoreToSpaceTitleCase}}</span>
+          </div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Amount</div>
+          <div class="key-value-pair-value">
+            {{data.amount | currency}}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Entry Type</div>
+          <div class="key-value-pair-value">{{data.type | stringUnderscoreToSpaceTitleCase}}</div>
+        </div>
+
+        <div *ngIf="data.type === typesEnum.REVERSING" class="key-value-pair">
+          <div class="key-value-pair-label">Reverse Date</div>
+          <div class="key-value-pair-value">
+            {{data.reverseDate | date:'shortDate'}}
+          </div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Group</div>
+          <div class="key-value-pair-value">
+            {{data.group | displayItemFromList: groups:'id':'name'}}
+          </div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Dimensions</div>
+          <div class="key-value-pair-value">
+            {{data.dimensions | displayItemsFromList: dimensions:'id':'name'}}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Source</div>
+          <div class="key-value-pair-value">{{data.displaySource}}</div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Created By</div>
+          <div class="key-value-pair-value">
+            {{data.createdBy | displayItemFromList: members:'id':'name'}}
+          </div>
+        </div>
+
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Updated By</div>
+          <div class="key-value-pair-value">
+            {{data.lastModifiedBy | displayItemFromList: members:'id':'name'}}
+          </div>
+        </div>
+
+        <div *ngIf="data.isApproved" class="key-value-pair">
+          <div class="key-value-pair-label">Approval</div>
+          <div class="key-value-pair-value">
+            {{data.approver | displayItemFromList: members:'id':'name'}}
+            ({{data.approvalDate | date:'shortDate'}})
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isVisible4thColumn" class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Reference</div>
+          <div class="key-value-pair-value">
+            <a *ngIf="data.isValidReferenceUrl"
+               target="_blank"
+               class="text-primary"
+               [href]="data.reference"
+               [title]="data.reference"
+            >
+              <ng-container *ngIf="data.hexReferenceId; else refTpl">{{data.hexReferenceId | shortGuid}}</ng-container>
+              <ng-template #refTpl>{{data.reference}}</ng-template>
+            </a>
+            <span *ngIf="!data.isValidReferenceUrl">{{data.reference}}</span>
+          </div>
+        </div>
+
+        <div *ngIf="data.customer" class="key-value-pair">
+          <div class="key-value-pair-label">Customer</div>
+          <div class="key-value-pair-value">
+            {{data.customer | displayItemFromList: crmAccounts:'id':'name'}}
+          </div>
+        </div>
+
+        <div *ngIf="data.vendor" class="key-value-pair">
+          <div class="key-value-pair-label">Vendor</div>
+          <div class="key-value-pair-value">
+            {{data.vendor | displayItemFromList: crmAccounts:'id':'name'}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-row mb-20">
+      <div [ngClass]="{'flex-col-3': isVisible4thColumn, 'flex-col-2': !isVisible4thColumn}">
+        <div class="key-value-pair description">
+          <div class="key-value-pair-label">Description</div>
+          <div class="key-value-pair-value">{{data.description}}</div>
+        </div>
+      </div>
+      <div class="flex-col"></div>
+    </div>
+
+    <div class="lines-container">
+      <h4>Journal Lines</h4>
+
+      <dx-data-grid
+        [dataSource]="data.lines"
+        [showBorders]="true"
+        [remoteOperations]="false"
+        [allowColumnResizing]="true"
+        columnResizingMode="widget"
+        [allowColumnReordering]="false"
+        [rowAlternationEnabled]="true"
+        [columnHidingEnabled]="true"
+        [columnAutoWidth]="true"
+      >
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-load-panel [enabled]="false"></dxo-load-panel>
+
+        <dxi-column dataField="postedDate" dataType="date" caption="Posted Date"></dxi-column>
+        <dxi-column dataField="group" [calculateDisplayValue]="calculateDisplayGroupValue"></dxi-column>
+        <dxi-column dataField="dimensions" caption="Dimensions" [calculateDisplayValue]="calculateDisplayDimensionsValue"></dxi-column>
+        <dxi-column dataField="account" caption="Account" alignment="left" [calculateDisplayValue]="calculateDisplayAccountNumberValue"></dxi-column>
+
+        <dxi-column dataField="description" width="30%" cellTemplate="descriptionTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'descriptionTemplate'">
+          <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+            {{data.value}}
+          </div>
+        </div>
+
+        <dxi-column dataField="debit">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column dataField="credit">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxo-summary>
+          <dxi-total-item column="description" alignment="right" displayFormat="Totals"></dxi-total-item>
+          <dxi-total-item column="debit" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+          <dxi-total-item column="credit" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+        </dxo-summary>
+
+      </dx-data-grid>
+    </div>
+
+    <div class="flex-row">
+      <div *ngIf="data?.attachments?.length" class="flex-col">
+        <app-accounting-file-upload
+          [attachments]="data.attachments"
+          [isEditable]="false"
+        ></app-accounting-file-upload>
+      </div>
+      <div class="flex-col">
+        <div *ngIf="data.notes" class="key-value-pair notes">
+          <div class="key-value-pair-label">Notes</div>
+          <div class="key-value-pair-value">{{data.notes}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

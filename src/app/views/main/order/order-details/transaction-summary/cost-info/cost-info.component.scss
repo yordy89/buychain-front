@@ -1,0 +1,46 @@
+.cost-info-wrapper {
+  width: 100%;
+
+  .cog-item {
+    .cog-label {
+      width: 200px;
+    }
+
+    mat-icon {
+      height: 20px;
+      width: 20px;
+      font-size: 15px;
+      color: grey;
+    }
+
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .description-header {
+    font-weight: 500;
+    font-size: 16px;
+    color: dimgrey;
+    display: flex;
+    justify-content: space-between;
+
+    mat-icon {
+      color: black;
+      cursor: pointer;
+
+      &:hover {
+        color: rgba(var(--palette-primary-500), 1);
+      }
+    }
+  }
+
+  p {
+    margin-bottom: 5px;
+  }
+
+  .total-row {
+    font-weight: 700;
+    font-size: 15px;
+  }
+}

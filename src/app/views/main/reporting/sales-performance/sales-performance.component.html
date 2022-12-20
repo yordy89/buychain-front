@@ -1,0 +1,200 @@
+<div class="reports-wrapper">
+  <div class="header-container">
+    <div class="header-section">
+      <h4>Sales Performance Report</h4>
+      <app-bookmark [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+                    (stateChanged)="onViewStateChanged($event)"></app-bookmark>
+    </div>
+  </div>
+
+  <div class="options-wrapper">
+
+    <div class="filters-and-options-container">
+      <div class="caption">Filter</div>
+      <div class="filter-container">
+        <dx-filter-builder
+          *ngIf="loaded"
+          [fields]="filterFields"
+          [(value)]="viewState.advancedFilter"
+          [groupOperations]="['and', 'or']">
+        </dx-filter-builder>
+        <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="filterTransactions()">Run</app-button>
+      </div>
+
+      <div class="caption">Options</div>
+      <div class="data-options-container">
+        <div class="option">
+          <mat-form-field appearance="outline" class="small">
+            <mat-label>Group By State Date</mat-label>
+            <mat-select [(value)]="viewState.state" (selectionChange)="onStateChanged($event)">
+              <mat-option *ngFor="let state of transactionStates" [value]="state.value">
+                {{state.value | stringUnderscoreToSpaceTitleCase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="time-period-selector">
+          <div class="option">
+            <mat-form-field appearance="outline" class="small">
+              <mat-label>Series</mat-label>
+              <mat-select [(value)]="viewState.series" (selectionChange)="onTimePeriodChanged()">
+                <mat-option *ngFor="let argument of timeSeries" [value]="argument">
+                  {{argument}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <mat-tab-group mat-align-tabs="end" *ngIf="normalizedChartData?.length; else NoChartData">
+    <mat-tab label="Chart View">
+      <div class="chart-wrapper">
+        <div class="chart-options-container">
+          <div class="option">
+            <mat-form-field appearance="outline" class="small">
+              <mat-label>Figure Of Merit</mat-label>
+              <mat-select [(value)]="viewState.chartDetails.figureOfMerit">
+                <mat-option *ngFor="let figure of figuresOfMerit" [value]="figure.key"
+                            [matTooltip]="!salesPerformanceService.uniquePriceSystem && figure.key === 'volume'
+                           ? 'The Price System among the Transactions Tally is not Unique' : ''"
+                            [disabled]="!salesPerformanceService.uniquePriceSystem && figure.key === 'volume'">
+                  {{figure.value}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="option">
+            <mat-form-field appearance="outline" class="small">
+              <mat-label>Chart Type</mat-label>
+              <mat-select [(value)]="viewState.chartDetails.type">
+                <mat-option *ngFor="let type of chartTypes" [value]="type.key" [disabled]="isUserBasedData && type.key !== 'bar'">
+                  {{type.value}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <dx-chart
+          [dataSource]="normalizedChartData"  [rotated]="isUserBasedData" (onDone)="initializeRangeSelector()">
+          <dxi-series [valueField]="viewState.chartDetails.figureOfMerit" argumentField="time" [name]="viewState.series">
+            <dxo-label [visible]="true" [backgroundColor]="'transparent'" [customizeText]="customizeLabel">
+              <dxo-font [color]="'gray'"></dxo-font>
+            </dxo-label>
+          </dxi-series>
+          <dxo-argument-axis
+            [valueMarginsEnabled]="false"
+            [argumentType]="isUserBasedData ? 'string' : 'datetime'"
+            [visualRange]="isUserBasedData ? {} : visualRange">
+            <dxo-grid [visible]="true"></dxo-grid>
+            <dxo-label [visible]="true"></dxo-label>
+          </dxo-argument-axis>
+          <dxi-value-axis [tickInterval]="10000">
+            <dxo-label [visible]="false"></dxo-label>
+            <dxo-tick [visible]="false"></dxo-tick>
+          </dxi-value-axis>
+          <dxo-common-series-settings
+            [type]="viewState.chartDetails.type"
+            hoverMode="allArgumentPoints"
+            selectionMode="allArgumentPoints">
+          </dxo-common-series-settings>
+          <dxo-legend
+            verticalAlignment="bottom"
+            horizontalAlignment="center">
+          </dxo-legend>
+          <dxo-size [height]="400"></dxo-size>
+          <dxo-adaptive-layout [width]="800"></dxo-adaptive-layout>
+          <dxo-export [enabled]="true"></dxo-export>
+        </dx-chart>
+
+        <dx-range-selector
+          *ngIf="!isUserBasedData && rangeSelectorVisible"
+          [dataSource]="normalizedChartData"
+          [(value)]="visualRange">
+          <dxo-size [height]="120"></dxo-size>
+          <dxo-scale
+            minorTickInterval="day"
+            tickInterval="month"
+            valueType="datetime"
+            [placeholderHeight]="20">
+          </dxo-scale>
+          <dxo-behavior
+            callValueChanged="onMoving"
+            [snapToTicks]="false">
+          </dxo-behavior>
+          <dxo-chart>
+            <dxi-series
+              type="line"
+              [valueField]="viewState.chartDetails.figureOfMerit"
+              argumentField="time">
+            </dxi-series>
+          </dxo-chart>
+        </dx-range-selector>
+
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Grid View">
+      <div class="datagrid-wrapper" *matTabContent>
+        <dx-data-grid
+          #txsPerformanceGrid
+          id="gridContainer"
+          [dataSource]="normalizedChartData"
+          [showBorders]="true"
+          [remoteOperations]="false"
+          [allowColumnResizing]="true"
+          columnResizingMode="widget"
+          [columnAutoWidth]="true"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="true"
+          [columnHidingEnabled]="true"
+          [hoverStateEnabled]="true"
+          [focusedRowEnabled]="true"
+          keyExpr="index"
+          (onToolbarPreparing)="onToolbarPreparing($event)"
+          (onExporting)="onExporting($event)"
+        >
+          <dxo-export [enabled]="true"></dxo-export>
+          <dxo-sorting mode="multiple"></dxo-sorting>
+          <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+          <dxo-search-panel [visible]="true"></dxo-search-panel>
+          <dxo-load-panel [enabled]="true"></dxo-load-panel>
+          <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+          <dxo-paging [enabled]="false"></dxo-paging>
+          <dxo-column-chooser [enabled]="true" [height]="700"></dxo-column-chooser>
+          <dxo-selection mode="single"></dxo-selection>
+          <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+                             [savingTimeout]="100"></dxo-state-storing>
+          <dxo-group-panel [visible]="true"></dxo-group-panel>
+          <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
+
+          <dxi-column dataField="time" dataType="string" [caption]="seriesCaption"></dxi-column>
+          <dxi-column dataField="numberOfTransactions" dataType="number"></dxi-column>
+          <dxi-column dataField="revenue" [allowGrouping]="false"><dxo-format type="currency" [precision]="2"></dxo-format></dxi-column>
+          <dxi-column dataField="margin" [allowGrouping]="false"><dxo-format type="currency" [precision]="2"></dxo-format></dxi-column>
+          <dxi-column dataField="avgMargin" caption="Avg Margin(%)" [allowGrouping]="false"><dxo-format  type="percent" [precision]="2"></dxo-format></dxi-column>
+          <dxi-column dataField="volume" *ngIf="salesPerformanceService.uniquePriceSystem" headerCellTemplate="volumeTooltip" [allowGrouping]="false"></dxi-column>
+
+          <div *dxTemplate="let info of 'volumeTooltip'">
+            <div [matTooltip]="salesPerformanceService.uniquePriceSystem">{{info.column.caption}}</div>
+          </div>
+
+        </dx-data-grid>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <ng-template #NoChartData>
+    <div class="no-data" *ngIf="normalizedChartData; else NotLoaded">
+      <h4>There are no Transactions matching your filter specifications.</h4>
+    </div>
+    <ng-template #NotLoaded>
+      <div class="no-data">
+        <h4>Please specify filters and press RUN to generate the report.</h4>
+      </div>
+    </ng-template>
+  </ng-template>
+</div>

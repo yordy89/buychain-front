@@ -1,0 +1,26 @@
+<div id="chart1">
+  <app-filter-by-trader
+    [crmSellersList]="crmSellersList"
+    [crmTransactions]="crmConfirmedTransactions"
+    [crmAccountData]="crmAccountData"
+    [action]="action"
+  ></app-filter-by-trader>
+  <dx-chart
+    [title]="chartTitle"
+    palette="Harmony Light"
+    [dataSource]="fiscalYearChartData">
+    <dxi-series valueField="currentYear" [name]="'Revenue ' + fiscalYear"></dxi-series>
+    <dxi-series valueField="lastYear" [name]="'Revenue ' + (fiscalYear - 1)"></dxi-series>
+    <dxo-common-series-settings #commonSeries argumentField="month" type="splinearea"></dxo-common-series-settings>
+    <dxo-margin [bottom]="20"></dxo-margin>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-legend
+      verticalAlignment="bottom"
+      horizontalAlignment="center">
+    </dxo-legend>
+    <dxo-argument-axis>
+      <dxo-label overlappingBehavior="rotate" [rotationAngle]="-45"></dxo-label>
+      <dxo-tick [visible]="true"></dxo-tick>
+    </dxo-argument-axis>
+  </dx-chart>
+</div>

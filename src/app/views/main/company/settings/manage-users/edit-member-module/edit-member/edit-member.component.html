@@ -1,0 +1,62 @@
+<div class="wrap">
+  <mat-expansion-panel class="profile-section" *ngIf="memberData" [disabled]="true" [expanded]="true">
+    <mat-expansion-panel-header class="styled">
+      <mat-panel-title>
+        Profile Information
+      </mat-panel-title>
+      <mat-panel-description class="actions-buttons-row">
+        <ng-container *ngIf="(readonlyMode$ | async); else editModeTpl">
+          <app-button *ngIf="canUpdateUser"
+                      [isPrimary]="true"
+                      [isNarrow]="true"
+                      (clicked)="edit()"
+                      cdkFocusInitial
+          >Edit</app-button>
+
+          <app-button [isNarrow]="true"
+                      (clicked)="backToCompanySettings()"
+          >Back</app-button>
+        </ng-container>
+
+        <ng-template #editModeTpl>
+          <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateUserProfile()">Save</app-button>
+          <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+        </ng-template>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <app-profile-form [parentForm]="form"
+                      [initialData$]="initialData$"
+                      [readonlyMode$]="readonlyMode$">
+    </app-profile-form>
+
+    <div class="created-and-modified" *ngIf="memberData">
+      <p>Created: <span>{{memberData.createdAt | date}}</span>, Last Modified:
+        <span>{{memberData.updatedAt | date}}</span></p>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="canUpdateRoles"
+                       #permissionsPanel
+    *ngIf="initialData?.profileCompletionState === ProfileCompletionState.COMPLETE">
+    <mat-expansion-panel-header class="styled" >
+      <mat-panel-title class="permissions-title">Permissions</mat-panel-title>
+
+      <mat-checkbox *ngIf="permissionsPanel.expanded"
+                    class="view-cost-checkbox"
+                    color="primary"
+                    [disabled]="isDisabledViewCostCheckbox"
+                    [checked]="initialData?.permissions.priceData"
+                    (change)="onToggleViewCost($event.checked)"
+                    (click)="$event.stopPropagation()"
+      >View Cost and Margin Data</mat-checkbox>
+
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <div class="company-roles-content-section">
+        <app-access-control [userData]="initialData"></app-access-control>
+      </div>
+    </ng-template>
+  </mat-expansion-panel>
+
+</div>

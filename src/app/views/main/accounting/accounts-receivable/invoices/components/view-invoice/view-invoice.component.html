@@ -1,0 +1,209 @@
+<ng-container *ngIf="data">
+  <div id="view-invoice" class="print-container">
+    <div class="flex-row align-items-start">
+      <section class="flex-col-2">
+        <section class="flex-row">
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Sales Order</div>
+              <div class="key-value-pair-value">
+                <span>{{salesOrder?.number}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Invoice Date</div>
+              <div class="key-value-pair-value">
+                <span>{{data.invoiceDate | date :'shortDate'}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Due Date</div>
+              <div class="key-value-pair-value">
+                <span>{{data.dueDate | date :'shortDate'}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Status</div>
+              <div class="key-value-pair-value">
+                <span class="badge" [ngClass]="data.stateBadgeClass">{{data.state | stringUnderscoreToSpaceTitleCase}}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="flex-row">
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Invoice Number</div>
+              <div class="key-value-pair-value">
+                <span>{{data.number}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Days Since Issue</div>
+              <div class="key-value-pair-value">
+                <span>{{data.sinceIssue}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Days Past</div>
+              <div class="key-value-pair-value">
+                <span>{{data.pastDue}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-col">
+            <div class="key-value-pair">
+              <div class="key-value-pair-label">Terms</div>
+              <div class="key-value-pair-value">
+                <span>{{data.terms}}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="flex-row mb-20">
+          <div class="flex-col-3">
+            <div class="key-value-pair description">
+              <div class="key-value-pair-label">Description</div>
+              <div class="key-value-pair-value">{{data.description}}</div>
+            </div>
+          </div>
+          <div class="flex-col"></div>
+        </div>
+      </section>
+
+      <section class="flex-col-2">
+        <div class="flex-row">
+          <div class="flex-col view-invoice-location-wrapper">
+            <div class="view-invoice-location-header">
+              <div class="view-invoice-location-header-label">Bill To</div>
+            </div>
+            <div class="view-invoice-location">
+              <span>{{billToLocation?.shortName}}</span><br/>
+              <span>{{billToLocation?.streetAddress}}</span><br/>
+              <span>{{billToLocation?.city}}, {{billToLocation?.state}}</span><br/>
+              <span>{{billToLocation?.zipCode}}</span>
+            </div>
+          </div>
+
+          <div class="flex-col view-invoice-location-wrapper">
+            <div class="view-invoice-location-header">
+              <div class="view-invoice-location-header-label">Ship To</div>
+            </div>
+            <div class="view-invoice-location">
+              <span>{{shipToLocation?.fullName}}</span><br/>
+              <span>{{shipToLocation?.streetAddress}}</span><br/>
+              <span>{{shipToLocation?.city}}, {{shipToLocation?.state}}</span><br/>
+              <span>{{shipToLocation?.zipCode}}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <dx-tab-panel [hidden]="printing" class="mb-20">
+      <dxi-item title="Line Items">
+        <app-invoice-line-items-grid
+          [data]="data"
+          [salesOrder]="salesOrder">
+        </app-invoice-line-items-grid>
+      </dxi-item>
+      <dxi-item tabTemplate="tabTemplate">
+        <app-invoice-payments-grid
+          [data]="data"
+          [salesOrder]="salesOrder"
+          [members]="members"
+          (paymentsUpdatedEvent)="onPaymentsUpdated()">
+        </app-invoice-payments-grid>
+      </dxi-item>
+      <div *dxTemplate="let content of 'tabTemplate'">
+        <span>{{paymentsTabTitle}}</span>
+      </div>
+    </dx-tab-panel>
+
+    <div *ngIf="!!data?.lineItems?.length" [hidden]="!printing" class="flex-row">
+      <div class="lines-data-grid-header">
+        <h4>Line Items</h4>
+      </div>
+      <app-invoice-line-items-grid
+        [data]="data"
+        [salesOrder]="salesOrder"
+        [printing]="printing">
+      </app-invoice-line-items-grid>
+    </div>
+
+    <div *ngIf="!!data?.payments?.length" [hidden]="!printing" class="flex-row mb-20">
+      <div class="lines-data-grid-header">
+        <h4>{{paymentsTabTitle}}</h4>
+      </div>
+      <app-invoice-payments-grid
+        [data]="data"
+        [salesOrder]="salesOrder"
+        [members]="members"
+        (paymentsUpdatedEvent)="onPaymentsUpdated()"
+        [printing]="true">
+      </app-invoice-payments-grid>
+    </div>
+
+    <div class="mt-25" *ngIf="!printing">
+      <app-accounting-milestones [milestones]="milestones">
+      </app-accounting-milestones>
+    </div>
+
+    <div class="flex-row mt-25" *ngIf="!printing">
+      <div class="flex-col">
+        <app-accounting-file-upload
+          [attachments]="data?.attachments"
+          [isEditable]="false"
+        ></app-accounting-file-upload>
+      </div>
+      <div class="flex-col">
+        <dx-tab-panel>
+          <dxi-item class="p-horizontal-5" title="Internal Notes">
+            <div class="key-value-pair">
+              <div class="key-value-pair-value">{{data.internalNotes}}</div>
+            </div>
+          </dxi-item>
+          <dxi-item class="p-horizontal-5" title="External Notes">
+            <div class="key-value-pair">
+              <div class="key-value-pair-value">{{data.externalNotes}}</div>
+            </div>
+          </dxi-item>
+        </dx-tab-panel>
+      </div>
+    </div>
+
+    <div *ngIf="printing && data?.internalNotes" class="flex-row">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Internal Notes</div>
+        <div class="key-value-pair-value">
+          <div class="key-value-pair-value">{{data.internalNotes}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="printing && data?.externalNotes" class="flex-row">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">External Notes</div>
+        <div class="key-value-pair-value">
+          <div class="key-value-pair-value">{{data.externalNotes}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

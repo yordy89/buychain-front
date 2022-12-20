@@ -1,0 +1,97 @@
+.easy-access-reports-wrapper {
+  width: 70%;
+  margin: 0 auto;
+
+  .header-container {
+    height: 60px;
+    display: flex;
+  }
+
+  mat-icon {
+    cursor: pointer;
+  }
+
+  .easy-access-bookmarks-list {
+    margin: 0 auto;
+
+    .easy-access-bookmark {
+      margin: 10px 0;
+      border: 2px solid grey;
+      border-radius: 7px;
+
+      .bookmark-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 5%;
+
+        .description-wrapper {
+          margin-top: 10px;
+
+          .description {
+            font-size: 18px;
+            font-weight: 700;
+          }
+
+          .type {
+            margin-left: 20px;
+          }
+        }
+
+        .actions-wrapper {
+          display: flex;
+
+          .run-icon {
+            margin: 5px;
+            font-size: 40px;
+          }
+
+          .delete-icon {
+            margin: 10px;
+            font-size: 30px;
+          }
+        }
+      }
+
+      .last-run {
+        text-align: right;
+        margin-right: 40px;
+        font-size: 13px;
+      }
+    }
+  }
+
+  .add-bookmark {
+    margin-left: 30px;
+
+    mat-icon {
+      font-size: 40px;
+    }
+  }
+}
+
+.menu-wrapper {
+  margin: 25px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  .menu-header {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .bookmark-selectors-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    app-button {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

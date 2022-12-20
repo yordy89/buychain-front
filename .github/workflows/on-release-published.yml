@@ -1,0 +1,43 @@
+
+name: Deploy
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'dev')
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: CI and Build
+        run: |
+          npm ci
+          npm run build
+      - name: Test
+        run: npm run test -- --configuration=ci
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: 'dev.buychain.tech'
+          AWS_ACCESS_KEY_ID: 'AKIA6JWQZDYKRON7SON5'
+          AWS_SECRET_ACCESS_KEY: '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'
+          AWS_REGION: 'us-east-1'
+          SOURCE_DIR: './dist'

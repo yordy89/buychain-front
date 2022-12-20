@@ -1,0 +1,31 @@
+.shipping-info-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+
+  &.is-modified-transport {
+    flex-direction: column !important;
+  }
+
+  .table-base {
+    flex: 1;
+    font-size: 14px;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+
+    .transportation-table-unit {
+      height: 50px;
+    }
+
+    .body-row {
+      font-size: 14px;
+
+      .attachment {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

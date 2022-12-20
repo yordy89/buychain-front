@@ -1,0 +1,26 @@
+<div class="filters-wrapper">
+  <app-filter-expander caption="Type" [(isExpanded)]="filtersState.typeExpanded">
+    <mat-form-field appearance="outline" class="selector-wrapper flex-col">
+      <mat-label>Type</mat-label>
+      <mat-select [(ngModel)]="filters.type">
+        <mat-option *ngFor="let item of accountTypes" [value]="item">
+          {{item | stringUnderscoreToSpaceTitleCase}}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix *ngIf="filters.type" (click)="resetAccountTypes($event)">close</mat-icon>
+    </mat-form-field>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Natural Balance" [(isExpanded)]="filtersState.naturalBalanceExpanded">
+    <mat-form-field appearance="outline" class="selector-wrapper flex-col">
+      <mat-label>Natural Balance</mat-label>
+      <mat-select [(ngModel)]="filters.naturalBalance">
+        <mat-option *ngFor="let item of naturalBalancesList" [value]="item">
+          {{item | stringUnderscoreToSpaceTitleCase}}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix *ngIf="filters.naturalBalance" class="reset-icon" (click)="resetNaturalBalance($event)">close</mat-icon>
+    </mat-form-field>
+  </app-filter-expander>
+
+</div>

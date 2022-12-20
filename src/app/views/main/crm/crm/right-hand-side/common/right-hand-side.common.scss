@@ -1,0 +1,24 @@
+.wrapper {
+  height: 100%;
+
+  .header-section {
+    padding-top: 0.5vh;
+    display: flex;
+    justify-content: space-between;
+
+    .header-label {
+      .name-section {
+        display: flex;
+        align-items: center;
+
+        h4 {
+          margin: 0 0 0 15px;
+        }
+      }
+    }
+  }
+
+  .content-wrapper {
+    height: calc(100% - 80px);
+  }
+}

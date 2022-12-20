@@ -1,0 +1,12 @@
+<app-chart-container [caption]="caption" [showViewAll]="showViewAll" (viewAllClick)="viewAllClick.emit()">
+  <table>
+    <thead class="thead">
+      <tr>
+        <td *ngFor="let col of columns">
+          {{col}}
+        </td>
+      </tr>
+    </thead>
+    <ng-content></ng-content>
+  </table>
+</app-chart-container>

@@ -1,0 +1,13 @@
+<app-modal-base [header]="title">
+  <ng-container content>
+    <div [innerHTML]="content"></div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button *ngIf="type === DialogType.Alert; else LoadModeConfirm" [isPrimary]="true" [isNarrow]="true" (clicked)="done()">Ok</app-button>
+    <ng-template #LoadModeConfirm>
+      <app-button [isNarrow]="true" (clicked)="reject()">Go back</app-button>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="confirm()">Confirm</app-button>
+    </ng-template>
+  </ng-container>
+</app-modal-base>

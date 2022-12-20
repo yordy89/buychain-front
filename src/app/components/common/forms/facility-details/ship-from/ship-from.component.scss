@@ -1,0 +1,11 @@
+.section-rate-table {
+  width: 30%;
+
+  .rate-table-selector {
+    margin: 10px 20px;
+
+    app-autocomplete {
+      width: 100%;
+    }
+  }
+}

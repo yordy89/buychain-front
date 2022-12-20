@@ -1,0 +1,41 @@
+<app-modal-base header="Add Milestone">
+  <ng-container content>
+    <form [formGroup]="form">
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="icon-control">
+          <mat-label>Icon</mat-label>
+          <mat-select [formControl]="icon" disableOptionCentering panelClass="visible-selected-value custom-icon-selector">
+            <mat-select-trigger>
+              <div class="selected-icon" *ngIf="icon.value">
+                <img src="/assets/milestoneIcons/{{icon.value}}.svg" alt="">
+              </div>
+            </mat-select-trigger>
+            <mat-option *ngFor="let value of iconsList" [value]="value">
+              <img src="/assets/milestoneIcons/{{value}}.svg" alt="">
+            </mat-option>
+          </mat-select>
+          <mat-error>{{icon?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Description</mat-label>
+          <textarea matInput placeholder="Start Typing" required [formControl]="description" rows="1"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <div class="file-upload-container">
+      <app-file-select
+        #fileSelector
+        icon="attachment"
+        buttonText="Attachment"
+        accept=".png, .jpg, .jpeg, .gif, .pdf"
+        (changed)="fileChanged($event)"></app-file-select>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="saveMilestone()">Save</app-button>
+  </ng-container>
+</app-modal-base>

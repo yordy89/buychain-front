@@ -1,0 +1,15 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+@use 'variables' as *;
+
+.bills-data-grid-header {
+  padding: 0 5px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 48px;
+
+  h4 {
+    font-weight: 500;
+    margin: 0;
+  }
+}

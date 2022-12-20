@@ -1,0 +1,30 @@
+<app-modal-base header="Add Product Lot to Tally">
+  <ng-container content>
+    <form [formGroup]="form" class="d-flex justify-content-around">
+      <div class="units-form">
+        <span class="label">Available: </span>
+        <div class="label">{{maxAvailableUnitCount}}</div>
+      </div>
+      <div class="units-form">
+        <span class="label">Add Units: </span>
+        <div class="units-input">
+          <mat-form-field>
+            <input matInput type="number" cdkFocusInitial required [formControl]="units" min="1" [max]="maxAvailableUnitCount" />
+            <mat-error>{{units.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close(false)">Cancel</app-button>
+    <app-button [isNarrow]="true"
+                [isDisabled]="units.invalid && (units.dirty || units.touched)"
+                [isPrimary]="true"
+                (clicked)="addLotToTransaction()"
+    >
+      Add
+    </app-button>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,20 @@
+<app-modal-base header="Move to Existing Product Lot" (closed)="onClose()">
+  <ng-container content>
+
+    <mat-form-field *ngIf="targetLots?.length; else NoValidLots" class="w-100" appearance="outline">
+      <mat-label>Select Product Lot</mat-label>
+      <mat-select [formControl]="selectProductLotControl">
+        <mat-option *ngFor="let lot of targetLots" [value]="lot">{{lot.displayValue}}</mat-option>
+      </mat-select>
+      <mat-error>{{selectProductLotControl?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+
+    <ng-template #NoValidLots>
+      <div class="no-data-plate">There are no product lots to move the products.</div>
+    </ng-template>
+
+  </ng-container>
+  <ng-container actions>
+    <app-button [isNarrow]="true" [isPrimary]="true" [isDisabled]="selectProductLotControl.invalid" (clicked)="submit()">Move</app-button>
+  </ng-container>
+</app-modal-base>

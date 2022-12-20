@@ -1,0 +1,15 @@
+<app-modal-base header="CRM Account Link">
+  <ng-container content>
+    <div class="content-wrapper">
+      <mat-icon color="primary" matPrefix>link</mat-icon>
+      <p>This Account Is Linked to <span>{{account?.link?.name}}</span></p>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()" class="grow-1">Close</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" icon="cached" (clicked)="syncCrmAccount()">Sync</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" icon="link_off" (clicked)="unlinkCrmAccount()">Unlink</app-button>
+  </ng-container>
+
+</app-modal-base>

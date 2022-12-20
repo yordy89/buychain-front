@@ -1,0 +1,120 @@
+<div class="main-wrapper">
+
+  <mat-card class="list-wrapper mat-elevation-z2" *ngIf="(crmStateService.isLeftPartVisible$ | async)">
+    <mat-card-header>
+
+      <mat-card-title>CRM</mat-card-title>
+      <div tabindex="-1" class="show-inactive-slider">
+        <mat-slide-toggle
+          [checked]="crmStateService.showArchived$ | async"
+          labelPosition="before"
+          color="primary"
+          class="text-secondary"
+          (change)="showArchivedSwitch($event)"
+        >Show Archived</mat-slide-toggle>
+      </div>
+      <app-bookmark tabindex="-1" [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+                    (stateChanged)="onStateChanged($event)"></app-bookmark>
+
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <div class="grid-container" *ngIf="crmPermissions.canRead; else NoPermission">
+        <dx-data-grid
+          #crmIndexGrid
+          id="gridContainer"
+          [dataSource]="entities"
+          [filterValue]="gridFilterValue"
+          [showBorders]="true"
+          [remoteOperations]="false"
+          [allowColumnResizing]="true"
+          columnResizingMode="widget"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="false"
+          [columnHidingEnabled]="true"
+          [hoverStateEnabled]="true"
+          [focusedRowEnabled]="true"
+          [(focusedRowKey)]="focusedRowKey"
+          keyExpr="id"
+          (onCellPrepared)="onCellPrepared($event)"
+          (onRowClick)="onRowSelected($event)"
+          (onToolbarPreparing)="onToolbarPreparing($event)"
+        >
+          <dxo-paging [enabled]="false"></dxo-paging>
+          <dxo-sorting mode="multiple"></dxo-sorting>
+          <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+          <dxo-search-panel [visible]="true"></dxo-search-panel>
+          <dxo-load-panel [enabled]="true"></dxo-load-panel>
+          <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+          <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+          <dxo-selection mode="single"></dxo-selection>
+          <dxo-group-panel [visible]="true"></dxo-group-panel>
+          <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+                             [savingTimeout]="100"></dxo-state-storing>
+
+          <div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+            <app-table-results-text [visibleRows]="crmIndexGrid.instance.totalCount()" [results]="entities.length"></app-table-results-text>
+          </div>
+
+          <dxi-column [visibleIndex]="0" [allowResizing]="false" [allowReordering]="false" [allowHiding]="false" [allowGrouping]="false" cellTemplate="typeTemplate" dataField="type" caption="" [width]="40"></dxi-column>
+          <div *dxTemplate="let entity of 'typeTemplate'" class="icon-cell">
+            <mat-icon color="primary">{{entity.data.icon}}</mat-icon>
+          </div>
+
+          <dxi-column *ngIf="!isOnlyOffline" [visibleIndex]="1" [allowResizing]="false" [allowReordering]="false" [allowHiding]="false" [allowGrouping]="false" cellTemplate="linkStateTemplate" dataField="linkState" caption="" [width]="40"></dxi-column>
+          <div *dxTemplate="let entity of 'linkStateTemplate'" class="icon-cell">
+            <mat-icon *ngIf="isVisibleLinkIcon(entity.data)" color="primary">link</mat-icon>
+            <mat-icon *ngIf="isVisibleUnlinkIcon(entity.data)" color="primary">link_off</mat-icon>
+          </div>
+
+          <dxi-column dataField="fullName" caption="Name" [allowGrouping]="false" [allowHiding]="false"></dxi-column>
+          <dxi-column dataField="description" caption="Description" [allowGrouping]="false" [visible]="(isTablet$ | async) !== true"></dxi-column>
+          <dxi-column dataField="accountName" caption="Account Name" [groupIndex]="0" [allowHiding]="false"></dxi-column>
+          <dxi-column dataField="updatedAt" caption="Last Modified" dataType="date" [allowGrouping]="false"
+                      [visible]="(isTablet$ | async) !== true"></dxi-column>
+          <dxi-column dataField="archivedString" caption="Archived" [visible]="false"></dxi-column>
+
+          <dxi-column [allowHiding]="false" cellTemplate="actionsTemplate" [allowGrouping]="false" [width]="40"></dxi-column>
+          <div *dxTemplate="let item of 'actionsTemplate'">
+            <app-table-actions *ngIf="item.data"
+                               [data]="item.data"
+                               [actions]="actions"
+                               (action)="onTableAction($event, item.data)"
+            ></app-table-actions>
+          </div>
+        </dx-data-grid>
+      </div>
+      <ng-template #NoPermission>
+        <div class="no-data-plate">
+          <div>You do not have enough permissions for this section</div>
+        </div>
+      </ng-template>
+
+      <div class="button-section" *ngIf="crmPermissions?.canCreate">
+        <app-button (clicked)="addCrmAccount()" [isPrimary]="true" icon="add">Add New</app-button>
+        <app-button (clicked)="onExportClick()" icon="open_in_browser">Export</app-button>
+        <app-button (clicked)="onImportClick()" icon="save_alt">Import</app-button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+
+
+  <mat-card *ngIf="isRightPartData && selectedCrmAccount"
+            class="list-wrapper mat-elevation-z2 selection-details-wrapper"
+            [ngClass]="{'is-expanded': (crmStateService.isLeftPartVisible$ | async) !== true}">
+    <mat-card-content>
+
+      <app-right-hand-side
+        [crmAccountData]="selectedCrmAccount"
+        [crmContactData]="selectedCrmContact"
+        [crmLocationData]="selectedCrmLocation"
+        [visibleTab]="rightSideVisibleTab"
+      ></app-right-hand-side>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

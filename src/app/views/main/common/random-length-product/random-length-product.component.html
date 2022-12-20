@@ -1,0 +1,48 @@
+<app-table-base class="striped w-100">
+  <ng-container header>
+    <tr class="header">
+      <th>Length</th>
+      <th *ngFor="let unit of lengthUnits">{{unit.length.name}}</th>
+    </tr>
+  </ng-container>
+
+  <ng-container body>
+    <tr>
+      <td>Count</td>
+      <td *ngFor="let unit of lengthUnits">
+
+        <div *ngIf="readonlyMode || !isRandomLengthEditable; else EditMode">
+          {{isRandomLengthsDefined ? unit.count.value : 'N/A'}}
+        </div>
+
+        <ng-template #EditMode>
+          <input matInput [formControl]="unit.count"
+                 type="number" class="input-border"
+                 [matTooltip]="unit.count.errors | errorMessage"
+                 [ngClass]="{'invalid': unit.count.errors | errorMessage}">
+        </ng-template>
+
+      </td>
+    </tr>
+  </ng-container>
+</app-table-base>
+
+<div class="d-flex justify-content-end mt-15" *ngIf="lengthUnitsSummary.actualMeasure">
+  <app-value-label label="Actual Measure" [value]="lengthUnitsSummary.actualMeasure | number : '1.0-3'" class="mr-20"></app-value-label>
+  <app-value-label label="Difference With Estimate" [value]="lengthUnitsSummary.differenceWithEstimate | number : '1.0-3'" class="mr-20"></app-value-label>
+  <app-value-label label="Actual Weight" [value]="lengthUnitsSummary.actualWeight | number : '1.0-2'" class="mr-20"></app-value-label>
+</div>
+
+
+<div *ngIf="readonlyMode; else EditButtons" class="d-flex justify-content-end mt-15">
+  <app-button *ngIf="isRandomLengthEditable" [isNarrow]="true" (clicked)="toggleEditMode(false)">Edit Unit Lengths</app-button>
+</div>
+
+<ng-template #EditButtons>
+  <div class="d-flex justify-content-end mt-15">
+    <app-button class="ml-20" [isNarrow]="true" [isPrimary]="true" (clicked)="updateProductRandomLengthUnits()">Save</app-button>
+    <app-button class="ml-20" [isNarrow]="true" (clicked)="cancelChanges()">Cancel</app-button>
+  </div>
+</ng-template>
+
+<hr>

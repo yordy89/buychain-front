@@ -1,0 +1,19 @@
+<app-table-chart caption="Late Orders" [columns]="columns"  (viewAllClick)="onViewAllClick()" [showViewAll]="showViewAll">
+  <tr *ngFor="let row of rows">
+    <td>
+      <a mat-button [routerLink]="''" (click)="navigateToCrmAccount(row.buyingCompanyId)">{{row.buyingCompanyName}}</a>
+    </td>
+    <td>
+      <a mat-button [routerLink]="''" (click)="navigateToTransaction(row.id)">{{row.transactionNumber}}</a>
+    </td>
+    <td>
+      {{row.producer}}
+    </td>
+    <td>
+      {{row.shipDate | date : 'MM/dd'}}
+    </td>
+    <td>
+      {{row.daysLate}}
+    </td>
+  </tr>
+</app-table-chart>

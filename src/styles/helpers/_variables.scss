@@ -1,0 +1,24 @@
+:root {
+  .isDarkTheme {
+    --text-1: #ccc;
+    --text-2: #afafaf;
+  }
+
+  .isLightTheme {
+    --text-1: #606060;
+    --text-2: #848484;
+  }
+}
+
+$text-1: var(--text-1);
+$text-2: var(--text-2);
+
+// todo refactor
+$buy-chain-color: rgb(0, 118, 186);
+$white: rgb(255, 255, 255);
+$light-grey: rgb(245, 245, 245);
+$grey: rgb(188, 190, 192);
+$dark-grey: rgb(94, 94, 94);
+$yellow: rgb(238, 158, 6);
+$smooth-transition: width 0.2s ease-in-out, height 0.2s ease-in-out, padding 0.2s ease-in-out,
+  font-size 0.2s ease-in-out;

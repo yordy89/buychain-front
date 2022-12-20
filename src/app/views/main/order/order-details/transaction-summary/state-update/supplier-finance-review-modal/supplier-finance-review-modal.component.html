@@ -1,0 +1,148 @@
+<app-modal-base [header]="title">
+  <ng-container content>
+    <mat-tab-group class="finance-tabs-container">
+      <mat-tab label="Key Metrics">
+        <div class="summary-sections-container mt-15">
+          <div class="summary-section">
+            <div class="summary-container">
+              <div class="section-header">General/Trends</div><hr>
+              <div class="section-content">
+                <div class="unit">
+                  <div class="label">Total Sales Transaction Outstanding:</div>
+                  <div class="value">{{outstandingSalesTransactions?.length}}</div>
+                </div>
+                <div class="unit">
+                  <div class="label">Total Purchase Transaction Outstanding:</div>
+                  <div class="value">{{outstandingPurchaseTransactions?.length}}</div>
+                </div>
+                <div class="unit">
+                  <div class="label">Total Sales Value Outstanding:</div>
+                  <div class="value">{{outstandingSalesTotalValue | currency}}</div>
+                </div>
+                <div class="unit">
+                  <div class="label">Total Purchase Value Outstanding:</div>
+                  <div class="value">{{outstandingPurchaseTotalValue | currency}}</div>
+                </div>
+                <div class="unit">
+                  <div class="label">Average Transaction Value:</div>
+                  <div class="value">{{averageTransactionValue | currency}}</div>
+                </div>
+                <div class="unit" *ngIf="isSeller">
+                  <div class="label">Avg Transaction Profit:</div>
+                  <div class="value">{{averageTransactionProfit | currency}}</div>
+                </div>
+                <div class="unit" *ngIf="isSeller">
+                  <div class="label">Avg Transaction Margin:</div>
+                  <div class="value">{{averageTransactionMargin | percent : '1.0-2'}}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-container">
+              <div class="section-header">This Transaction</div><hr>
+              <div class="section-content">
+                <div class="unit">
+                  <div class="label">Transaction Value:</div>
+                  <div class="value">{{transactionValue | currency}}</div>
+                </div>
+                <div class="unit" *ngIf="isSeller">
+                  <div class="label">Transaction Profit:</div>
+                  <div class="value">{{transactionProfit | currency}}</div>
+                </div>
+                <div class="unit" *ngIf="isSeller">
+                  <div class="label">Transaction Margin:</div>
+                  <div class="value">{{transactionMargin}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-section">
+
+            <div class="summary-container" *ngIf="isSeller">
+              <div class="section-header">Credit</div><hr>
+              <div class="chart-holder" *ngIf="canReadCreditInfo && outstandingSalesTotalValue; else NoPermissionsForCreditInfo">
+                <dx-circular-gauge
+                    *ngIf="crmCreditInfo?.maxCredit; else NoCreditInfo"
+                    id="gauge"
+                    [value]="outstandingSalesTotalValue"
+                    [subvalues]="[outstandingSalesTotalValue]">
+                  <dxo-value-indicator
+                      type="triangleNeedle"
+                      color="#8FBC8F">
+                  </dxo-value-indicator>
+                  <dxo-subvalue-indicator
+                      type="textCloud"
+                      color="#483D8B"><dxo-text format="currency"></dxo-text>
+                  </dxo-subvalue-indicator>
+                  <dxo-geometry
+                      [startAngle]="180"
+                      [endAngle]="0">
+                  </dxo-geometry>
+                  <dxo-scale
+                      [startValue]="0"
+                      [endValue]="crmCreditInfo.maxCredit"
+                      [tickInterval]="crmCreditInfo.maxCredit/2">
+                  </dxo-scale>
+                  <dxo-size [height]="200"></dxo-size>
+                  <dxo-title
+                      [text]="'Credit Terms: ' + (crmCreditInfo.creditTerms || 'No credit terms')"
+                      horizontalAlignment="center"
+                      verticalAlignment="bottom">
+                    <dxo-font
+                        [size]="15"
+                        color="grey">
+                    </dxo-font>
+                    <dxo-margin [top]="15"></dxo-margin>
+                  </dxo-title>
+                </dx-circular-gauge>
+                <ng-template #NoCreditInfo>
+                  <div class="no-data-plate">Credit limit not set for this customer. Please update in CRM</div>
+                </ng-template>
+
+              </div>
+              <ng-template #NoPermissionsForCreditInfo>
+                <div class="no-data-plate">You do not have enough permissions to see Credit Info</div>
+              </ng-template>
+            </div>
+
+            <div class="summary-container">
+              <div class="section-header">Pipeline by state</div><hr>
+              <div class="chart-holder">
+                <div class="wrapper">
+                  <dx-pie-chart
+                      id="pie"
+                      type="doughnut"
+                      title="Transactions by State"
+                      palette="Soft Pastel"
+                      [dataSource]="transactionStateDonutData">
+                    <dxi-series
+                        argumentField="label"
+                        valueField="count">
+                      <dxo-label [visible]="true" [customizeText]="customizeText">
+                        <dxo-connector [visible]="true"></dxo-connector>
+                      </dxo-label>
+                    </dxi-series>
+                    <dxo-size [height]="280"></dxo-size>
+                    <dxo-legend [margin]="0" horizontalAlignment="right" verticalAlignment="top"></dxo-legend>
+                  </dx-pie-chart>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Transactions">
+        <div *matTabContent class="mt-15">
+          <app-open-transactions [transactionsList]="outstandingTransactions"></app-open-transactions>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Close</app-button>
+  </ng-container>
+</app-modal-base>

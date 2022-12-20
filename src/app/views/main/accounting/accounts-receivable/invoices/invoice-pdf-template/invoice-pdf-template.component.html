@@ -1,0 +1,98 @@
+<div class="main-wrapper">
+  <div class="content">
+
+    <div class="d-flex-between">
+      <img src="assets/images/buyChain-logo.png" crossorigin="anonymous" />
+      <div class="order-numbers">
+        <div class="header-with-number-wrapper">
+          <div class="header">
+            INVOICE
+          </div>
+          <div class="id">
+            {{invoice.number}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="buyer-info">
+      <app-invoice-pdf-template-address
+        [shipToLocation]="shipToLocation"
+        [billToLocation]="billToLocation"
+      ></app-invoice-pdf-template-address>
+    </div>
+
+    <div class="details-table-section">
+      <div class="invoice-details-header">
+        <div class="first-line">
+          <div class="in-line-value">
+            <div>
+              <span class="label-value-label">Invoice Number:</span><span>{{invoice.number}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="second-line">
+          <div>
+            <div>
+              <span class="label-value-label">Invoice Date:</span><span>{{invoice.invoiceDate | date}}</span>
+            </div>
+            <div>
+              <span class="label-value-label">Due Date:</span><span>{{invoice.dueDate | date}}</span>
+            </div>
+          </div>
+          <div>
+            <div>
+              <span class="label-value-label">Days Since Issue:</span><span>{{invoice.sinceIssue}}</span>
+            </div>
+            <div>
+              <span class="label-value-label">Days Past:</span><span>{{invoice.pastDue}}</span>
+            </div>
+          </div>
+          <div>
+            <div>
+              <span class="label-value-label">Sales Order:</span><span>{{salesOrderNumber}}</span>
+            </div>
+            <div>
+              <span class="label-value-label">Terms:</span><span>{{invoice.terms}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="line-items-table">
+        <thead>
+          <th>Type</th>
+          <th class="text-left">DESCRIPTION</th>
+          <th>QTY</th>
+          <th>Units Of Measure</th>
+          <th>AMOUNT</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lineItem of invoice.lineItems">
+            <td>{{lineItem.type}}</td>
+            <td class="text-left">{{lineItem.description}}</td>
+            <td>{{lineItem.quantity}}</td>
+            <td>{{lineItem.units}}</td>
+            <td>{{lineItem.revenue | currency}}</td>
+          </tr>
+          <tr class="spacer-row" [style.height.px]="spacerRowHeight()">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="total-row">
+      <div class="total-box">
+        <span class="label">Total</span>
+        <div class="value">
+          {{invoice.total | currency}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+.access-controls-wrapper {
+  width: 100%;
+
+  .profiles-wrapper {
+    display: flex;
+    font-size: 16px;
+
+    .profiles-selection-section {
+      padding: 20px;
+
+      .header-section {
+        padding: 20px 20px 20px 0;
+
+        .description-header {
+          font-weight: bold;
+          font-size: 18px;
+          color: grey;
+        }
+
+        .additional-clarification {
+          font-size: 16px;
+          color: grey;
+        }
+      }
+
+      .list-item {
+        display: flex;
+        align-items: flex-start;
+        margin: 5px 0;
+
+        .profile-radio-button {
+          min-width: 140px;
+        }
+      }
+
+      .profile-radio-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .profile-unit {
+        margin-top: 2px;
+
+        .profile-name {
+          font-size: 16px;
+          font-weight: bold;
+          color: dimgrey;
+        }
+
+        .profile-description {
+          font-size: 16px;
+          color: dimgray;
+        }
+      }
+    }
+
+    .profiles-description-section {
+      width: 80%;
+      margin: 15px;
+    }
+  }
+
+  .tab-wrapper {
+    padding: 7px 10px;
+    height: 100%;
+  }
+}

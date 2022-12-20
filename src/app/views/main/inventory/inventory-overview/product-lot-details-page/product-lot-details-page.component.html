@@ -1,0 +1,18 @@
+<mat-card *ngIf="lotId" class="mat-elevation-z2">
+  <mat-card-header>
+
+    <mat-card-title>Product Lot Details</mat-card-title>
+    <app-button [isNarrow]="true" (clicked)="backToInventory()" tabindex="-1">Back</app-button>
+
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <app-product-lot-details
+      [lotId]="lotId"
+      (noLotData)="backToInventory()">
+    </app-product-lot-details>
+
+  </mat-card-content>
+</mat-card>
+

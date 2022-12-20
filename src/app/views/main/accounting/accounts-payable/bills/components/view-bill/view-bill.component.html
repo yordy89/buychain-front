@@ -1,0 +1,124 @@
+<ng-container *ngIf="data">
+  <div id="view-bill" class="print-container">
+    <section class="flex-row">
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Purchase Order</div>
+          <div class="key-value-pair-value">
+            <span>{{purchaseOrder?.number}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Due Date</div>
+          <div class="key-value-pair-value">
+            <span>{{data.dueDate | date :'shortDate'}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Status</div>
+          <div class="key-value-pair-value">
+            <span class="badge" [ngClass]="data.stateBadgeClass">{{data.state | stringUnderscoreToSpaceTitleCase}}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="flex-row">
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Vendor</div>
+          <div class="key-value-pair-value">
+            {{data.vendor.company | displayItemFromList: crmAccounts:'id':'name'}}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Days Since Issue</div>
+          <div class="key-value-pair-value">
+            <span>{{data.sinceIssue}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Days Past</div>
+          <div class="key-value-pair-value">
+            <span>{{data.pastDue}}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <dx-tab-panel [hidden]="printing" class="mt-15 mb-20">
+      <dxi-item title="Line Items">
+        <app-bill-line-items-grid
+          [data]="data"
+          [purchaseOrder]="purchaseOrder">
+        </app-bill-line-items-grid>
+      </dxi-item>
+      <dxi-item tabTemplate="tabTemplate">
+        <app-bill-payments-grid
+          [data]="data"
+          [purchaseOrder]="purchaseOrder"
+          [members]="members"
+          (paymentsUpdatedEvent)="onPaymentsUpdated()">
+        </app-bill-payments-grid>
+      </dxi-item>
+      <div *dxTemplate="let content of 'tabTemplate'">
+        <span>{{paymentsTabTitle}}</span>
+      </div>
+    </dx-tab-panel>
+
+    <div class="mt-25" *ngIf="!printing">
+      <app-accounting-milestones [milestones]="milestones">
+      </app-accounting-milestones>
+    </div>
+
+    <div *ngIf="!!data?.billLineItems?.length" [hidden]="!printing" class="flex-row">
+      <div class="lines-data-grid-header">
+        <h4>Line Items</h4>
+      </div>
+      <app-bill-line-items-grid
+        [data]="data"
+        [purchaseOrder]="purchaseOrder"
+        [printing]="true">
+      </app-bill-line-items-grid>
+    </div>
+
+    <div *ngIf="!!data?.payments?.length" [hidden]="!printing" class="flex-row mb-20">
+      <div class="lines-data-grid-header">
+        <h4>{{paymentsTabTitle}}</h4>
+      </div>
+      <app-bill-payments-grid
+        [data]="data"
+        [purchaseOrder]="purchaseOrder"
+        [members]="members"
+        (paymentsUpdatedEvent)="onPaymentsUpdated()"
+        [printing]="true">
+      </app-bill-payments-grid>
+    </div>
+
+    <div class="flex-row">
+      <div *ngIf="data?.attachments?.length" class="flex-col">
+        <app-accounting-file-upload
+          [attachments]="data.attachments"
+          [isEditable]="false"
+        ></app-accounting-file-upload>
+      </div>
+      <div class="flex-col">
+        <div class="key-value-pair">
+          <div class="key-value-pair-label">Notes</div>
+          <div class="key-value-pair-value">{{data.notes}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,42 @@
+.selection-list {
+  width: 200px;
+  height: 320px;
+  overflow-y: auto;
+  border: 1px solid #dedee0;
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+
+  .mat-radio-button {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0;
+    height: 22px;
+  }
+
+  .mat-checkbox {
+    padding: 5px 0;
+    height: 22px;
+  }
+}
+
+.spec-selector {
+  display: flex;
+}
+
+.spec-selection-item.selected {
+  background-color: rgba(var(--palette-primary-900), 0.2);
+}
+
+.clear-product-button {
+  margin-left: 30px;
+}
+
+app-button {
+  margin-right: 20px;
+}
+
+.autocompletion-row {
+  margin-bottom: 10px;
+  padding: 10px 5px;
+}

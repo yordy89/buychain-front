@@ -1,0 +1,58 @@
+<app-modal-base header="CRM Account Link">
+  <ng-container content>
+    <ng-template #InviteMode>
+      <div class="invitation-wrapper">
+        <div class="linking-message">
+          <mat-icon color="primary" matPrefix>email</mat-icon>
+          <p>Send an invitation email to the person you would like to see in BuyChain<sup>TH</sup></p>
+        </div>
+        <div class="selector-wrapper">
+          <form [formGroup]="invitationForm">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Email" required [formControl]="email">
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="content-wrapper" *ngIf="!inviteMode; else InviteMode">
+      <div *ngIf="companiesList?.length; else NoUnlinkedAccountLeft">
+        <div class="linking-message">
+          <mat-icon color="primary" matPrefix>link_off</mat-icon>
+          <p>This Account Is unlinked. Link it to a BuyChain<sup>TH</sup> Customer to enhance communication and functionality</p>
+        </div>
+        <div class="selector-wrapper">
+          <form [formGroup]="form">
+            <app-autocomplete
+                [data]="companiesList"
+                formControlName="selectedCompany"
+                keyName="id"
+                displayName="name"
+                placeholder="Search Accounts"
+            ></app-autocomplete>
+          </form>
+        </div>
+      </div>
+      <ng-template #NoUnlinkedAccountLeft>
+        <p class="no-data-plate">You already have CRM accounts linked to all companies in BuyChain<sup>TH</sup> system</p>
+      </ng-template>
+      <div class="invitation-link-wrapper">
+        <span (click)="toggleInvitationMode(true)">Can't find the account you are looking for? Send an invitation</span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <ng-container *ngIf="!inviteMode; else InviteActions">
+      <app-button [isNarrow]="true" (clicked)="close()">Close</app-button>
+      <app-button *ngIf="companiesList?.length" [isNarrow]="true" [isPrimary]="true" (clicked)="linkAccount()">Save</app-button>
+    </ng-container>
+
+    <ng-template #InviteActions>
+      <app-button [isNarrow]="true" (clicked)="toggleInvitationMode(false)">Back</app-button>
+      <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="sendAnInvitation()">Send</app-button>
+    </ng-template>
+  </ng-container>
+</app-modal-base>

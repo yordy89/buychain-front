@@ -1,0 +1,42 @@
+.content {
+  height: 250px;
+  font-size: 18px;
+}
+
+.selection-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.progress-bar {
+  position: relative;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  color: white;
+  font-size: 22px;
+}
+
+.mat-progress-bar {
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error-list {
+  border: 1px solid #979797;
+  overflow: auto;
+  padding: 10px;
+  margin-top: 25px;
+  height: 200px;
+}
+
+.hide {
+  display: none;
+}

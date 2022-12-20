@@ -1,0 +1,166 @@
+.wrapper {
+  .header-section {
+    .source-section {
+      font-size: 12px;
+      padding-left: 39px;
+    }
+
+    .linked-to-section {
+      font-size: 13px;
+      padding-left: 39px;
+
+      span {
+        font-style: italic;
+      }
+    }
+
+    .actions {
+      mat-icon {
+        cursor: pointer;
+        padding-left: 10px;
+      }
+    }
+  }
+
+  .content-wrapper {
+    .actions-container {
+      .actions {
+        justify-content: flex-end;
+        flex-direction: row;
+        display: flex;
+        margin-right: 30px;
+
+        mat-icon {
+          cursor: pointer;
+          padding-left: 10px;
+        }
+
+        app-button {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .is-expanded {
+      width: 49%;
+    }
+
+    /* tabs styles */
+    app-crm-account-sales-info,
+    app-crm-account-credit-info,
+    app-crm-account-contacts,
+    app-crm-account-locations,
+    app-crm-account-orders,
+    app-crm-account-reports {
+      width: 100%;
+    }
+
+    .labels-section-wrapper {
+      .labels-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+
+    .bill-to-section {
+      .header {
+        font-size: 18px;
+        font-weight: bold;
+        color: dimgrey;
+      }
+
+      .content {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 5px;
+
+        .input-section {
+          display: flex;
+          align-items: baseline;
+          padding-right: 20px;
+
+          .input-label {
+            padding: 0 5px;
+            color: dimgrey;
+            font-size: 15px;
+            font-weight: 400;
+          }
+
+          .mat-form-field {
+            width: 220px;
+          }
+        }
+      }
+    }
+
+    .sales-team-table-wrapper {
+      .sales-team-header {
+        font-size: 18px;
+        font-weight: bold;
+        color: dimgrey;
+      }
+
+      .add-sales-team-container {
+        .add-sales-team-input {
+          display: flex;
+          justify-content: space-between;
+
+          .input-section {
+            padding-left: 5px;
+
+            mat-form-field {
+              width: 235px;
+            }
+          }
+
+          .action-section {
+            padding-right: 25px;
+            padding-top: 20px;
+
+            mat-icon {
+              cursor: pointer;
+              margin-left: 10px;
+              font-size: 25px;
+            }
+          }
+        }
+
+        .no-members-left {
+          margin: 10px;
+
+          .no-members-left-message {
+            font-size: 15px;
+            font-weight: 300;
+            margin-left: 3px;
+            color: grey;
+          }
+
+          .info-icon {
+            color: grey;
+            font-size: 17px;
+            height: 20px;
+            width: 20px;
+            transform: rotate(180deg);
+          }
+        }
+
+        .add-sales-team-button {
+          padding: 10px 0;
+        }
+      }
+    }
+
+    .quick-book-section {
+      padding-left: 20px;
+
+      .quick-book-fields {
+        padding-left: 10px;
+
+        > div {
+          margin: 10px 0;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<app-modal-base header="Change Order Type">
+  <ng-container content>
+    <mat-form-field appearance="outline">
+      <mat-label>Change Type</mat-label>
+      <mat-select [(value)]="selectedType" required placeholder="Select One">
+        <mat-option [value]="ChangeTransactionTypesEnum.ModifyTransport" [disabled]="!userPermissions.canModifyTransport">
+          {{ChangeTransactionTypesEnum.ModifyTransport | stringUnderscoreToSpaceTitleCase}}
+        </mat-option>
+        <mat-option [value]="ChangeTransactionTypesEnum.ModifyTally" [disabled]="!userPermissions.canModifyTally || true"><!--TODO activate when available-->
+          {{ChangeTransactionTypesEnum.ModifyTally | stringUnderscoreToSpaceTitleCase}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="changeTransaction()">Submit</app-button>
+  </ng-container>
+</app-modal-base>

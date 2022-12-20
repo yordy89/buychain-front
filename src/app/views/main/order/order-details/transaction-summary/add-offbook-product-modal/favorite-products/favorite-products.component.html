@@ -1,0 +1,162 @@
+<div class="app-grid-container fab-container" *ngIf="favoriteProductsList?.length; else NoFavorites">
+	<dx-data-grid
+    #productGrid
+		class="my-products-grid"
+    [height]="413"
+		[dataSource]="favoriteProductsList"
+		[showBorders]="true"
+		[remoteOperations]="false"
+		[allowColumnResizing]="true"
+		columnResizingMode="widget"
+		[columnAutoWidth]="true"
+		[allowColumnReordering]="true"
+		[rowAlternationEnabled]="true"
+		[columnHidingEnabled]="true"
+		[hoverStateEnabled]="true"
+		(onCellPrepared)="onCellPrepared($event)"
+		(onSelectionChanged)="selectionChangedHandler($event)"
+		(onToolbarPreparing)="onToolbarPreparing($event)">
+		<dxo-paging [enabled]="false"></dxo-paging>
+		<dxo-sorting mode="multiple"></dxo-sorting>
+		<dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+		<dxo-search-panel [visible]="true"></dxo-search-panel>
+		<dxo-load-panel [enabled]="true"></dxo-load-panel>
+		<dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+		<dxo-group-panel [visible]="true"></dxo-group-panel>
+		<dxo-selection [allowSelectAll]="false" showCheckBoxesMode="always" mode="multiple"></dxo-selection>
+
+		<div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+			<app-table-results-text [visibleRows]="productGrid.instance.totalCount()" [results]="favoriteProductsList.length"></app-table-results-text>
+		</div>
+
+		<dxi-column dataField="specShorthand" [allowHiding]="false" [allowGrouping]="false"></dxi-column>
+    <dxi-column dataField="productGroupName" caption="Product Group" [visible]="false"></dxi-column>
+    <dxi-column dataField="productName" caption="Product" [visible]="false"></dxi-column>
+
+    <dxi-column dataField="lumberCutGrade" caption="Lumber: Cut & Grade" [sortingMethod]="cutGradeSorting" [visible]="false"></dxi-column>
+    <dxi-column dataField="lumberSeasoning" [visible]="false" caption="Lumber: Seasoning"></dxi-column>
+    <dxi-column dataField="lumberPattern" [visible]="false" caption="Lumber: Pattern"></dxi-column>
+    <dxi-column dataField="lumberSpecies" [visible]="false" caption="Lumber: Species"></dxi-column>
+    <dxi-column dataField="lumberSubspecies" [visible]="false" caption="Lumber: Sub-Species"></dxi-column>
+    <dxi-column dataField="lumberGrade" [visible]="false" caption="Lumber: Grade"></dxi-column>
+    <dxi-column dataField="lumberSubGrade" [visible]="false" caption="Lumber: Sub-Grade"></dxi-column>
+    <dxi-column dataField="lumberCutType" [visible]="false" caption="Lumber: CutType"></dxi-column>
+
+    <dxi-column dataField="size"
+                name="cutShorthand"
+                caption="Cut"
+                dataType="string"
+                [allowSearch]="false"
+                [visible]="false"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+    ></dxi-column>
+
+    <dxi-column dataField="lumberThickness"
+                name="lumberThicknessName"
+                caption="Lumber: Thickness"
+                dataType="string"
+                [visible]="false"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+    ></dxi-column>
+
+    <dxi-column dataField="lumberLength" caption="Lumber: Length" [sortingMethod]="sortDimensionValues" [visible]="false"></dxi-column>
+
+    <dxi-column dataField="lumberWidth"
+                name="lumberWidthName"
+                caption="Lumber: Width"
+                dataType="string"
+                [visible]="false"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+    ></dxi-column>
+
+    <dxi-column dataField="panelType" [visible]="false" caption="Panel: Type"></dxi-column>
+    <dxi-column dataField="panelSpecies" [visible]="false" caption="Panel: Species"></dxi-column>
+    <dxi-column dataField="panelSeasoning" [visible]="false" caption="Panel: Seasoning"></dxi-column>
+    <dxi-column dataField="panelSeasoningChemical" [visible]="false" caption="Panel: Seasoning Chemical"></dxi-column>
+    <dxi-column dataField="panelGrade" [visible]="false" caption="Panel: Grade"></dxi-column>
+    <dxi-column dataField="panelFinish" [visible]="false" caption="Panel: Finish"></dxi-column>
+    <dxi-column dataField="panelMfgProcess" [visible]="false" caption="Panel: Manufacturing Process"></dxi-column>
+    <dxi-column dataField="panelRating" [visible]="false" caption="Panel: Rating"></dxi-column>
+    <dxi-column dataField="panelStandard" [visible]="false" caption="Panel: Standard"></dxi-column>
+
+    <dxi-column dataField="panelThickness"
+                name="panelThicknessName"
+                caption="Panel: Thickness"
+                dataType="string"
+                [visible]="false"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+    ></dxi-column>
+
+    <dxi-column dataField="panelLength"
+                name="panelLengthName"
+                caption="Panel: Length"
+                dataType="string"
+                [visible]="false"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+    ></dxi-column>
+
+    <dxi-column dataField="panelWidth"
+                name="panelWidthName"
+                caption="Panel: Width"
+                dataType="string"
+                [visible]="false"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+    ></dxi-column>
+
+    <dxi-column dataField="panelPatternWidth" [visible]="false" caption="Panel: Pattern Width"></dxi-column>
+    <dxi-column dataField="engineeredGrade" [visible]="false" caption="Engineered: Grade"></dxi-column>
+    <dxi-column dataField="engineeredType" [visible]="false" caption="Engineered: Type"></dxi-column>
+    <dxi-column dataField="engineeredSeasoning" [visible]="false" caption="Engineered: Seasoning"></dxi-column>
+    <dxi-column dataField="engineeredDepth" [visible]="false" caption="Engineered: Depth"></dxi-column>
+    <dxi-column dataField="engineeredCertification" [visible]="false" caption="Engineered: Certification"></dxi-column>
+    <dxi-column dataField="engineeredClassification" [visible]="false" caption="Engineered: Classification"></dxi-column>
+
+    <dxi-column dataField="engineeredThickness"
+                name="engineeredThicknessName"
+                caption="Engineered: Thickness"
+                dataType="string"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+                [visible]="false"
+    ></dxi-column>
+
+    <dxi-column dataField="engineeredLength"
+                name="engineeredLengthName"
+                caption="Engineered: Length"
+                dataType="string"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+                [visible]="false"
+    ></dxi-column>
+
+    <dxi-column dataField="engineeredWidth"
+                name="engineeredWidthName"
+                caption="Engineered: Width"
+                dataType="string"
+                [calculateCellValue]="calculateCellValueBasedOnFieldName"
+                [sortingMethod]="sortDimensionValues"
+                [visible]="false"
+    ></dxi-column>
+
+    <dxi-column cellTemplate="actionsTemplate" [allowHiding]="false" [allowGrouping]="false" [width]="40"></dxi-column>
+		<div *dxTemplate="let item of 'actionsTemplate'">
+			<app-table-actions [disabled]="isRowSelected()" [actions]="tableActions" (action)="onTableAction($event, item.data)"></app-table-actions>
+		</div>
+	</dx-data-grid>
+
+	<app-table-fab *ngIf="isRowSelected()"
+	               [actions]="fabActions"
+	               (action)="onFABAction($event)"
+	></app-table-fab>
+
+</div>
+
+<ng-template #NoFavorites>
+	<div class="no-data-plate">You do not have any favorite products specified.</div>
+</ng-template>

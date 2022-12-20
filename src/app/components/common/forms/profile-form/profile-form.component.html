@@ -1,0 +1,174 @@
+<form [formGroup]="form" *ngIf="initialData">
+
+  <div class="left-part" [ngClass]="{'is-crm': isCrm}">
+
+    <div class="upload-photo-section">
+      <app-image-upload
+        [formControl]="profilePictureUrl"
+        [imageResourceType]="isCrm ? ImageResourceType.Logo : ImageResourceType.Profile"
+        [name]="initialData?.firstName"
+        label='Upload Your Picture'
+        description='*Maximum file size 2MB. PNG, JPG accepted'
+        [allowReset]="true"
+        [readonlyMode]="(!isCrm && currentUser.id !== initialData.id) || (readonlyMode$ | async)">
+      </app-image-upload>
+    </div>
+
+    <div class="basic-info-container">
+      <div class="title">Information</div>
+      <ng-container *ngIf="readonlyMode; else EditableMode">
+        <div class="flex-grid-row">
+          <div class="flex-col">First Name: {{initialData.firstName}}</div>
+          <div class="flex-col">Last Name: {{initialData.lastName}}</div>
+        </div>
+        <div class="flex-grid-row">
+          <div class="flex-col">Email: {{initialData.username}}</div>
+          <div class="flex-col">Title: {{initialData.title}}</div>
+        </div>
+        <div class="flex-grid-row">
+          <div class="flex-col">Phone: {{initialData.callingCode}} {{initialData.workPhone}}</div>
+        </div>
+      </ng-container>
+
+      <ng-template #EditableMode>
+        <div>
+          <div class="flex-row">
+            <mat-form-field appearance="outline" class="flex-col">
+              <mat-label>First Name</mat-label>
+              <input matInput appNullOnEmpty placeholder="First Name" required [formControl]="firstName">
+              <mat-error>{{firstName?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-col">
+              <mat-label>Last name</mat-label>
+              <input matInput appNullOnEmpty placeholder="Last Name" required [formControl]="lastName">
+              <mat-error>{{lastName?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex-row">
+            <mat-form-field appearance="outline" class="flex-col">
+              <mat-label>Email</mat-label>
+              <input matInput appNullOnEmpty placeholder="Email" [required]="!isCrm" [formControl]="username">
+              <mat-error>{{username?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-col">
+              <mat-label>Title</mat-label>
+              <input matInput appNullOnEmpty placeholder="Title" [required]="profileCompletion" [formControl]="title">
+              <mat-error>{{title?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex-row">
+            <div class="phone-input flex-col">
+              <div class="calling-code">
+                <app-autocomplete label="Area Code"
+                                  [data]="countryCodes"
+                                  formControlName="callingCode"
+                                  placeholder="Area Code"
+                                  [isRequired]="profileCompletion"
+                ></app-autocomplete>
+              </div>
+              <div class="phone-number">
+                <mat-form-field appearance="outline" class="field-width-auto">
+                  <mat-label>Work Phone</mat-label>
+                  <input matInput placeholder="XXX-XXX-XXXX" [required]="profileCompletion" [formControl]="workPhone" mask="000-000-0000">
+                  <mat-error>{{workPhone?.errors | errorMessage}}</mat-error>
+                </mat-form-field>
+              </div>
+
+            </div>
+            <div class="flex-col"></div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="get-info-container"
+      *ngIf="profileCompletion">
+      <div class="title">Tell us just two things</div>
+
+      <div class="section flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>What is your main reason to use BuyChain?</mat-label>
+          <textarea matInput appNullOnEmpty placeholder="Start Typing" formControlName="reasonToUse"></textarea>
+          <mat-error>{{reasonToUse?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>How did you hear about us</mat-label>
+          <textarea matInput appNullOnEmpty placeholder="Start Typing" formControlName="hearAboutUs"></textarea>
+          <mat-error>{{hearAboutUs?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="right-part" *ngIf="!isCrm">
+
+    <div class="section d-flex justify-content-between" *ngIf="initialData.profileCompletionState === ProfileCompletionState.COMPLETE">
+      <div>
+        <div class="title">User State</div>
+        <div class="content">
+          <mat-form-field appearance="outline">
+            <mat-select [formControl]="accountState">
+              <mat-option *ngFor="let state of accountStateList" [value]="state">
+                {{state | stringUnderscoreToSpaceTitleCase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div>
+        <div class="title">Group</div>
+        <app-tree-selector *ngIf="groupsList"
+          class="flex-col"
+          [control]="memberGroup"
+          [allowClear]="true"
+          appearance="outline"
+          keyExpr="id"
+          parentExpr="parent"
+          displayKey="name"
+          [nullValue]="null"
+          nullExpression="Global"
+          [treeListData]="groupsList">
+        </app-tree-selector>
+      </div>
+    </div>
+
+    <div class="section product-interest-section"
+      [ngClass]="{'is-invalid': productsOfInterestIds.invalid && productsOfInterestIds.touched}">
+      <div class="title">Product Interests <span class="sub-title">(Select all that apply)</span></div>
+      <div class="content product-role-selection-section">
+        <div class="option" *ngFor="let userProductRole of productsOfInterestList">
+          <mat-checkbox color="primary" [disabled]="readonlyMode" (change)="selectProductUserRole(userProductRole)"
+            [checked]="userProductRole.isSelected"></mat-checkbox>
+          <div class="product-data">
+            <div class="name">{{userProductRole.name}}</div>
+            <div class="description">{{userProductRole.description}}</div>
+          </div>
+        </div>
+      </div>
+      <mat-error *ngIf="productsOfInterestIds.invalid && productsOfInterestIds.touched">{{productsOfInterestIds.errors | errorMessage}}</mat-error>
+    </div>
+
+    <div class="section" *ngIf="!isCrm && initialData.profileCompletionState === ProfileCompletionState.COMPLETE">
+      <div class="title">Privacy Settings</div>
+      <div class="content">
+        <div class="option">
+          <mat-checkbox [matTooltip]="privacySettingsTooltipText" matTooltipPosition="below" color="primary"
+                        [disabled]="readonlyMode || !permissions.canUpdatePrivacy" (change)="updateUserPrivacySettings($event)"
+                        [checked]="!initialData.privacySettings.allowListing">
+            <div class="name">Unlisted Profile</div>
+          </mat-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <app-button *ngIf="permissions.canUpdateUser" [isDisabled]="readonlyMode" [isNarrow]="true" (clicked)="openChangePasswordModal($event)">Change Password</app-button>
+  </div>
+
+</form>

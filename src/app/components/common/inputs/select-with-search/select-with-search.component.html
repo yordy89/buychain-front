@@ -1,0 +1,19 @@
+<mat-form-field [appearance]="appearance" class="w-100">
+  <mat-label *ngIf="label">{{label}}</mat-label>
+  <mat-select disableOptionCentering="true" [formControl]="form" (openedChange)="openedChange($event)">
+    <mat-form-field class="search-input white-field-bg">
+      <mat-label>Search</mat-label>
+      <input matInput autocomplete="off"  #searchInput [value]="searchTerm"
+          (keydown)="$event.stopPropagation()"
+          (input)="onSearchTermChange($event)">
+      <span *ngIf="withLoadMore && !allLoaded" matSuffix class="cursor-pointer text-primary" (click)="triggerLoadMore($event)">Load More</span>
+    </mat-form-field>
+    <mat-option *ngFor="let option of filteredOptionList" [value]="valueField ? option[valueField] : option" >
+      {{displayField ? option[displayField] : option}}
+    </mat-option>
+  </mat-select>
+  <button *ngIf="allowClear && form.value" mat-icon-button (click)="onClear($event)" class="clear" matSuffix>
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-error>{{form?.errors | errorMessage}}</mat-error>
+</mat-form-field>

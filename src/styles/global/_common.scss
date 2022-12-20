@@ -1,0 +1,242 @@
+html {
+  font-size: 16px;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  min-height: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+div {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+p {
+  margin: 0 0 16px;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: inherit;
+}
+
+.h1,
+h1 {
+  font-size: 2rem;
+}
+
+.h2,
+h2 {
+  font-size: 1.75rem;
+}
+
+.h3,
+h3 {
+  font-size: 1.5rem;
+}
+
+.h4,
+h4 {
+  font-size: 1.25rem;
+}
+
+.h5,
+h5 {
+  font-size: 1rem;
+}
+
+.h6,
+h6 {
+  font-size: 0.875rem;
+}
+
+.table-heading {
+  padding: 12px 0;
+  border-bottom: 5px solid rgb(var(--palette-primary-500), 1);
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+
+.pt-5 {
+  padding-top: 5px !important;
+}
+
+.pt-20 {
+  padding-top: 20px !important;
+}
+
+.pr-20 {
+  padding-right: 20px !important;
+}
+
+.p-5 {
+  padding: 5px !important;
+}
+
+.p-10 {
+  padding: 10px !important;
+}
+
+.p-horizontal-5 {
+  padding: 0 5px !important;
+}
+
+.mt-15 {
+  margin-top: 15px !important;
+}
+
+.mt-25 {
+  margin-top: 25px !important;
+}
+
+.mb-20 {
+  margin-bottom: 20px !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+
+.mr-20 {
+  margin-right: 20px !important;
+}
+
+.ml-50 {
+  margin-left: 50px !important;
+}
+
+.ml-20 {
+  margin-left: 20px !important;
+}
+
+.ml-15 {
+  margin-left: 20px !important;
+}
+
+.ml-0 {
+  margin-left: 0 !important;
+}
+
+.m-0 {
+  margin: 0 !important;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.w-350px {
+  width: 350px;
+}
+
+input[type='number'] {
+  appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}
+
+.no-data-plate {
+  box-sizing: border-box;
+  border: 1px solid rgba(var(--palette-primary-200), 1);
+  background-color: rgba(var(--palette-primary-100), 0.35);
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-size: 17px;
+  padding: 20px 30px;
+}
+
+.error-placeholder {
+  box-sizing: border-box;
+  border: 1px solid rgba(var(--palette-warn-200), 1);
+  background-color: rgba(var(--palette-warn-100), 0.35);
+  color: rgba(var(--palette-warn-500), 1);
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-size: 17px;
+  padding: 20px 30px;
+}
+
+.no-data {
+  width: 100%;
+  color: rgba(var(--palette-primary-200), 1);
+  text-align: center;
+  font-size: 17px;
+  padding-top: 30px;
+}
+
+perfect-scrollbar {
+  .ps-content {
+    height: 100%;
+  }
+}
+
+// input fields browser suggested user and password autofill coloring
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+}

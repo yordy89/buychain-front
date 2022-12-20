@@ -1,0 +1,68 @@
+:host {
+  margin: 0 20px 0 3%;
+}
+
+.profile-photo {
+  float: left;
+  display: flex;
+}
+
+.photo-wrapper {
+  position: relative;
+
+  .clear-photo {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    color: rgba(var(--palette-warn-500), 1);
+    transform: rotate(45deg);
+
+    &:hover {
+      color: rgba(var(--palette-warn-500), 0.7);
+    }
+  }
+
+  .input-file {
+    display: none;
+  }
+
+  img {
+    width: 130px;
+  }
+}
+
+.custom-file-input {
+  position: absolute;
+  left: 0;
+  top: 100px;
+
+  .update-logo {
+    position: absolute;
+    background-color: grey;
+    width: 130px;
+    height: 30px;
+  }
+
+  .update-text {
+    color: white;
+    margin: 0 auto;
+    padding-top: 5px;
+    width: 85px;
+  }
+
+  .photo-upload-description {
+    position: absolute;
+    bottom: 20px;
+    left: 170px;
+    width: 160px;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 15px;
+    margin-top: 10px;
+
+    .text-style {
+      font-weight: 400;
+      font-size: 14px;
+    }
+  }
+}

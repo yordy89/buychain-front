@@ -1,0 +1,60 @@
+<mat-card *ngIf="permissions.canRead; else NoReadAccess" class="mat-elevation-z2">
+	<mat-card-header>
+		<mat-card-title>{{title}}</mat-card-title>
+
+		<button *ngIf="entry?.isDraftManual && permissions.canDelete" color="warn" mat-icon-button title="Delete" (click)="onDelete()" tabindex="-1">
+			<mat-icon>delete</mat-icon>
+		</button>
+
+		<button *ngIf="isViewState && entry?.isDraftManual && permissions.canUpdate" color="primary" mat-icon-button title="Edit" (click)="onEdit()" tabindex="-1">
+			<mat-icon>mode_edit</mat-icon>
+		</button>
+
+    <button
+      *ngIf="isViewState"
+      color="primary"
+      mat-icon-button
+      title="Export to PDF"
+      tabindex="-1"
+      (click)="generateViewJournalEntryPDF()">
+      <mat-icon>print</mat-icon>
+    </button>
+
+		<button *ngIf="!isAddState" color="primary" mat-icon-button title="Log" (click)="onOpenLog()" tabindex="-1">
+			<mat-icon>list_alt</mat-icon>
+		</button>
+
+		<button color="primary" mat-icon-button title="Close" (click)="onClose()" tabindex="-1">
+			<mat-icon>close</mat-icon>
+		</button>
+	</mat-card-header>
+
+	<mat-card-content>
+		<app-add-edit-journal-entry *ngIf="isLoaded && ((isAddState && permissions.canCreate) || (permissions.canUpdate && isEditState && entry))"
+                                [editMode]="isEditState"
+		                            [data]="entry"
+		                            [crmAccounts]="crmAccountsList"
+		                            [dimensions]="dimensionsList"
+		                            [groups]="groupsList"
+		                            [accounts]="accountsList"
+		                            [members]="members"
+		                            (resultChange)="onResult($event)"
+		                            (back)="onClose()"
+		></app-add-edit-journal-entry>
+
+		<app-view-journal-entry *ngIf="isViewState && isLoaded"
+		                        [data]="entry"
+		                        [crmAccounts]="crmAccountsList"
+		                        [dimensions]="dimensionsList"
+		                        [groups]="groupsList"
+		                        [accounts]="accountsList"
+		                        [members]="members"
+		></app-view-journal-entry>
+
+	</mat-card-content>
+</mat-card>
+
+<ng-template #NoReadAccess>
+	<div class="no-data">You do not have enough permissions for this section</div>
+</ng-template>
+

@@ -1,0 +1,131 @@
+<app-modal-base *ngIf="isLoaded" header="Edit Shipping and Transportation" (closed)="close()">
+  <ng-container content>
+    <div class="ship-to-section">
+      <div class="section">
+        <div class="content-wrapper">
+          <app-table-base [formGroup]="shipToFormGroup" headingText="Ship To">
+            <ng-container header>
+              <tr>
+                <th>Company</th>
+                <th>Facility</th>
+                <th>Sales Rep</th>
+              </tr>
+            </ng-container>
+
+            <ng-container body>
+              <tr class="body-row">
+                <td *ngIf="shipToCompanyName; else NoShipToCompanyName">
+                  <div class="label">{{shipToCompanyName}}</div>
+                </td>
+                <ng-template #NoShipToCompanyName>
+                  <td *ngIf="!shipToCompanyName" class="editable">
+                    <app-select-with-search [form]="shipToCompany" [optionList]="companies" [displayField]="'name'"
+                                            [valueField]="'id'"></app-select-with-search>
+                  </td>
+                </ng-template>
+                <td *ngIf="shipToFacilityName; else NoShipToFacilityName">
+                  <div class="label">{{shipToFacilityName}}</div>
+                </td>
+                <ng-template #NoShipToFacilityName>
+                  <td class="editable">
+                    <mat-form-field [matTooltip]="shipToDisabledTooltip" matTooltipPosition="above"
+                      *ngIf="shipToFacility.disabled || facilities?.length; else noFacilities">
+                      <mat-select formControlName="shipToFacility">
+                        <mat-option *ngFor="let facility of facilities" [value]="facility.id">
+                          {{facility.shortName}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error>{{shipToFacility?.errors | errorMessage}}</mat-error>
+                    </mat-form-field>
+                    <ng-template #noFacilities>
+                      <span class="no-entries-text">No facilities are defined for this Account in the CRM. Please go to the
+                        CRM and add a facility.</span>
+                    </ng-template>
+                  </td>
+                </ng-template>
+                <td *ngIf="shipToUserName; else NoShipToUserName">
+                  <div class="label">{{shipToUserName}}</div>
+                </td>
+                <ng-template #NoShipToUserName>
+                  <td class="editable">
+                    <mat-form-field *ngIf="shipToUser.disabled || users?.length; else noUsers">
+                      <mat-select formControlName="shipToUser">
+                        <mat-option *ngFor="let user of users" [value]="user.id">
+                          <span *ngIf="user.firstName">{{user.firstName}} {{user.lastName}}</span>
+                          <span *ngIf="!user.firstName">{{user.username}}</span>
+                        </mat-option>
+                      </mat-select>
+                      <mat-error>{{shipToUser?.errors | errorMessage}}</mat-error>
+                    </mat-form-field>
+                    <ng-template #noUsers>
+                      <span class="no-entries-text">No users are defined for this Account in the CRM. Please go to the CRM and
+                        add a user.</span>
+                    </ng-template>
+                  </td>
+                </ng-template>
+              </tr>
+            </ng-container>
+          </app-table-base>
+        </div>
+      </div>
+      <div class="section">
+        <div class="content-wrapper">
+
+          <app-table-base headingText="Bill To">
+            <ng-container header>
+              <tr>
+                <th>Facility</th>
+                <th>Contact</th>
+              </tr>
+            </ng-container>
+
+            <ng-container body>
+              <tr class="body-row">
+                <td class="editable">
+                  <mat-form-field>
+                    <mat-select [formControl]="billToLocation">
+                      <mat-option *ngFor="let facility of facilities" [value]="facility.id">
+                        {{facility.shortName}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error>{{billToLocation?.errors | errorMessage}}</mat-error>
+                  </mat-form-field>
+                </td>
+                <td class="editable">
+                  <mat-form-field>
+                    <mat-select [formControl]="billToContact">
+                      <mat-option *ngFor="let user of users" [value]="user.id">
+                        <span *ngIf="user.firstName">{{user.firstName}} {{user.lastName}}</span>
+                        <span *ngIf="!user.firstName">{{user.username}}</span>
+                      </mat-option>
+                    </mat-select>
+                    <mat-error>{{billToContact?.errors | errorMessage}}</mat-error>
+                  </mat-form-field>
+                </td>
+              </tr>
+            </ng-container>
+          </app-table-base>
+
+        </div>
+      </div>
+    </div>
+    <app-shipping-transportation
+      [transactionData]="transaction"
+      [selectedShipToFacility$]="selectedShipToFacility$"
+      [transportationFormGroup]="transportationFormGroup"
+      [freightTermsFromControl]="freightTermsFromControl"
+      [estimatedShipDateFormControl]="estimatedShipDateFormControl"
+    ></app-shipping-transportation>
+  </ng-container>
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button
+        [isNarrow]="true"
+        (clicked)="submit()"
+        [isDisabled]="shipToFormGroup.invalid || (transportationFormGroup.enabled && !transportationFormGroup.valid) || freightTermsFromControl.invalid"
+        [isPrimary]="true"
+    >
+      Submit
+    </app-button>
+  </ng-container>
+</app-modal-base>

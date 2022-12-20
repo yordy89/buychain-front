@@ -1,0 +1,61 @@
+.transaction-list-wrapper {
+  .row {
+    display: grid;
+    grid-auto-columns: minmax(max-content, 2fr);
+    grid-auto-flow: column;
+    font-size: 16px;
+
+    &.header {
+      height: 49px;
+      font-size: 18px;
+      padding-left: 50px;
+      background-color: #97acd1;
+
+      &.sales {
+        background-color: #95c595;
+      }
+    }
+
+    > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .transaction-number {
+      text-align: left;
+
+      .tx-short-number-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+
+  mat-expansion-panel {
+    margin-bottom: 5px;
+  }
+
+  mat-expansion-panel-header {
+    padding-right: 0;
+    position: relative;
+  }
+
+  mat-panel-title {
+    display: inline;
+    margin-right: 0;
+  }
+
+  .add-transaction-button {
+    margin: 15px 0 5px;
+    display: flex;
+    justify-content: left;
+  }
+}
+
+app-transaction-summary {
+  padding: 1%;
+  display: block;
+}

@@ -1,0 +1,21 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+@use 'variables' as *;
+
+.lines-data-grid-header {
+  height: 48px;
+  padding: 0 5px 5px;
+  display: flex;
+  align-items: center;
+
+  h4 {
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+.add-line-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}

@@ -1,0 +1,63 @@
+<div class="easy-access-reports-wrapper">
+  <div class="header-container">
+    <div class="header-section">
+      <h4>Easy Access Reports</h4>
+    </div>
+  </div>
+
+  <div class="easy-access-bookmarks-list">
+
+    <div class="easy-access-bookmark" *ngFor="let bookmark of easyAccessBookmarksList">
+      <div class="bookmark-info">
+        <div class="description-wrapper">
+          <div class="description">{{bookmark.description}}</div>
+          <div class="type">Type: {{bookmark.type}}</div>
+        </div>
+        <div class="actions-wrapper">
+          <mat-icon class="run-icon" color="primary" (click)="onEasyAccessBookmarkRun(bookmark.value)">play_arrow</mat-icon>
+          <mat-icon class="delete-icon" color="primary" (click)="onEasyAccessBookmarkDelete(bookmark.value)">delete_forever</mat-icon>
+        </div>
+      </div>
+      <div class="last-run">Last Run on {{bookmark.lastRunDate}} at {{bookmark.lastRunTime}}</div>
+
+    </div>
+  </div>
+
+  <div class="add-bookmark">
+    <mat-icon color="primary" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="addBookmarkMenu">add</mat-icon>
+  </div>
+
+  <mat-menu #addBookmarkMenu="matMenu" yPosition="below" xPosition="after">
+    <div class="menu-wrapper" (click) = "$event.stopPropagation()">
+      <div class="menu-header">Add a Saved Report to My List</div>
+
+      <div class="bookmark-selectors-wrapper">
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>type</mat-label>
+            <mat-select (selectionChange)="onReportTypeSelection()" [(value)]="selectedType">
+              <mat-option *ngFor="let type of ReportTypeEnum" [value]="type">
+                {{type}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field *ngIf="bookmarkSelectionEntries?.length; else NoBookmarks" appearance="outline">
+            <mat-label>bookmarks</mat-label>
+            <mat-select [(value)]="selectedBookmark">
+              <mat-option *ngFor="let bookmark of bookmarkSelectionEntries" [value]="bookmark">
+                {{bookmark.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <ng-template #NoBookmarks>
+          <div *ngIf="selectedType">No Bookmarks are available to add in shortlist.</div>
+        </ng-template>
+        <app-button (clicked)="onBookmarkSelection()" [isDisabled]="!selectedType || !selectedBookmark">Add</app-button>
+      </div>
+    </div>
+  </mat-menu>
+
+</div>

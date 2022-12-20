@@ -1,0 +1,72 @@
+<div class="wrapper">
+  <div class="general-summary-wrapper">
+    <div class="summary-section">
+      <div class="unit">
+        <app-value-label [value]="totalTransactionsNumberYTD | number : '1.0-2'" label="Total Orders YTD"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="totalRevenueYTD | currency" label="Total Revenue YTD"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="totalMarginYTD | currency" label="Total Margin YTD"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="allTimeRevenue | currency" label="All Time Revenue"></app-value-label>
+      </div>
+    </div>
+    <div class="summary-section">
+      <div class="unit">
+        <app-value-label [value]="averageTransactionsMonthYTD | number : '1.0-2'" label="AVG Transaction YTD" unit="per month"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="averageRevenueTransactionYTD | currency" label="AVG Transaction Revenue YTD">
+        </app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="averageMarginTransactionYTD | currency" label="AVG Transaction Margin YTD">
+        </app-value-label>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="seller-summary-wrapper">
+    <mat-tab-group #tabGroup *ngIf="crmSellersList">
+      <mat-tab *ngFor="let seller of crmSellersList" [label]="seller.name">
+        <app-seller-summary [seller]="seller" [accountTransactions]="crmTransactions" [crmAccountData]="crmAccountData" *matTabContent></app-seller-summary>
+      </mat-tab>
+      <mat-tab label="Others">
+        <app-seller-summary [accountTransactions]="crmTransactions" [crmAccountData]="crmAccountData" *matTabContent></app-seller-summary>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="charts-wrapper" *ngIf="companyData" [ngClass]="{'is-expanded': (isLeftPartVisible$ | async) !== true}">
+    <div class="chart-container">
+      <app-fy-revenue-chart
+        [crmSellersList]="crmSellersList"
+        [crmTransactions]="crmTransactions"
+        [crmAccountData]="crmAccountData"
+      ></app-fy-revenue-chart>
+    </div>
+    <div class="chart-container">
+      <app-trader-revenue-chart
+        [crmSellersList]="crmSellersList"
+        [crmTransactions]="crmFYConfirmedTransactions"
+        [crmAccountData]="crmAccountData"
+      ></app-trader-revenue-chart>
+    </div>
+    <div class="chart-container">
+      <app-transaction-state-pipeline
+        [crmSellersList]="crmSellersList"
+        [crmTransactions]="crmFYAllTransactions"
+        [crmAccountData]="crmAccountData"
+      ></app-transaction-state-pipeline>
+    </div>
+    <div class="chart-container">
+      <app-top-spec-table
+        [crmSellersList]="crmSellersList"
+        [crmTransactions]="crmFYConfirmedTransactions"
+        [crmAccountData]="crmAccountData"
+      ></app-top-spec-table>
+    </div>
+  </div>
+</div>

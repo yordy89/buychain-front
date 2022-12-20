@@ -1,0 +1,25 @@
+<app-modal-base header="Export CRM Data" (closed)="onClose()">
+  <ng-container content>
+    <div class="flex-row align-items-baseline">
+      <h5>Select CRM entity type to export:</h5>
+
+      <mat-form-field class="ml-20">
+        <mat-select [(value)]="selectedType">
+          <mat-option *ngFor="let entity of entityTypes" [value]="entity">
+            {{entity}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true"
+                [isPrimary]="true"
+                [isDisabled]="!selectedType"
+                (clicked)="this.onExport()"
+    >
+      Export
+    </app-button>
+  </ng-container>
+</app-modal-base>

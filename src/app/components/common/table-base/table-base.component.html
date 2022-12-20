@@ -1,0 +1,13 @@
+<div *ngIf="headingText" class="table-heading">{{headingText}}</div>
+
+<div class="table-base-wrapper" [ngStyle]="{'max-height': maxBodyHeight}">
+  <table [ngStyle]="{'min-width': minWidth}">
+    <thead class="table-header">
+      <ng-content select="[header]"></ng-content>
+    </thead>
+
+    <tbody class="table-body">
+      <ng-content select="[body]"></ng-content>
+    </tbody>
+  </table>
+</div>

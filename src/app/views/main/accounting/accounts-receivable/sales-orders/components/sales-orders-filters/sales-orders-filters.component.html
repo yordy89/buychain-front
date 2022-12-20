@@ -1,0 +1,104 @@
+<div class="filters-wrapper">
+
+  <app-filter-expander caption="Status" [(isExpanded)]="filtersState.stateExpanded">
+    <div *ngFor="let item of states">
+      <mat-checkbox color="primary"
+                    (change)="onStateCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key || '' | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Customer" [(isExpanded)]="filtersState.customerExpanded">
+    <app-select-with-search
+      label="Customer"
+      appearance="outline"
+      [allowClear]="true"
+      [form]="customerControl"
+      [optionList]="crmAccounts"
+      [valueField]="'id'"
+      [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Sales Rep" [(isExpanded)]="filtersState.ownerExpanded">
+    <app-select-with-search
+      label="Sales Rep"
+      appearance="outline"
+      [allowClear]="true"
+      [form]="ownerControl"
+      [optionList]="members"
+      [valueField]="'id'"
+      [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Group" [(isExpanded)]="filtersState.groupExpanded">
+    <app-tree-selector class="w-100"
+                       label="Group"
+                       [treeListData]="groups"
+                       [control]="groupControl"
+                       keyExpr="id"
+                       displayKey="name"
+                       placeholder="Group"
+                       [allowClear]="true"
+                       parentExpr="parent"
+    ></app-tree-selector>
+
+    <mat-checkbox
+      [(ngModel)]="filters.childGroups"
+      [disabled]="!groupControl.value"
+      color="primary"
+    >Include Child Groups</mat-checkbox>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Unassigned Items" [(isExpanded)]="filtersState.openLineItemsExpanded">
+    <div *ngFor="let item of openLineItemsTypes">
+      <mat-checkbox color="primary"
+                    (change)="onTypeCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Created On" [(isExpanded)]="filtersState.createdOnExpanded">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>From</mat-label>
+        <input matInput
+               [(ngModel)]="filters.dateFrom"
+               [matDatepicker]="createdOnFrom"
+               [max]="maxFromDate"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #createdOnFrom></mat-datepicker>
+
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="createdOnFrom"></mat-datepicker-toggle>
+          <button *ngIf="filters.dateFrom" mat-icon-button (click)="resetDate($event, 'dateFrom')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput
+               [(ngModel)]="filters.dateTo"
+               [matDatepicker]="createdOnTo"
+               [max]="currentDate"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #createdOnTo></mat-datepicker>
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="createdOnTo"></mat-datepicker-toggle>
+          <button *ngIf="filters.dateTo" mat-icon-button (click)="resetDate($event, 'dateTo')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </div>
+  </app-filter-expander>
+
+</div>

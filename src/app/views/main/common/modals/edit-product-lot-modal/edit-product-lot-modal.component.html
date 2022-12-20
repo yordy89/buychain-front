@@ -1,0 +1,17 @@
+<app-modal-base header="Edit Product Lot" (closed)="close()">
+
+  <ng-container content>
+
+    <app-product-lot-details
+      [lotId]="lotId"
+      (noLotData)="close()">
+    </app-product-lot-details>
+
+  </ng-container>
+
+  <ng-container actions>
+    <div class="d-flex justify-content-end w-100">
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="close()">Done</app-button>
+    </div>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,127 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+form {
+  margin-right: 10px;
+}
+
+.mat-form-field {
+  a {
+    color: currentcolor;
+  }
+}
+
+.flex-col {
+  > .mat-form-field,
+  > app-autocomplete,
+  > app-tree-selector,
+  > app-chip-list-input {
+    &:not(app-chip-list-input) {
+      height: 80px;
+    }
+
+    display: block;
+  }
+}
+
+.open-lines-items-container {
+  background: #fff;
+  padding: 15px 16px 0;
+  margin-bottom: 25px;
+  transform: translateX(-16px);
+  width: calc(100% + 42px);
+
+  @include mat_css_dark-theme {
+    background-color: #424242;
+  }
+
+  .lines-list {
+    margin-bottom: 15px;
+  }
+
+  .bottom-info-row {
+    padding: 5px 0 10px;
+
+    .mat-divider {
+      position: static;
+    }
+
+    > .flex-col {
+      margin: 0;
+    }
+  }
+}
+
+.add-edit-invoice-top-section-row {
+  align-items: flex-start;
+
+  .flex-row .flex-col:not(:first-child) {
+    margin-left: 50px;
+  }
+}
+
+.add-edit-invoice-terms {
+  margin-left: 0;
+}
+
+.add-edit-invoice-location-wrapper {
+  border-left: 1px solid #408ed6;
+  border-right: 1px solid #408ed6;
+  border-bottom: 1px solid #408ed6;
+  min-height: 150px;
+}
+
+.add-edit-invoice-location-header {
+  background-color: rgba(var(--palette-primary-100), 0.35);
+  height: 40px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  border-top: solid 1px #408ed6;
+  border-bottom: solid 1px #408ed6;
+}
+
+.add-edit-invoice-bill-to {
+  margin-left: 50px !important;
+}
+
+.add-edit-invoice-location {
+  padding: 14px;
+}
+
+.add-edit-invoice-location-placeholder {
+  color: #9b9b9b;
+}
+
+.add-line-btn {
+  color: rgba(var(--palette-primary-500), 1);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  line-height: 0.1px;
+}
+
+.add-edit-invoice-tab-item {
+  background-color: white;
+}
+
+.add-edit-invoice-alt-bill-to {
+  margin: 0;
+}
+
+.add-edit-invoice-location-edit-icon {
+  cursor: pointer;
+
+  &.disabled {
+    color: #9b9b9b;
+
+    &:hover {
+      cursor: not-allowed;
+    }
+
+    &:active {
+      pointer-events: none;
+    }
+  }
+}

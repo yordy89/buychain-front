@@ -1,0 +1,39 @@
+<div class="wrapper-container">
+  <div class="locations-table-wrapper">
+
+    <app-table-base *ngIf="accountLocations?.length; else NoCrmContacts" class="striped">
+      <ng-container header>
+        <tr class="header">
+          <th class="type">Type</th>
+          <th class="carrier">Name</th>
+          <th class="description">Address</th>
+          <th class="archived">Archived</th>
+          <th></th>
+        </tr>
+      </ng-container>
+
+      <ng-container body>
+        <tr *ngFor="let location of accountLocations" [ngClass]="{'archived-crm': location.archived}">
+          <td><mat-icon color="primary">location_on</mat-icon></td>
+          <td>{{location.shortName}}</td>
+          <td>{{location.streetAddress}}</td>
+          <td>{{location.archived | booleanYesNo}}</td>
+          <td>
+            <app-table-actions [data]="location"
+                               [actions]="actions"
+                               (action)="onTableAction($event, location)"
+            ></app-table-actions>
+          </td>
+        </tr>
+      </ng-container>
+    </app-table-base>
+
+    <ng-template #NoCrmContacts>
+      <p class="no-data-plate">You do not have any CRM Locations yet</p>
+    </ng-template>
+  </div>
+  <div class="add-location-wrapper">
+    <app-button *ngIf="crmPermissions.canCreate" [isNarrow]="true" icon="add" (clicked)="addCrmAccountLocation()">Add New</app-button>
+  </div>
+</div>
+

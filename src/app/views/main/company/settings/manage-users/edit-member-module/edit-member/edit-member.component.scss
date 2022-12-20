@@ -1,0 +1,26 @@
+.wrap {
+  padding: 0 5px;
+
+  .profile-section {
+    h3 {
+      text-align: center;
+      color: rgba(var(--palette-primary-900), 1);
+    }
+
+    .created-and-modified {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 30px;
+    }
+  }
+}
+
+.permissions-title {
+  flex-grow: 0;
+}
+
+.view-cost-checkbox {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}

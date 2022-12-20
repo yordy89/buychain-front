@@ -1,0 +1,176 @@
+<form *ngIf="!editMode || editMode && data" [formGroup]="form" novalidate>
+
+  <section class="flex-row">
+    <div class="flex-col">
+      <mat-form-field appearance="outline" class="badge-select w-100">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="state">
+          <mat-select-trigger>
+            <span class="badge" [ngClass]="[statusBadgeClass(form.get('state').value)]">{{form.get('state').value || '' | stringUnderscoreToSpaceTitleCase}}</span>
+          </mat-select-trigger>
+          <mat-option
+            *ngFor="let item of statuses"
+            [value]="item"
+            [disabled]="!!stateOptionDisabledTooltip(item)"
+            [matTooltip]="stateOptionDisabledTooltip(item)"
+            [matTooltipDisabled]="!stateOptionDisabledTooltip(item)"
+            matTooltipPosition="right"
+          >
+            <span class="badge" [ngClass]="[statusBadgeClass(item)]">{{item || '' | stringUnderscoreToSpaceTitleCase}}</span>
+          </mat-option>
+        </mat-select>
+
+        <mat-error>{{form.get('status')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+
+      <app-autocomplete label="Account"
+                        [data]="accounts"
+                        panelWidth="auto"
+                        formControlName="paymentAccount"
+                        keyName="id"
+                        displayName="numberAndName"
+                        placeholder="Account"
+                        class="w-100"
+                        [isRequired]="true"
+      ></app-autocomplete>
+    </div>
+
+    <div class="flex-col">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option *ngFor="let item of types" [value]="item">
+            {{item | stringUnderscoreToSpaceTitleCase}}
+          </mat-option>
+        </mat-select>
+        <mat-error>{{form.get('type')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Amount</mat-label>
+        <input matInput placeholder="Amount" formControlName="amount" currencyMask required>
+        <mat-error>{{form.get('amount')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+      <div *ngIf="!editMode && unpaidAmountAvailable" class="select-full-amount">
+        <span
+          class="select-full-amount-btn"
+          (click)="onSelectFullUnpaidAmount()"
+        >
+          {{'Select Full Unpaid Amount: ' + (bill.unpaid | currency)}}
+        </span>
+      </div>
+    </div>
+
+    <div class="flex-col">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Payment Date</mat-label>
+        <input matInput
+               formControlName="paymentDate"
+               [matDatepicker]="paymentDate"
+               placeholder="mm/dd/yyyy"
+               required
+        >
+        <mat-datepicker-toggle matSuffix [for]="paymentDate"></mat-datepicker-toggle>
+        <mat-datepicker #paymentDate></mat-datepicker>
+        <mat-error>{{form.get('paymentDate')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Currency</mat-label>
+        <mat-select formControlName="currency" required>
+          <mat-option *ngFor="let item of currencies" [value]="item">
+            {{item}}
+          </mat-option>
+        </mat-select>
+        <mat-error>{{form.get('currency')?.errors | errorMessage}}</mat-error>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section class="flex-row" *ngIf="showCheckFields">
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Check Number</mat-label>
+      <input matInput placeholder="Check Number" formControlName="checkNumber" type="number">
+      <mat-error>{{form.get('checkNumber')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Memo</mat-label>
+      <input matInput placeholder="Memo" formControlName="memo">
+      <mat-error>{{form.get('memo')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </section>
+
+  <section *ngIf="showSettlementFields" class="mt-15">
+    <h5 class="mt-0">Settlement Information</h5>
+    <div [formGroup]="settlementFormGroup" class="flex-row">
+      <div class="flex-col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Payment Date</mat-label>
+          <input matInput
+                 formControlName="paymentDate"
+                 [matDatepicker]="paymentDate"
+                 placeholder="mm/dd/yyyy"
+                 required
+          >
+          <mat-datepicker-toggle matSuffix [for]="paymentDate"></mat-datepicker-toggle>
+          <mat-datepicker #paymentDate></mat-datepicker>
+          <mat-error>{{settlementFormGroup.get('paymentDate')?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Post Date</mat-label>
+          <input matInput
+                 formControlName="postDate"
+                 [matDatepicker]="postDate"
+                 placeholder="mm/dd/yyyy"
+                 required
+          >
+          <mat-datepicker-toggle matSuffix [for]="postDate"></mat-datepicker-toggle>
+          <mat-datepicker #postDate></mat-datepicker>
+          <mat-error>{{settlementFormGroup.get('postDate')?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Amount</mat-label>
+          <input matInput placeholder="Amount" formControlName="amount" currencyMask required>
+          <mat-error>{{settlementFormGroup.get('amount')?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-col">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type" required>
+            <mat-option *ngFor="let item of types" [value]="item">
+              {{item | stringUnderscoreToSpaceTitleCase}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{settlementFormGroup.get('type')?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <div class="flex-row">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload
+        [(attachments)]="attachments"
+        (removeAttachment)="removeAttachment($event)"
+      ></app-accounting-file-upload>
+    </div>
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Notes</mat-label>
+      <textarea rows="3" matInput placeholder="Notes" formControlName="notes" appNullOnEmpty maxlength="500"></textarea>
+      <mat-error>{{form.get('notes')?.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">{{editMode ? 'Update' : 'Add'}}</app-button>
+</div>

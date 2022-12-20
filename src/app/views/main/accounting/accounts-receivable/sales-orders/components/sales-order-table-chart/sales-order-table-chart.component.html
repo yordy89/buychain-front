@@ -1,0 +1,143 @@
+<div class="d-flex justify-content-end">
+	<button *ngIf="visibleCharts" color="primary" mat-icon-button title="Export to XLSX" tabindex="-1" (click)="onExportChart()">
+		<mat-icon>file_download</mat-icon>
+	</button>
+
+	<button color="primary" mat-icon-button title="Close" (click)="onClose()" tabindex="-1">
+		<mat-icon>close</mat-icon>
+	</button>
+</div>
+<div *ngIf="visibleCharts" class="charts-row print-container" id="charts-container">
+	<div class="chart-container accounting-full-staked-bar-chart">
+    <h4 class="chart-title">Profit/(Loss) Estimate</h4>
+    <mat-divider></mat-divider>
+    <div class="chart">
+      <dx-chart
+          [dataSource]="getProfitData"
+          [animation]="false"
+          palette="Soft Pastel"
+          #profitChart
+      >
+        <dxo-size
+          [height]="220"
+          [width]="220">
+        </dxo-size>
+        <dxi-series
+          *ngFor="let item of profitItemsList"
+          [color]="item.color"
+          [valueField]="item.valueField"
+          [name]="item.name"
+          [visible]="item.visible"
+        >
+          <dxo-label
+            [visible]="true"
+            [customizeText]="customizeStackedBarLabelText"
+            backgroundColor="none"
+            [font]="chartLabelFont"
+          ></dxo-label>
+        </dxi-series>
+
+        <dxi-value-axis
+          [grid]="{visible: false}"
+          [label]="{visible: false}"
+          [tick]="{ shift: -8, length: 18, color: getAxisColor(profitItemsList, 'revenue') }"
+          [title]="{
+            text: profitValueAxisTitle(),
+            font: {
+              color: getAxisColor(profitItemsList, 'revenue'),
+              weight: chartLabelFont.weight,
+              size: chartLabelFont.size
+             }
+          }"
+          position="right"
+          [tickInterval]="1"
+          [endOnTick]="true"
+          [color]="getAxisColor(profitItemsList, 'revenue')"
+        ></dxi-value-axis>
+        <dxo-argument-axis [visible]="false" [grid]="{visible: false}" [label]="{visible: false}"></dxo-argument-axis>
+        <dxo-common-series-settings argumentField="name" type="fullStackedBar" [barWidth]="100"></dxo-common-series-settings>
+        <dxo-legend [visible]="false"></dxo-legend>
+        <dxo-tooltip [enabled]="true"  location="edge" [customizeTooltip]="customizeStackedBarTooltip"></dxo-tooltip>
+      </dx-chart>
+
+      <ng-container [ngTemplateOutlet]="legendsTpl" [ngTemplateOutletContext]="{list: profitLegendsList}"></ng-container>
+    </div>
+	</div>
+
+	<div class="chart-container accounting-full-staked-bar-chart">
+    <h4 class="chart-title">Billing Status</h4>
+    <mat-divider></mat-divider>
+    <div class="chart">
+      <dx-chart
+          [dataSource]="statusData"
+          [animation]="false"
+          palette="Soft Pastel"
+          #statusChart
+      >
+        <dxo-size
+          [height]="220"
+          [width]="220">
+        </dxo-size>
+        <dxi-series
+          *ngFor="let item of statusItemsList"
+          [color]="item.color"
+          [valueField]="item.valueField"
+          [name]="item.name"
+          [visible]="item.visible">
+          <dxo-label
+            [visible]="true"
+            [customizeText]="customizeStackedBarLabelText"
+            backgroundColor="none"
+            [font]="chartLabelFont"
+          ></dxo-label>
+        </dxi-series>
+
+        <dxi-value-axis
+          [grid]="{visible: false}"
+          [label]="{visible: false}"
+          [tick]="{ shift: -8, length: 18, color: getAxisColor(statusItemsList, 'total') }"
+          [title]="{
+            text: statusValueAxisTitle(),
+            font: {
+              color: getAxisColor(statusItemsList, 'total'),
+              weight: chartLabelFont.weight,
+              size: chartLabelFont.size
+             }
+          }"
+          position="right"
+          [tickInterval]="1"
+          [color]="getAxisColor(statusItemsList, 'total')"
+        ></dxi-value-axis>
+        <dxo-argument-axis [visible]="false" [grid]="{visible: false}" [label]="{visible: false}"></dxo-argument-axis>
+        <dxo-common-series-settings argumentField="name" type="fullStackedBar" [barWidth]="100"></dxo-common-series-settings>
+        <dxo-legend [visible]="false"></dxo-legend>
+        <dxo-tooltip [enabled]="true"  location="edge" [customizeTooltip]="customizeStackedBarTooltip"></dxo-tooltip>
+      </dx-chart>
+
+      <ng-container [ngTemplateOutlet]="legendsTpl" [ngTemplateOutletContext]="{list: statusLegendsList}"></ng-container>
+    </div>
+	</div>
+</div>
+
+<ng-container *ngIf="!visibleCharts">
+  <div class="no-data-plate">There is no data to display.</div>
+</ng-container>
+
+<ng-template #legendsTpl let-list="list">
+	<div class="chart-legends">
+    <div class="d-flex justify-content-between">
+      <div class="chart-legends-heading">Type</div>
+      <div class="chart-legends-heading">Totals</div>
+    </div>
+		<ul class="chart-legends-list">
+			<li *ngFor="let item of list" class="chart-legend">
+					<span class="chart-legend-label">
+						<span class="chart-legend-color" [ngStyle]="{backgroundColor: item.color}"></span>
+						{{item.key}}
+					</span>
+				<span *ngIf="item.total >= 0">{{item.total | currency}}</span>
+				<span *ngIf="item.total < 0" [ngStyle]="{color: item.color}">({{legendValue(item.total)}})</span>
+			</li>
+		</ul>
+	</div>
+</ng-template>

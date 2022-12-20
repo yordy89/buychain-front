@@ -1,0 +1,25 @@
+.wrap {
+  padding: 0 5px;
+
+  .profile-section {
+    .actions-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 30px;
+
+      app-button {
+        padding: 0 10px;
+      }
+
+      mat-icon {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .created-and-modified {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 30px;
+  }
+}

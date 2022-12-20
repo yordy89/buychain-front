@@ -1,0 +1,21 @@
+<app-product-list [onAction]="productActions"></app-product-list>
+<span
+  style="visibility: hidden; position: fixed"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="marketMenu"></span>
+<mat-menu #marketMenu="matMenu" (closed)="onClosedMenu()">
+  <div *ngIf="userPermissions.canUpdateTally" class="market-menu-wrapper">
+    <p>Add Product Lot To Transaction</p>
+    <hr>
+    <div class="transactions-wrapper">
+      <div class="tx-wrapper" *ngFor="let transaction of availableTransactions" (click)="addLotToTransactionTally(transaction)">
+        <button mat-menu-item>{{transaction.transactionNumber}}</button>
+        <span class="description">{{transaction.tally.contentDescription}}</span>
+      </div>
+    </div>
+    <p *ngIf="availableTransactions?.length === 0">No available Transactions</p>
+    <hr>
+  </div>
+  <button *ngIf="userPermissions.canCreateTransactions" mat-menu-item (click)="createNewTransaction()">Create New Transaction</button>
+</mat-menu>

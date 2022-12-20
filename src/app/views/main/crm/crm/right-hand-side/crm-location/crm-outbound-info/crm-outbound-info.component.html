@@ -1,0 +1,29 @@
+<div class="ship-to-actions" *ngIf="crmLocation.canUpdate">
+  <app-button [isNarrow]="true" [isPrimary]="true" *ngIf="disabledMode; else DoneButton" (clicked)="onEditClick()">Edit
+  </app-button>
+  <ng-template #DoneButton>
+    <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="done()">Done</app-button>
+  </ng-template>
+</div>
+<div class="container-wrapper">
+  <div class="section-notes">
+    <form [formGroup]="form">
+      <div class="active-hours">
+        <mat-form-field appearance="outline">
+          <mat-label>Loading department active hours</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty [appDisableControl]="disabledMode"
+            [formControl]="loadingHours" rows="1"></textarea>
+          <mat-error>{{loadingHours?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="comments">
+        <mat-form-field appearance="outline">
+          <mat-label>Comments</mat-label>
+          <textarea matInput placeholder="Start Typing" appNullOnEmpty [appDisableControl]="disabledMode"
+            [formControl]="loadingNotes" rows="5"></textarea>
+          <mat-error>{{loadingNotes?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+</div>

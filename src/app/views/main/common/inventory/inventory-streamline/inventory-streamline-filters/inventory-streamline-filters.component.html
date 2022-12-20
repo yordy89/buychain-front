@@ -1,0 +1,130 @@
+<div class="filters-wrapper">
+
+  <span class="text-primary">Required</span>
+  <mat-divider class="mb-20"></mat-divider>
+
+  <app-filter-expander *ngIf="uiProducts" caption="Products"
+                       [(isExpanded)]="filtersState.expandedProducts">
+    <mat-radio-group>
+      <div *ngFor="let productGroup of uiProducts" class="product-name-container">
+        <div class="product-name-header">
+          <mat-icon *ngIf="productGroup.isExpanded; else ProductsNotVisible"
+                    class="product-name-header-icon"
+                    (click)="productGroupExpansionToggled(productGroup, false)">arrow_drop_up
+          </mat-icon>
+          <ng-template #ProductsNotVisible>
+            <mat-icon (click)="productGroupExpansionToggled(productGroup, true)">arrow_right</mat-icon>
+          </ng-template>
+          <mat-radio-button color="primary" [value]="productGroup.name"
+                            (click)="productNameSelectionToggled(productGroup)"
+                            [checked]="productGroup.isSelected">
+            <span class="label">{{productGroup.name}}</span>
+          </mat-radio-button>
+        </div>
+        <div class="products" *ngIf="productGroup.isExpanded">
+          <mat-checkbox *ngFor="let product of productGroup.products"
+                        (change)="productSelectionToggled(productGroup)"
+                        [(ngModel)]="product.isSelected" color="primary">
+            <span class="label">{{product.name}}</span>
+          </mat-checkbox>
+        </div>
+      </div>
+    </mat-radio-group>
+  </app-filter-expander>
+
+  <app-filter-expander class="facilities-filter-wrapper" caption="Ship From Facilities" [(isExpanded)]="filtersState.expandedShipFrom">
+    <form [formGroup]="form">
+      <app-autocomplete *ngIf="shipFromFacilitiesList.length"
+                        class="w-100"
+                        label="Ship From Facility"
+                        [data]="shipFromFacilitiesList"
+                        [formControl]="shipFromControl"
+                        keyName="id"
+                        displayName="shortName"
+                        placeholder="Ship From Name"
+      ></app-autocomplete>
+    </form>
+  </app-filter-expander>
+
+  <span class="text-primary">Optional</span>
+  <mat-divider class="mb-20"></mat-divider>
+
+  <app-filter-expander caption="Spec Shorthand" [(isExpanded)]="filtersState.expandedSpecShorthand">
+    <mat-form-field appearance="outline">
+      <mat-label>Spec Contains...</mat-label>
+      <input matInput placeholder="Spec Contains" [formControl]="specShorthandControl" type="text" maxlength="100">
+      <mat-error>{{specShorthandControl.errors | errorMessage}}</mat-error>
+    </mat-form-field>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Owner" [(isExpanded)]="filtersState.expandedOwner">
+    <mat-radio-group [(ngModel)]="filters.owner" *ngIf="filtersState.expandedOwner">
+      <mat-radio-button color="primary" [value]="true">Me</mat-radio-button>
+      <mat-radio-button color="primary" [value]="false">Company (all)</mat-radio-button>
+    </mat-radio-group>
+  </app-filter-expander>
+
+  <app-filter-expander *appShowContract caption="Inventory Type" [(isExpanded)]="filtersState.expandedInventoryType">
+    <div class="checkbox-container">
+      <mat-checkbox color="primary" *ngFor="let item of inventoryTypes"
+                    (change)="inventoryStateToggled()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="State" [(isExpanded)]="filtersState.expandedState">
+    <div class="checkbox-container">
+      <mat-checkbox *ngFor="let state of productLotStates"
+                    color="primary"
+                    [(ngModel)]="state.isSelected"
+                    (change)="updateStatesFilter()">
+        {{state.key | stringUnderscoreToSpaceTitleCase}}
+      </mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+
+  <app-filter-expander caption="Permissions" [(isExpanded)]="filtersState.expandedPermission">
+    <div class="checkbox-container">
+      <mat-checkbox *ngFor="let permission of productLotPermissions" color="primary" [(ngModel)]="permission.isSelected"
+                    (change)="updatePermissionsFilter()">
+        {{permission.key | stringUnderscoreToSpaceTitleCase}}
+      </mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander *appShowContract caption="Contract Status" [(isExpanded)]="filtersState.expandedContractStatus">
+    <div class="checkbox-container">
+      <mat-checkbox color="primary" *ngFor="let item of contractStatuses"
+                    (change)="onContractStatusCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander *appShowContract caption="Contract Supplier" [(isExpanded)]="filtersState.expandedContractSupplier">
+    <app-select-with-search
+      label="Supplier"
+      appearance="outline"
+      [allowClear]="true"
+      [form]="contractSupplierControl"
+      [optionList]="crmAccounts"
+      [valueField]="'id'"
+      [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+  <app-filter-expander *appShowContract caption="Contract Broker" [(isExpanded)]="filtersState.expandedContractBroker">
+    <app-select-with-search
+      label="Broker"
+      appearance="outline"
+      [allowClear]="true"
+      [form]="contractBrokerControl"
+      [optionList]="crmAccounts"
+      [valueField]="'id'"
+      [displayField]="'name'">
+    </app-select-with-search>
+  </app-filter-expander>
+
+</div>

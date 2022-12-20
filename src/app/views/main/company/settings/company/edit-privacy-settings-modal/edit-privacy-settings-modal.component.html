@@ -1,0 +1,13 @@
+<app-modal-base header="Update Privacy Settings">
+  <ng-container content>
+    <div class="flex-row align-items-center">
+      <div>Allow Listing: <app-tooltip-info-icon [tooltipText]="tooltipTextEnum.ALLOW_LISTING"></app-tooltip-info-icon></div>
+      <mat-checkbox class="ml-20" color="primary" [(ngModel)]="allowListing"></mat-checkbox>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updatePrivacySettings()">Save</app-button>
+  </ng-container>
+</app-modal-base>

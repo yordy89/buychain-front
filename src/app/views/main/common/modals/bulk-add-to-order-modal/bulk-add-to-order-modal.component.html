@@ -1,0 +1,176 @@
+<app-modal-base header="Add Lots to Transaction" (closed)="close()">
+  <ng-container content>
+
+    <div class="mb-20 d-flex-between" *ngIf="noCompatibilityIssues()">
+
+      <div>
+        <app-autocomplete
+          *ngIf="targetTxs?.length"
+          label="Select Transaction"
+          keyName="id"
+          displayName="transactionNumber"
+          [data]="targetTxs"
+          [formControl]="targetTxControl"
+          [emptyValue]="null"
+        ></app-autocomplete>
+
+        <div *ngIf="targetTxs && !targetTxs?.length" class="no-data-plate">There are no compatible transactions to which the selected lot can be added.</div>
+
+        <app-button class="ml-20" *ngIf="targetTxs?.length"
+                    [isNarrow]="true"
+                    [isPrimary]="true"
+                    [isDisabled]="!targetTxControl.valid || txContainsSomeOfLots()"
+                    (clicked)="submitToAdd()">Add To Tally
+        </app-button>
+      </div>
+
+      <app-button class="ml-20" *ngIf="userPermissions.canCreateTransactions"
+                  [isNarrow]="true"
+                  [isPrimary]="true"
+                  (clicked)="createTxWithLots()">Create New
+      </app-button>
+    </div>
+
+    <div *ngIf="!noCompatibilityIssues()" class="error-placeholder mb-20">
+      <span class="text-bold">Sorry, there are a few issues with your selection</span><br>
+      <ng-container *ngIf="compatibilityIssues.priceSystem">
+        <span>Price System does not match across selected lots.</span>
+        <br>
+      </ng-container>
+      <ng-container *ngIf="compatibilityIssues.shipFrom">
+        <span >Ship From facility does not match across selected lots.</span>
+        <br>
+      </ng-container>
+      <ng-container *ngIf="compatibilityIssues.availableProducts">
+        <span >There are lots with no available products.</span>
+        <br>
+      </ng-container>
+      <span *ngIf="compatibilityIssues.productsToAddCount">Please provide a positive number for units of products to add to transaction.</span>
+    </div>
+
+    <mat-button-toggle-group appearance="legacy" [value]="inventoryView" (change)="onChangeInventoryView($event)">
+      <mat-button-toggle [ngClass]="{'background-primary': inventoryView === InventoryViewEnum.MasterView}"
+                         [value]="InventoryViewEnum.MasterView">Master View</mat-button-toggle>
+      <mat-button-toggle [disabled]="compatibilityIssues.shipFrom" [ngClass]="{'background-primary': inventoryView === InventoryViewEnum.ProductView}"
+                         [value]="InventoryViewEnum.ProductView">Product View</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div *ngIf="inventoryView === InventoryViewEnum.MasterView">
+      <app-table-base maxBodyHeight="400px" class="striped">
+        <ng-container header>
+          <tr>
+            <th></th>
+            <th>Lot</th>
+            <th>Spec Shorthand</th>
+            <th>Ship From</th>
+            <th>Price System</th>
+            <th *ngIf="isVisibleInventoryTypeColumn">InventoryType</th>
+            <th>Available Products</th>
+            <th>Owner</th>
+            <th>Permission</th>
+            <th>Price Of Merit</th>
+            <th>Ship Week Estimate</th>
+            <th>Units To Add</th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr *ngFor="let lot of data.productLots"
+              [matTooltip]="lot.isAlreadyInTx ? 'The Lot is already added to the target Transaction tally.' : ''"
+              [ngClass]="{'invalid-line': !lot.hasAvailableProducts || lot.isAlreadyInTx}">
+            <td><mat-icon *ngIf="data.productLots.length > 1" class="cursor-pointer" color="warn" (click)="removeLot(lot)">close</mat-icon></td>
+            <td>{{lot.lotShortId}}</td>
+            <td>{{lot.specShorthand}}</td>
+            <td [ngClass]="{'invalid-cell': compatibilityIssues.shipFrom}">{{lot.shipFromShortName}}</td>
+            <td>{{lot.spec.priceSystem}}</td>
+            <td *ngIf="isVisibleInventoryTypeColumn">{{lot.inventoryType | stringUnderscoreToSpaceTitleCase}}</td>
+            <td [ngClass]="{'invalid-cell': !lot.hasAvailableProducts}">{{lot.availableProductsCount}}</td>
+            <td>{{lot.ownerId | displayItemFromList: data.membersList: 'id':'name'}}</td>
+            <td>{{lot.permission | stringUnderscoreToSpaceTitleCase}}</td>
+            <td>{{lot.priceOfMerit | currency}}</td>
+            <td>{{lot.shipWeekEstimate | date}}</td>
+            <td>
+              <app-number-input [control]="lot.unitsToAddControl"
+                                [min]="0" [max]="lot.availableProductsCount"
+                                (inputCompleted)="runSummaryCalculations()">
+              </app-number-input>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+
+      <hr>
+
+      <div *ngIf="noCompatibilityIssues()" class="d-flex justify-content-flex-end mt-15">
+        <app-value-label class="ml-50" [value]="(masterViewSummary.totalWeight | number : '1.0-2') + ' lbs'" label="Total Weight"></app-value-label>
+        <app-value-label class="ml-50" [value]="(masterViewSummary.totalMeasure | number : '1.3') + masterViewSummary.measureLabel" label="Total Measure"></app-value-label>
+        <app-value-label class="ml-50" [value]="masterViewSummary.totalCostBasis | number : '1.0-2'" label="Total Cost Basis"></app-value-label>
+        <app-value-label class="ml-50" [value]="masterViewSummary.totalSalesPrice | number : '1.0-2'" label="Total Sales Price"></app-value-label>
+        <app-value-label class="ml-50" [value]="masterViewSummary.totalProfit | number : '1.0-2'" label="Total Profit"></app-value-label>
+      </div>
+
+    </div>
+
+    <div *ngIf="inventoryView === InventoryViewEnum.ProductView">
+      <app-table-base maxBodyHeight="400px" class="striped">
+        <ng-container header>
+          <tr>
+            <th></th>
+            <th>Spec Shorthand</th>
+            <th>Price System</th>
+            <th>Units</th>
+            <th>Allocated Units</th>
+            <th>Available Units</th>
+            <th>On Hand Units</th>
+            <th>On Order Units</th>
+            <th>In Transit Units</th>
+            <th>Qty</th>
+            <th>Units To Add</th>
+          </tr>
+        </ng-container>
+
+        <ng-container body>
+          <tr *ngFor="let entry of productViewData"
+              [ngClass]="{'invalid-line': !entry.hasAvailableProducts || entry.unitsToAddControl.invalid}">
+            <td><mat-icon *ngIf="productViewData.length > 1" class="cursor-pointer" color="warn" (click)="removeLine(entry)">close</mat-icon></td>
+            <td>{{entry.specShorthand}}</td>
+            <td>{{entry.spec.priceSystem}}</td>
+            <td [ngClass]="{'invalid-cell': !entry.hasAvailableProducts}">{{entry.productsCount}}</td>
+            <td>{{entry.allocatedProductsCount}}</td>
+            <td>{{entry.availableProductsCount}}</td>
+            <td>{{entry.onHandCount}}</td>
+            <td>{{entry.onOrderCount}}</td>
+            <td>{{entry.inTransitCount}}</td>
+            <td>{{entry.qtyInUomWithLabel}}</td>
+            <td>
+              <app-number-input [control]="entry.unitsToAddControl"
+                                [min]="0" [max]="entry.availableProductsCount"
+                                [matTooltip]="targetTxControl.value && entry.maxAvailableForTargetTx < entry.availableProductsCount
+                                 ? 'Only ' + entry.maxAvailableForTargetTx + ' products available for target Transaction' : ''"
+                                (inputCompleted)="runSummaryCalculations()">
+              </app-number-input>
+            </td>
+          </tr>
+        </ng-container>
+      </app-table-base>
+
+      <hr>
+
+      <div *ngIf="noCompatibilityIssues()" class="d-flex justify-content-flex-end mt-15">
+        <app-value-label class="ml-50" [value]="(productViewSummary.totalWeight | number : '1.0-2') + ' lbs'" label="Total Weight"></app-value-label>
+        <app-value-label class="ml-50" [value]="(productViewSummary.totalMeasure | number : '1.3') + productViewSummary.measureLabel" label="Total Measure"></app-value-label>
+        <app-value-label class="ml-50" [value]="productViewSummary.totalCostBasis | number : '1.0-2'" label="Total Cost Basis"></app-value-label>
+        <app-value-label class="ml-50" [value]="productViewSummary.totalSalesPrice | number : '1.0-2'" label="Total Sales Price"></app-value-label>
+        <app-value-label class="ml-50" [value]="productViewSummary.totalProfit | number : '1.0-2'" label="Total Profit"></app-value-label>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-container actions>
+    <div class="d-flex justify-content-end w-100">
+      <app-button [isPrimary]="false" [isNarrow]="true" (clicked)="close()">Close</app-button>
+    </div>
+  </ng-container>
+</app-modal-base>

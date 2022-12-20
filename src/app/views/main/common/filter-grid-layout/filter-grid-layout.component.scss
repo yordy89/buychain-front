@@ -1,0 +1,114 @@
+@use 'variables' as *;
+
+.wrapper {
+  height: 100%;
+
+  .top-panel {
+    position: relative;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 18%), 0 2px 2px 0 rgba(0, 0, 0, 14%), 0 1px 5px 0 rgba(0, 0, 0, 12%);
+    height: 60px;
+    background-color: rgba(var(--palette-background-dialog), 1);
+    display: flex;
+    justify-content: space-between;
+    z-index: 2;
+
+    .left-side {
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+
+      h4 {
+        margin: 0;
+        margin-top: 1px;
+        margin-right: 2vw;
+        margin-left: 10px;
+      }
+
+      .filter-icon-container {
+        border: 1px solid rgba(#000, 0.5);
+        border-radius: 5px;
+        padding: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        position: relative;
+
+        .mat-icon {
+          color: rgba(#000, 0.5);
+        }
+
+        .counter {
+          display: inline-block;
+          background-color: rgba(var(--palette-warn-500), 1);
+          width: 15px;
+          height: 15px;
+          color: #fff;
+          position: absolute;
+          right: -7px;
+          top: -7px;
+          text-align: center;
+          line-height: 15px;
+          font-size: 13px;
+          font-weight: bold;
+          border-radius: 3px;
+        }
+
+        &.opened {
+          border-color: rgba(var(--palette-primary-500), 1);
+
+          .mat-icon {
+            color: rgba(var(--palette-primary-500), 1);
+          }
+        }
+      }
+    }
+
+    .right-side {
+      float: right;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+    }
+  }
+
+  .content {
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 10%), 0 2px 2px 0 rgba(0, 0, 0, 10%), 0 1px 5px 0 rgba(0, 0, 0, 10%);
+    display: flex;
+    width: 100%;
+    height: calc(100% - 60px);
+  }
+
+  .filter {
+    background-color: rgba(var(--palette-background-dialog), 1);
+    width: 300px;
+    height: 100%;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 10%), 0 2px 2px 0 rgba(0, 0, 0, 10%), 0 1px 5px 0 rgba(0, 0, 0, 10%);
+    padding: 10px;
+    overflow: auto;
+
+    &-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      height: 40px;
+
+      h5 {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 18px;
+        font-weight: 500;
+        color: $text-1;
+      }
+
+      .mat-icon-button {
+        margin-right: -5px;
+      }
+    }
+  }
+}
+
+:host-context(.rightside-content-hold.has-tabs) {
+  .wrapper {
+    height: calc(100% - 49px);
+  }
+}

@@ -1,0 +1,11 @@
+<button class="button" mat-flat-button
+  [ngClass]="{ 'narrow' : isNarrow, 'base' : !isDisabled && !isPrimary && !isWarn }"
+  [color]="color"
+  [attr.cdkFocusInitial]="isPrimary"
+  [disabled]="isDisabled"
+  (click)="click($event)">
+  <span class="content-wrapper">
+    <mat-icon *ngIf="icon">{{icon}}</mat-icon>
+    <ng-content></ng-content>
+  </span>
+</button>

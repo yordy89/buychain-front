@@ -1,0 +1,100 @@
+<div class="user-management-wrapper">
+  <div class="pending-approvals" *ngIf="memberManagementPermissions.canUpdatePendingMembers">
+    <p class="pending-members-title">Pending Approvals</p>
+    <div *ngIf="pendingMembersList?.length; else NoPendingMembers" class="pending-members-list-container">
+      <div *ngFor="let pendingMember of pendingMembersList">
+        <div class="pending-member-container">
+          <div>A user ({{pendingMember.username}}) would like to join your company</div>
+          <div class="action-buttons">
+            <div class="approve" (click)="approvePendingMember(pendingMember, true)">
+              <mat-icon matPrefix>check_circle</mat-icon>
+              <p>Approve</p>
+            </div>
+            <div class="deny" (click)="approvePendingMember(pendingMember, false)">
+              <mat-icon matPrefix>cancel</mat-icon>
+              <p>Deny</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #NoPendingMembers>
+      <p class="no-data-plate">You do not have any pending approvals</p>
+    </ng-template>
+  </div>
+  <div class="manage-users-container">
+    <p class="company-members-title">Company Members</p>
+    <div class="company-members-list-container">
+      <div class="company-member-container">
+
+        <app-table-base *ngIf="filteredMemberList?.length; else NoMembers" class="striped">
+          <ng-container header>
+            <tr>
+              <th class="first-name" (click)="sort('firstName')">
+                First name
+                <mat-icon *ngIf="sorted?.by === 'firstName'">
+                  <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+                  <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+                </mat-icon>
+              </th>
+              <th class="last-name" (click)="sort('lastName')">
+                Last name
+                <mat-icon *ngIf="sorted?.by === 'lastName'">
+                  <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+                  <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+                </mat-icon>
+              </th>
+              <th class="email" (click)="sort('username')">
+                User Email
+                <mat-icon *ngIf="sorted?.by === 'username'">
+                  <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+                  <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+                </mat-icon>
+              </th>
+              <th class="permissions" (click)="sort('accessControlProfile')">
+                Access Profile
+                <mat-icon *ngIf="sorted?.by === 'accessControlProfile'">
+                  <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+                  <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+                </mat-icon>
+              </th>
+              <th class="account-state" (click)="sort('accountState')">
+                Account State
+                <mat-icon *ngIf="sorted?.by === 'accountState'">
+                  <span *ngIf="sorted.isAscending; else arrowUp">arrow_downward</span>
+                  <ng-template #arrowUp><mat-icon>arrow_upward</mat-icon></ng-template>
+                </mat-icon>
+              </th>
+              <th *ngIf="memberManagementPermissions.canReadMemberDetails"></th>
+            </tr>
+          </ng-container>
+          <ng-container body>
+            <tr *ngFor="let member of filteredMemberList; let i = index">
+              <td class="first-name">{{member.firstName}}</td>
+              <td class="last-name">{{member.lastName}}</td>
+              <td class="email">
+                {{member.username}}
+              </td>
+              <td class="permissions">
+                {{member.accessControlProfile | stringUnderscoreToSpaceTitleCase}}
+              </td>
+              <td class="account-state">
+                {{member.accountState | stringUnderscoreToSpaceTitleCase}}
+              </td>
+              <td *ngIf="memberManagementPermissions.canReadMemberDetails">
+                <app-table-actions [data]="member"
+                                   [actions]="tableActions"
+                                   (action)="onTableAction($event, member)"
+                ></app-table-actions>
+              </td>
+            </tr>
+          </ng-container>
+        </app-table-base>
+
+        <ng-template #NoMembers>
+          <p class="no-data-plate">There are no members</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

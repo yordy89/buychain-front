@@ -1,0 +1,114 @@
+<app-modal-base header="Add New Rate Table Entry" (closed)="close()">
+  <ng-container content>
+    <form [formGroup]="form">
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Destination Short Name</mat-label>
+          <input matInput placeholder="Short Name" required [formControl]="destinationShortName" type="text">
+          <mat-error>{{destinationShortName?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Capacity</mat-label>
+          <input matInput placeholder="Capacity" required [formControl]="capacity" type="number" appNullOnEmpty>
+          <mat-error>{{capacity?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Description</mat-label>
+          <textarea matInput placeholder="Description" [formControl]="destinationDescription" type="text"></textarea>
+          <mat-error>{{destinationDescription?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Country</mat-label>
+          <mat-select [formControl]="destinationCountry" required>
+            <mat-option *ngFor="let item of countriesList" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{destinationCountry?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>State</mat-label>
+          <mat-select [formControl]="destinationState" required>
+            <mat-option *ngFor="let item of statesList" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{destinationState?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <app-autocomplete
+          [data]="citiesList"
+          [isRequired]="true"
+          [isCustomAllowed]="true"
+          label="City"
+          formControlName="destinationCity"
+          keyName="name"
+          placeholder="City"
+          class="flex-col"
+        ></app-autocomplete>
+
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>UoM</mat-label>
+          <mat-select [formControl]="uom" required>
+            <mat-option *ngFor="let item of uomList" [value]="item">
+              {{item | stringUnderscoreToSpaceTitleCase}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{uom?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Transport Type</mat-label>
+          <mat-select [formControl]="type" required>
+            <mat-option *ngFor="let item of transportMethodTypes" [value]="item">
+              {{item | stringUnderscoreToSpaceTitleCase}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{type?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Cost</mat-label>
+          <input matInput placeholder="Cost" required [formControl]="cost" type="number" appNullOnEmpty>
+          <mat-error>{{cost?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-row" *ngIf="type.value === TransportMethodType.Rail">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Rail Restriction</mat-label>
+          <mat-select [formControl]="railRestriction" required>
+            <mat-option *ngFor="let item of railRestrictions" [value]="item">
+              {{item | stringUnderscoreToSpaceTitleCase}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{railRestriction?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Rail Carrier</mat-label>
+          <mat-select [formControl]="carrier" required>
+            <mat-option *ngFor="let item of railCarriers" [value]="item.abbreviation">
+              {{item.abbreviation}} - {{item.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{carrier?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+    </form>
+  </ng-container>
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isNarrow]="true" (clicked)="addNewRateTableEntry()" [isPrimary]="true">Save</app-button>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,30 @@
+<div [ngStyle]="{'visibility': isSelectedRealData ? 'visible' : 'hidden'}" class="d-flex justify-content-center">{{lastUpdatedTimeString}}&nbsp;
+  <span class="link text-primary" (click)="onLoadFreshData()">Reload Data</span>
+</div>
+
+<app-orders-by-day [dashboardData]="managersDashboardData"
+                   [(dateRange)]="selectedDateRange"
+                   [dataSource]="dataSource"
+                   (dateRangeChange)="onDateRangeChange()"
+></app-orders-by-day>
+
+<div class="row-section">
+  <app-numeric-indicator title="Median Orders / Day" [currentValue]="metrics.medianOrdersPerDay.current"
+                         [previousValue]="metrics.medianOrdersPerDay.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Avg Orders / Day" [currentValue]="metrics.averageOrdersPerDay.current"
+                         [previousValue]="metrics.averageOrdersPerDay.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Avg Revenue / Day" [currentValue]="metrics.averageRevenuePerDay.current"
+                         [previousValue]="metrics.averageRevenuePerDay.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Avg Margin / Order" [currentValue]="metrics.averageMarginPerDay.current"
+                         [previousValue]="metrics.averageMarginPerDay.previous"></app-numeric-indicator>
+  <app-numeric-indicator title="Avg Orders / Person" [currentValue]="metrics.averageOrdersPerPerson.current"
+                         [previousValue]="metrics.averageOrdersPerPerson.previous"></app-numeric-indicator>
+</div>
+
+<div class="row-section">
+  <app-orders-by-type [managersTransactions]="managersTransactions"></app-orders-by-type>
+  <app-tree-chart [managersTransactions]="managersTransactions"></app-tree-chart>
+</div>
+<div class="row-section">
+  <app-leaderboard [managersTransactions]="managersTransactions" [maxRowCount]="4"></app-leaderboard>
+</div>

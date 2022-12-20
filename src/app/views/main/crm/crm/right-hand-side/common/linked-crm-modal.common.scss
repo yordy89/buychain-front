@@ -1,0 +1,12 @@
+.content-wrapper {
+  display: flex;
+  font-size: 18px;
+
+  mat-icon {
+    margin-right: 10px;
+  }
+
+  span {
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,32 @@
+<mat-icon class="pt-5 cursor-pointer"
+          [matMenuTriggerFor]="shoppingCartMenu"
+          [matBadge]="unitsInCart?.length || ''"
+          matBadgeSize="small"
+          matBadgeColor="warn"
+          color="primary">
+  add_shopping_cart
+</mat-icon>
+
+<mat-menu #shoppingCartMenu="matMenu" [class]="'no-max-width'">
+
+  <ng-container *ngIf="unitsInCart.length; else NoUnitsInCart">
+
+    <button mat-menu-item (click)="openBulkAddToOrder()">
+      <mat-icon color="primary">shopping_cart</mat-icon>
+      <span>Open Details</span>
+    </button>
+
+    <button mat-menu-item (click)="clearCart()">
+      <mat-icon color="warn">clear_all</mat-icon>
+      <span>Clear Cart</span>
+    </button>
+
+  </ng-container>
+
+  <ng-template #NoUnitsInCart>
+    <div class="no-data-plate">
+      The Cart is Empty.
+    </div>
+  </ng-template>
+
+</mat-menu>

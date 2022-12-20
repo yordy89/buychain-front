@@ -1,0 +1,8 @@
+.user-photo-name {
+    display: flex;
+}
+
+.user-name {
+    margin-left: 15px;
+    padding-top: 12px;
+}

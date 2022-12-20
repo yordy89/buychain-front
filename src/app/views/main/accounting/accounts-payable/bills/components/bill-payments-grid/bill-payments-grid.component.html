@@ -1,0 +1,75 @@
+<ng-container>
+    <dx-data-grid
+      [dataSource]="data.payments"
+      [showBorders]="true"
+      [remoteOperations]="false"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [allowColumnReordering]="false"
+      [rowAlternationEnabled]="true"
+      [columnHidingEnabled]="true"
+      [columnAutoWidth]="true"
+    >
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-load-panel [enabled]="false"></dxo-load-panel>
+
+      <dxi-column dataField="type" cellTemplate="typeCellTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'typeCellTemplate'">
+        {{data.value | stringUnderscoreToSpaceTitleCase}}
+      </div>
+
+      <dxi-column dataField="state" caption="Status" cellTemplate="stateTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'stateTemplate'">
+						<span class="badge" [ngClass]="data.data.stateBadgeClass">
+							{{ data.value | stringUnderscoreToSpaceTitleCase }}
+						</span>
+      </div>
+
+      <dxi-column dataField="paymentDate" dataType="date" caption="Date"></dxi-column>
+      <dxi-column dataField="createdBy" [calculateDisplayValue]="calculateDisplayCreatedByValue"></dxi-column>
+
+      <dxi-column dataField="attachments" cellTemplate="attachmentsTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'attachmentsTemplate'">
+        <mat-icon
+          *ngIf="!!data?.value?.length"
+          aria-hidden="false"
+          aria-label="Attach icon">
+          attach_file
+        </mat-icon>
+      </div>
+
+      <dxi-column dataField="currency" caption="Currency"></dxi-column>
+
+      <dxi-column dataField="amount" caption="Amount">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+
+      <dxo-summary>
+        <dxi-total-item column="currency" alignment="right" displayFormat="Totals"></dxi-total-item>
+        <dxi-total-item column="amount" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+      </dxo-summary>
+
+      <dxi-column [allowReordering]="false"
+                  [allowHiding]="false"
+                  [allowGrouping]="false"
+                  [width]="40"
+                  cellTemplate="paymentActionsTemplate"
+      ></dxi-column>
+      <div *dxTemplate="let item of 'paymentActionsTemplate'">
+        <app-table-actions *ngIf="item.data"
+                           [data]="item.data"
+                           [actions]="actions"
+                           (action)="onAction($event, item.data)"
+        ></app-table-actions>
+      </div>
+    </dx-data-grid>
+    <span
+      *ngIf="canAddPayment"
+      [ngClass]="{'add-line-btn': true, 'mt-15': true, 'disabled': !data.isApproved}"
+      (click)="onAddPayment()"
+      matTooltip="The vendor invoice must be APPROVED."
+      [matTooltipDisabled]="data.isApproved">
+      <mat-icon>add</mat-icon> Add Payment
+    </span>
+</ng-container>

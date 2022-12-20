@@ -1,0 +1,21 @@
+@use 'variables' as *;
+
+.mat-menu {
+  &.menu-content-no-padding {
+    .mat-menu-content {
+      padding: 0 !important;
+    }
+  }
+
+  &.no-max-width {
+    max-width: unset;
+
+    &.mat-menu-panel {
+      max-width: none !important;
+    }
+  }
+}
+
+.mat-menu-panel {
+  color: $text-1;
+}

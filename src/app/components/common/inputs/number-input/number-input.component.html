@@ -1,0 +1,29 @@
+<div class="number-input"
+  (click)="$event.stopPropagation();"
+  (mouseup)="$event.stopPropagation();">
+
+  <app-icon-button
+    icon="remove"
+    (clicked)="decrease()"></app-icon-button>
+
+  <span
+    class="input-wrap"
+    [ngClass]="{'prefix-dollar': prefix === 'dollar' }">
+    <input
+      [formControl]="control" type="number"
+      [ngClass]="{'updating': control.dirty, 'invalid': control.invalid }"
+      (blur)="onSubmit($event)"
+      (keydown.enter)="onSubmit($event)"
+      [matTooltip]="max !== null ? 'Maximum: ' + max : ''"
+      matTooltipPosition="above"
+      matTooltipClass="small-tooltip">
+  </span>
+
+
+  <app-icon-button
+    icon="add"
+    (clicked)="increase()"
+    [matTooltip]="max !== null ? 'Maximum: ' + max : ''"
+    matTooltipPosition="above"
+    matTooltipClass="small-tooltip"></app-icon-button>
+</div>

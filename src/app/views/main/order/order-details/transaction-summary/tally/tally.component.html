@@ -1,0 +1,448 @@
+<mat-accordion *ngIf="tallyItems?.length; else NoTallyUnits"
+               class="wrap"
+               [ngClass]="{'has-contract': isContractsSupported}"
+>
+
+  <!-- Header -->
+  <mat-expansion-panel class="header" [disabled]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-description>
+
+        <div class="row">
+          <div class="cell spec-shorthand"></div>
+          <div *appShowContract class="cell purchase-method flex-direction-column">
+            <span>Purchase Method</span>
+            <span *ngIf="isContractAllowed" class="text-nowrap">
+              Change All&nbsp;
+              <mat-icon class="small-icon cursor-pointer" matTooltip="Cash" color="primary" (click)="onChangeAllPurchaseMethods(purchaseMethodsEnum.CASH)">monetization_on</mat-icon>&nbsp;|&nbsp;
+              <mat-icon class="small-icon cursor-pointer" matTooltip="Contract" color="primary" (click)="onChangeAllPurchaseMethods(purchaseMethodsEnum.CONTRACT)">description</mat-icon>
+            </span>
+          </div>
+          <div class="cell units">Units</div>
+          <div class="cell uom">Measures</div>
+          <div class="cell offer">Sales Price/UoM</div>
+          <div class="cell delivered-per-uom">Delivered Price/UoM</div>
+          <div class="cell delivered">Subtotal</div>
+        </div>
+
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+
+  <!-- Tally Items -->
+  <mat-expansion-panel *ngFor="let line of tallyItems"
+                       [ngClass]="{'is-invalid': line.isLineInvalid}"
+                       [togglePosition]="'before'"
+                       [(expanded)]="line.isExpanded"
+                       (mouseup)="$event.stopPropagation();"
+                       class="tally-item"
+  >
+    <mat-expansion-panel-header >
+      <mat-panel-description (mouseup)="$event.stopPropagation();">
+
+        <form [formGroup]="line.formGroup">
+
+          <div class="row">
+            <div class="cell spec-shorthand">
+              <span class="text-ellipsis">{{line.specShorthand}}</span>
+              <span class="badge badge-ui-primary ml-15" *ngIf="transactionData.isPurchasedTally && line.hasAllocatedProducts">Allocated</span>
+              <span class="badge badge-ui-warning ml-15" *ngIf="isSellingTally && line.hasOutstandingProducts && !line.needsReplacement">Outstanding Products</span>
+              <span class="badge badge-ui-warning ml-15" *ngIf="isSellingTally && line.needsReplacement">Products Not Available</span>
+<!--              (click)="openAcquiredTransaction(getLineItemAcquiredTxId(line.lineItem))"-->
+            </div>
+            <div *appShowContract class="cell purchase-method">
+              <mat-select *ngIf="isContractAllowed"
+                          [value]="line.purchaseMethod"
+                          (click)="$event.stopPropagation()"
+                          (selectionChange)="onChangePurchaseMethod($event, line)"
+                          class="small-control"
+              >
+                <mat-select-trigger>
+                  <mat-icon class="small-icon" color="primary">{{line.isContractPurchaseMethod ? 'description' : 'monetization_on'}}</mat-icon>
+                  {{line.purchaseMethod | stringUnderscoreToSpaceTitleCase}}
+                </mat-select-trigger>
+                <mat-option *ngFor="let item of purchaseMethods" [value]="item">
+                  <mat-icon class="small-icon" color="primary">{{item === purchaseMethodsEnum.CONTRACT ? 'description' : 'monetization_on'}}</mat-icon>
+                  {{item | stringUnderscoreToSpaceTitleCase}}
+                </mat-option>
+              </mat-select>
+
+              <div *ngIf="!isContractAllowed">
+                <mat-icon class="small-icon" color="primary">{{line.isContractPurchaseMethod ? 'description' : 'monetization_on'}}</mat-icon>
+                {{line.purchaseMethod | stringUnderscoreToSpaceTitleCase}}
+              </div>
+            </div>
+
+            <div class="cell units">
+              <app-number-input *ngIf="canUpdateTallyQty(line); else QuantityTemplate"
+                [control]="line.qtyFormControl"
+                [min]="1"
+                (inputCompleted)="updateAllChangedTallyItems()">
+              </app-number-input>
+
+              <ng-template #QuantityTemplate>
+                <div><span class="value">{{line.qty}}</span></div>
+              </ng-template>
+            </div>
+
+            <div class="cell uom">
+              <div>
+                <span class="value">{{line.unitTotalMeasure | number: '1.3'}}</span>
+                <span class="unit">{{line.measureLabel}}</span>
+              </div>
+            </div>
+
+            <div class="cell offer">
+              <ng-container *ngIf="!line.contract">
+                <app-number-input *ngIf="canUpdateTally && !isOfferOnDeliveredPrice"
+                                  [control]="line.offerFormControl"
+                                  [min]="0"
+                                  [max]="maxSafeNumber"
+                                  [prefix]="'dollar'"
+                                  (inputCompleted)="updateAllChangedTallyItems()">
+                </app-number-input>
+
+                <div *ngIf="!canUpdateTally || isOfferOnDeliveredPrice">
+                  <div>
+                    <span class="value">{{line.offer | currency}}</span>
+                    <span>/</span>
+                    <span class="unit">{{line.measureLabel}}</span>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+            <div class="cell delivered-per-uom">
+              <ng-container *ngIf="!line.contract">
+                <div>
+                  <app-number-input *ngIf="canUpdateTally && isOfferOnDeliveredPrice"
+                                    [control]="line.deliveredOfferFormControl"
+                                    [min]="0"
+                                    [max]="maxSafeNumber"
+                                    [prefix]="'dollar'"
+                                    (inputCompleted)="updateAllChangedTallyItems()">
+                  </app-number-input>
+                </div>
+
+                <div *ngIf="!canUpdateTally || !isOfferOnDeliveredPrice">
+                  <span class="value">{{transactionData.calcDeliveredPricePerUoM(line) | currency}}</span>
+                  <span>/</span>
+                  <span class="unit">{{line.measureLabel}}</span>
+                </div>
+              </ng-container>
+            </div>
+
+            <div class="cell delivered">
+              <ng-container *ngIf="!line.contract">
+                <span *ngIf="!hasMixedUoM" class="value">
+                  {{transactionData.calcDeliveredPricePerLineItem(line) | currency}}
+                </span>
+
+                  <span *ngIf="hasMixedUoM" class="value">
+                  {{line.unitTotalSalesPrice | currency}}
+                </span>
+              </ng-container>
+            </div>
+          </div>
+
+        </form>
+
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <app-random-length-product *ngIf="line.isRandomLengthUnit"
+                               [product]="line.sampleProduct"
+                               (specChangedEmitter)="tallyChanged.emit()"
+    ></app-random-length-product>
+
+    <dx-data-grid
+        [dataSource]="[line]"
+        [showBorders]="true"
+        [remoteOperations]="false"
+        [allowColumnResizing]="true"
+        columnResizingMode="widget"
+        [allowColumnReordering]="false"
+        [rowAlternationEnabled]="true"
+        [columnHidingEnabled]="true"
+        [columnAutoWidth]="true"
+    >
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-load-panel [enabled]="false"></dxo-load-panel>
+
+      <ng-container *ngIf="!transactionData.isPurchasedTally">
+        <dxi-column caption="Ship Date" cellTemplate="shipWeekEstimateCellTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'shipWeekEstimateCellTemplate'">
+          {{(transactionData.inTransitDate || line.shipWeekEstimate) | date}}
+        </div>
+
+        <dxi-column *ngIf="isSeller" caption="Count by States" cellTemplate="countByStatesCellTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'countByStatesCellTemplate'">
+          <div *ngFor="let item of line.countByStates">
+            {{item.state | stringUnderscoreToSpaceTitleCase}} - {{item.count}}
+          </div>
+        </div>
+      </ng-container>
+
+      <dxi-column *ngIf="transactionData.isPurchasedTally && line.hasAllocatedProducts" caption="Allocated In" cellTemplate="allocatedInCellTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'allocatedInCellTemplate'">
+        <div *ngFor="let id of line.allocatedTransactionIds">
+          <a href="#" (click)="openTransaction($event, id)">{{id | shortGuid}}</a>
+        </div>
+      </div>
+
+      <ng-container *appShowContract>
+        <ng-container *ngIf="line.contract" [formGroup]="line.contractGroup">
+          <dxi-column caption="Contract" cellTemplate="contractCellTemplate" width="100px"></dxi-column>
+          <div *dxTemplate="let data of 'contractCellTemplate'">
+            <div *ngIf="!isContractEditMode" [matTooltip]="line.contractGroup.get('number').value" matTooltipClass="small-tooltip" class="text-ellipsis">
+              {{line.contractGroup.get('number').value}}
+            </div>
+
+            <div *ngIf="isContractEditMode" class="small-control-container">
+              <input class="small-control" matInput appNullOnEmpty placeholder="Contract" type="text" formControlName="number">
+              <mat-error *ngIf="line.contractGroup.get('number').errors">{{line.contractGroup.get('number').errors | errorMessage}}</mat-error>
+            </div>
+          </div>
+
+          <dxi-column caption="Contract Terms" cellTemplate="contractTermsCellTemplate" width="150px"></dxi-column>
+          <div *dxTemplate="let data of 'contractTermsCellTemplate'">
+            <div *ngIf="!isContractEditMode" [matTooltip]="line.contractGroup.get('terms').value" matTooltipClass="small-tooltip" class="text-ellipsis">
+              {{line.contractGroup.get('terms').value}}
+            </div>
+
+            <div *ngIf="isContractEditMode" class="small-control-container">
+              <textarea class="small-control" matInput appNullOnEmpty placeholder="Terms" formControlName="terms"></textarea>
+              <mat-error *ngIf="line.contractGroup.get('terms').errors">{{line.contractGroup.get('terms').errors | errorMessage}}</mat-error>
+            </div>
+          </div>
+
+          <dxi-column caption="Contract Expiration" cellTemplate="contractExpCellTemplate"></dxi-column>
+          <div *dxTemplate="let data of 'contractExpCellTemplate'">
+            <ng-container *ngIf="!isContractEditMode">
+              {{line.contractGroup.get('expirationDate').value | date}}
+            </ng-container>
+
+            <div *ngIf="isContractEditMode" class="small-control-container">
+              <div class="d-flex align-items-center">
+                <input matInput
+                       formControlName="expirationDate"
+                       [matDatepicker]="expirationDate"
+                       placeholder="mm/dd/yyyy"
+                       class="small-control"
+                       (click)="expirationDate.open()"
+                >
+                <mat-datepicker #expirationDate></mat-datepicker>
+                <mat-datepicker-toggle matSuffix [for]="expirationDate" [tabIndex]="-1"></mat-datepicker-toggle>
+              </div>
+              <mat-error *ngIf="line.contractGroup.get('expirationDate').errors">{{line.contractGroup.get('expirationDate').errors | errorMessage}}</mat-error>
+            </div>
+          </div>
+
+          <dxi-column *appShowViewCost caption="Contract Price" cellTemplate="contractPriceCellTemplate"></dxi-column>
+          <div *dxTemplate="let data of 'contractPriceCellTemplate'">
+            <ng-container *ngIf="!isContractEditMode">
+              {{line.contractGroup.get('contractPrice').value | currency}}
+            </ng-container>
+
+            <div *ngIf="isContractEditMode" class="small-control-container">
+              <input class="small-control" matInput placeholder="Price" type="number" formControlName="contractPrice">
+              <mat-error *ngIf="line.contractGroup.get('contractPrice').errors">{{line.contractGroup.get('contractPrice').errors | errorMessage}}</mat-error>
+            </div>
+          </div>
+
+          <dxi-column *ngIf="isContractAllowed" caption="Contract Actions" cellTemplate="actionsCellTemplate"></dxi-column>
+          <div *dxTemplate="let data of 'actionsCellTemplate'">
+            <app-icon-button *ngIf="!isContractEditMode" (clicked)="onEditContract()" icon="edit"></app-icon-button>
+
+            <ng-container *ngIf="isContractEditMode">
+              <app-icon-button [isDisabled]="line.contractGroup.invalid" (clicked)="onSaveContract(line)" icon="save"></app-icon-button>
+              <app-icon-button [isWarn]="true" (clicked)="onCancelEditContract(line)" icon="cancel"></app-icon-button>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <dxi-column caption="Total Weight" dataField="totalWeight" alignment="left" cellTemplate="totalWeightCellTemplate"></dxi-column>
+      <div *dxTemplate="let data of 'totalWeightCellTemplate'">
+        {{data.value | number: '1.0-2'}} lbs
+      </div>
+
+      <dxi-column *ngIf="!line.contract" caption="Total Sales Price" cssClass="text-bold" dataField="unitTotalSalesPrice">
+        <dxo-format type="currency" [precision]="2"></dxo-format>
+      </dxi-column>
+
+      <ng-container *ngIf="!transactionData.isPurchasedTally && !line.contract">
+        <dxi-column caption="Discount" dataField="discountPerUnit" cellTemplate="discountCellTemplate"></dxi-column>
+        <div *dxTemplate="let data of 'discountCellTemplate'">
+          {{ data.value ? (data.value | currency) : '-'}}
+        </div>
+
+        <dxi-column caption="List Price / {{line.measureLabel}}" dataField="priceOfMerit">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+
+        <dxi-column caption="Total List Price" dataField="unitTotalListPrice">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dxi-column>
+      </ng-container>
+
+      <ng-container *ngIf="isSeller && !line.contract">
+        <ng-container *appShowViewCost>
+
+          <dxi-column caption="Cost Basis / {{line.measureLabel}}" cssClass="text-bold" dataField="avgCostBasisOfUnitPerUom">
+            <dxo-format type="currency" [precision]="2"></dxo-format>
+          </dxi-column>
+
+          <dxi-column caption="Total Cost Basis" cssClass="text-bold" dataField="unitTotalCostBasis">
+            <dxo-format type="currency" [precision]="2"></dxo-format>
+          </dxi-column>
+
+          <dxi-column caption="Margin" cssClass="text-bold" dataField="margin" cellTemplate="marginCellTemplate"></dxi-column>
+          <div *dxTemplate="let data of 'marginCellTemplate'">
+            <span [ngClass]="{'text-danger': line.profitPerUom < 0 }">
+              {{ data.value | number:'1.0-2' }}%
+            </span>
+          </div>
+
+          <dxi-column caption="Profit / {{line.measureLabel}}" cssClass="text-bold" dataField="profitPerUom" cellTemplate="profitPerUomCellTemplate"></dxi-column>
+          <div *dxTemplate="let data of 'profitPerUomCellTemplate'">
+            <span [ngClass]="{'text-danger': line.profitPerUom < 0 }">
+              {{ data.value | currency }}
+            </span>
+          </div>
+
+          <dxi-column caption="Total Profit" cssClass="text-bold" dataField="profitPerLine" cellTemplate="profitPerLineCellTemplate"></dxi-column>
+          <div *dxTemplate="let data of 'profitPerLineCellTemplate'">
+            <span [ngClass]="{'text-danger': line.profitPerUom < 0 }">
+              {{ data.value | currency }}
+            </span>
+          </div>
+
+        </ng-container>
+      </ng-container>
+
+    </dx-data-grid>
+
+    <mat-action-row>
+      <app-button *ngIf="canSearchAndReplace(line)"
+                  [isNarrow]="true"
+                  icon="youtube_searched_for"
+                  (clicked)="searchAndReplace(line)"
+      >Search and Replace</app-button>
+
+      <app-button *ngIf="(isSeller || transactionData.isPurchasedTally) && canReadLineItemProducts(line)"
+                  [isNarrow]="true"
+                  icon="visibility"
+                  (clicked)="openProductLot(line)"
+      >See Product Lot</app-button>
+
+      <app-button *ngIf="canDeleteTally"
+                  [isNarrow]="true"
+                  [isWarn]="true"
+                  icon="remove_shopping_cart"
+                  (clicked)="removeItem(line)"
+      >Remove</app-button>
+    </mat-action-row>
+
+  </mat-expansion-panel>
+
+  <!-- deleted products -->
+
+  <mat-expansion-panel *ngIf="transactionData.tally.deletedProducts?.length" class="tally-item" [disabled]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-description>
+        <div class="row deleted">
+
+          <div class="cell spec-shorthand">Some products have been sold.</div>
+
+          <div *appShowContract class="cell purchase-method"></div>
+
+          <div class="cell units">{{transactionData.tally.deletedProducts.length}}</div>
+
+          <div class="cell uom">--</div>
+
+          <div class="cell offer">--</div>
+
+          <div class="cell delivered-per-uom">--</div>
+
+          <div class="cell delivered">
+            <span *ngIf="transactionData.isSales">
+              <app-icon-button icon="remove_shopping_cart"
+                               [isDisabled]="!canDeleteTally"
+                               [isWarn]="true"
+                               (clicked)="removeDeletedProductsFromTally(transactionData.tally.deletedProducts)">
+                Remove
+              </app-icon-button>
+            </span>
+          </div>
+
+        </div>
+
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+
+  <!-- Footer -->
+  <mat-expansion-panel class="footer" [disabled]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-description>
+
+        <div class="row">
+
+          <div class="cell spec-shorthand"></div>
+          <div *appShowContract class="cell purchase-method"></div>
+
+          <div class="cell units">
+            <div class="property-box">
+              <span class="value">{{transactionData.tallyTotalWeight | number: '1.0-2'}}<span class="unit">lbs</span></span>
+              <span class="label">Total Weight</span>
+            </div>
+          </div>
+
+          <div class="cell uom">
+            <div class="property-box" *ngIf="!hasMixedUoM">
+              <span class="value">{{transactionData.tallyTotalMeasureTemporary | number: '1.3'}}<span
+                  class="unit">{{transactionData.measureLabel}}</span></span>
+              <span class="label">Total Measure</span>
+            </div>
+          </div>
+
+          <div class="cell offer">
+            <div *ngIf="!hasMixedUoM && transactionData.hasCashTallyItem" class="property-box">
+              <span class="value">{{transactionData.tallyTotalOfferedPrice | currency }}</span>
+              <span class="label">Total Sales Price</span>
+            </div>
+          </div>
+
+          <div class="cell delivered-per-uom">
+
+          </div>
+
+          <div class="cell delivered">
+            <ng-container *ngIf="transactionData.hasCashTallyItem">
+              <div *ngIf="!hasMixedUoM" class="property-box">
+                <span class="value">{{transactionData.deliveredPriceTotal | currency }}</span>
+                <span class="label">Total Price</span>
+              </div>
+
+              <div *ngIf="hasMixedUoM" class="property-box">
+                <span class="value">{{transactionData.tallyTotalOfferedPrice | currency }}</span>
+                <span class="label">Total Price</span>
+              </div>
+            </ng-container>
+          </div>
+
+        </div>
+
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+
+</mat-accordion>
+
+<ng-template #NoTallyUnits>
+  <div class="no-tally" *ngIf="transactionData">
+    <h4>Transaction has no Tally yet.</h4>
+  </div>
+</ng-template>

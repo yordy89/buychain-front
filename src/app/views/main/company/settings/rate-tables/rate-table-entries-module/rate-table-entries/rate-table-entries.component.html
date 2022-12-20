@@ -1,0 +1,133 @@
+<div class="wrapper">
+  <div class="border">
+    <div class="top-wrapper">
+      <div class="rate-table-header" >
+        <div *ngIf="headerDisabled; else headerEditTemplate"
+             class="disabled-header-container actions-row-container"
+        >
+          <div class="disabled-headers">
+            <p class="name-txt">{{name.value}}</p>
+            <p class="description-txt">{{description.value}}</p>
+          </div>
+
+          <div class="actions-buttons-row">
+            <app-button *ngIf="currentUser.canDelete"
+                        [isWarn]="true"
+                        [isNarrow]="true"
+                        (clicked)="deleteRateTable()"
+            >Delete</app-button>
+
+            <app-button *ngIf="currentUser.canModify"
+                        [isPrimary]="true"
+                        [isNarrow]="true"
+                        (clicked)="switchToHeaderEditMode()"
+            >Edit</app-button>
+
+            <app-button [isNarrow]="true"
+                        (clicked)="backToCompanySettings()"
+            >Back</app-button>
+          </div>
+        </div>
+        <ng-template #headerEditTemplate>
+          <div class="header-edit-mode-container">
+            <form [formGroup]="form">
+              <div>
+                <div class="input-field">
+                  <mat-form-field class="name-input">
+                    <mat-label>Name</mat-label>
+                    <input matInput required [formControl]="name">
+                  </mat-form-field>
+                  <div *ngIf="name.touched && name.invalid && name.value">
+                    <div class="error">Rate table name is too long</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="input-field">
+                  <mat-form-field class="description-input">
+                    <mat-label>Description</mat-label>
+                    <input matInput required [formControl]="description">
+                  </mat-form-field>
+                  <div *ngIf="description.touched && description.invalid && description.value">
+                    <div class="error">Rate table description is too long</div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="header-actions">
+              <app-button [isNarrow]="true" (clicked)="saveHeaderChanges()" [isPrimary]="true">Save</app-button>
+              <app-button [isNarrow]="true" (clicked)="cancelHeaderEditing()">Cancel</app-button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="rate-table-entries">
+      <dx-data-grid
+        #rateTableEntriesGrid
+        class="entries-grid"
+        [dataSource]="rateTableEntries"
+        [showBorders]="true"
+        [remoteOperations]="false"
+        columnResizingMode="widget"
+        [allowColumnResizing]="true"
+        [allowColumnReordering]="true"
+        [rowAlternationEnabled]="true"
+        [columnHidingEnabled]="true"
+        [hoverStateEnabled]="true"
+        [height]="'100%'"
+        [focusedRowEnabled]="true"
+        keyExpr="id"
+        (onToolbarPreparing)="onToolbarPreparing($event)"
+      >
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+        <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+        <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-grouping [contextMenuEnabled]="true"></dxo-grouping>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-search-panel [visible]="true"></dxo-search-panel>
+
+        <div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+          <app-table-results-text [visibleRows]="rateTableEntriesGrid.instance.totalCount()" [results]="rateTableEntries?.length"></app-table-results-text>
+        </div>
+
+        <dxi-column dataField="destinationShortName" caption="Location Name" [width]="200" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="destinationCountry" caption="Country" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="destinationState" caption="State/Province" [groupIndex]="0" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="destinationCity" caption="City/Municipality" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="transportMethod.type" caption="Transport" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="uom" caption="UoM" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="capacity" caption="Max Capacity" [width]="100" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="transportMethod.carrier" caption="Carrier" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="transportMethod.railRestriction" caption="Restriction" [autoExpandGroup]="false"></dxi-column>
+        <dxi-column dataField="cost" caption="Cost" [width]="80" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="destinationDescription" caption="Destination Notes" [allowGrouping]="false"></dxi-column>
+
+        <dxi-column *ngIf="currentUser.canModify || currentUser.canDelete" [allowHiding]="false" cellTemplate="actionsTemplate" [allowGrouping]="false" [width]="40"></dxi-column>
+        <div *dxTemplate="let item of 'actionsTemplate'">
+          <app-table-actions *ngIf="item.data"
+                             [data]="item.data"
+                             [actions]="actions"
+                             (action)="onTableAction($event, item.data)"
+          ></app-table-actions>
+        </div>
+
+        <dxo-summary>
+            <dxi-group-item column="destinationShortName" summaryType="count" [customizeText]="getGroupCountText"></dxi-group-item>
+        </dxo-summary>
+      </dx-data-grid>
+    </div>
+
+    <div class="actions-container">
+      <app-button *ngIf="currentUser.canModify" icon="add" (clicked)="addEntry()">Add Entry</app-button>
+      <app-button icon="open_in_browser" (clicked)="export()">Export Entries</app-button>
+      <app-button *ngIf="currentUser.canModify" icon="save_alt" (clicked)="showImportModal()">Import Entries</app-button>
+    </div>
+
+  </div>
+</div>

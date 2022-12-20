@@ -1,0 +1,24 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+form {
+  margin-right: 10px;
+}
+
+.mat-form-field {
+  a {
+    color: currentcolor;
+  }
+}
+
+.flex-col {
+  > .mat-form-field,
+  > app-autocomplete,
+  > app-tree-selector,
+  > app-chip-list-input {
+    &:not(app-chip-list-input) {
+      height: 80px;
+    }
+
+    display: block;
+  }
+}

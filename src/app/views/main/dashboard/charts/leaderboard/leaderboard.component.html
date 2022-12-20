@@ -1,0 +1,11 @@
+<app-table-chart caption="Leaderboard" [columns]="columns" (viewAllClick)="onViewAllClick()" [showViewAll]="showViewAll">
+    <tr *ngFor="let row of rows">
+      <td class="user-photo-name">
+        <app-letter-logo [value]="row?.sellerProfilePictureUrl" [name]="row.sellerName" [isSmall]="true"></app-letter-logo>
+        <div class="user-name">{{row.sellerName}}</div>
+      </td>
+      <td>{{row.ordersCount}}</td>
+      <td>${{row.totalSales | number : '1.0-2'}}</td>
+      <td>{{row.lastOrderDate | dateAgo}}</td>
+    </tr>
+</app-table-chart>

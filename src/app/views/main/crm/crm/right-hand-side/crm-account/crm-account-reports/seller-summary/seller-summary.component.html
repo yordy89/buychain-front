@@ -1,0 +1,31 @@
+<div class="wrapper">
+  <div class="general-summary-wrapper">
+    <div class="summary-section">
+      <div class="unit">
+        <app-value-label [value]="sellerTransactionsNumberYTD | number : '1.0-2'" label="Total Orders YTD"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="sellerRevenueYTD | currency" label="Total Revenue YTD"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="sellerMarginYTD | currency" label="Total Margin YTD"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="sellerAllTimeRevenue | currency" label="All Time Revenue"></app-value-label>
+      </div>
+    </div>
+    <div class="summary-section">
+      <div class="unit">
+        <app-value-label [value]="averageTransactionsMonthYTD | currency" label="Average Transaction YTD" unit="per month"></app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="averageTransactionsMonthYTD | currency" label="Average Transaction Revenue YTD" unit="per month">
+        </app-value-label>
+      </div>
+      <div class="unit">
+        <app-value-label [value]="averageMarginTransactionYTD | currency" label="Average Transaction Margin YTD">
+        </app-value-label>
+      </div>
+    </div>
+  </div>
+</div>

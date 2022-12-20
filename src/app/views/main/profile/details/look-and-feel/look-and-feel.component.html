@@ -1,0 +1,65 @@
+<div class="wrapper">
+  <div class="profile-section">
+    <h5>Profile:</h5>
+    <mat-form-field>
+      <mat-label *ngIf="selectedProfile.isCustom">Custom</mat-label>
+      <mat-select (selectionChange)="onProfileChange($event)" [value]="selectedProfile">
+        <mat-option *ngFor="let profile of profiles" [value]="profile">
+          {{profile.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="settings-section">
+    <div class="option-group">
+
+      <div>
+        <span>Larger Scrollbars:</span>
+        <div class="option-switch">
+          <mat-slide-toggle [ngModel]="selectedProfile.useLargeScrollBars"
+            (change)="onUseLargeScrollBarsChange($event)">
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+      <div>
+        <span>Dark Mode:</span>
+        <div class="option-switch">
+          <mat-slide-toggle [ngModel]="selectedProfile.isDark" (change)="onDarkModeChange($event)"></mat-slide-toggle>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="option-group">
+      
+      <div>
+        <span>Primary Color:</span>
+        <div class="option-color-picker" [style.background]="selectedProfile['primaryColor']"
+          [matMenuTriggerFor]="primaryColorMenu"></div>
+        <mat-menu #primaryColorMenu="matMenu" class="color-picker-menu">
+          <color-swatches (onChangeComplete)="onValueChange($event, 'primaryColor')" [height]="570"></color-swatches>
+        </mat-menu>
+      </div>
+
+      <div>
+        <span>Accent Color:</span>
+        <div class="option-color-picker" [style.background]="selectedProfile['accentColor']"
+          [matMenuTriggerFor]="accentColorMenu"></div>
+        <mat-menu #accentColorMenu="matMenu" class="color-picker-menu">
+          <color-swatches (onChangeComplete)="onValueChange($event, 'accentColor')" [height]="570"></color-swatches>
+        </mat-menu>
+      </div>
+
+      <div>
+        <span>Warn Color:</span>
+        <div class="option-color-picker" [style.background]="selectedProfile['warnColor']"
+          [matMenuTriggerFor]="warnColorMenu"></div>
+        <mat-menu #warnColorMenu="matMenu" class="color-picker-menu">
+          <color-swatches (onChangeComplete)="onValueChange($event, 'warnColor')" [height]="570"></color-swatches>
+        </mat-menu>
+      </div>
+
+    </div>
+  </div>
+</div>

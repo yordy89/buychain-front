@@ -1,0 +1,12 @@
+<form [formGroup]="form">
+  <app-autocomplete
+    [data]="companiesList"
+    [isRequired]="true"
+    label="Select Company"
+    formControlName="selectedCompany"
+    iconName="homet"
+    keyName="id"
+    displayName="name"
+    placeholder="Start typing company name"
+  ></app-autocomplete>
+</form>

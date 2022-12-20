@@ -1,0 +1,39 @@
+<div class="wrapper">
+
+  <div class="options-wrapper">
+    <div class="label">Report Type: </div>
+    <div class="options-selector">
+      <mat-form-field>
+        <mat-select [(value)]="optionState" (selectionChange)="onOptionChanged()">
+          <mat-option *ngFor="let option of chartOptions" [value]="option">
+            {{option | stringUnderscoreToSpaceTitleCase}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div id="chart2">
+    <dx-chart
+      id="chart"
+      [title]="(optionState | stringUnderscoreToSpaceTitleCase) + ' By Trader YTD'"
+      [dataSource]="revenueByTraderChartData">
+      <dxi-series *ngFor="let seller of crmSellersList" [valueField]="seller.username" [name]="seller.firstName"></dxi-series>
+      <dxi-series valueField="others" name="Others"></dxi-series>
+      <dxo-common-series-settings
+        argumentField="month"
+        type="stackedBar">
+      </dxo-common-series-settings>
+      <dxo-legend
+        verticalAlignment="bottom"
+        horizontalAlignment="center"
+        itemTextPosition="top">
+      </dxo-legend>
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-argument-axis>
+        <dxo-label overlappingBehavior="rotate" [rotationAngle]="-45"></dxo-label>
+        <dxo-tick [visible]="true"></dxo-tick>
+      </dxo-argument-axis>
+    </dx-chart>
+  </div>
+</div>

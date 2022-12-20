@@ -1,0 +1,27 @@
+.table-chart {
+  table {
+    width: 100%;
+    padding: 0 5px;
+
+    tr {
+      td {
+        padding: 5px 3px;
+        text-align: center;
+
+        &:first-of-type {
+          text-align: left;
+        }
+      }
+    }
+
+    .thead {
+      tr {
+        td {
+          padding: 3px;
+          font-weight: bold;
+          text-align: center;
+        }
+      }
+    }
+  }
+}

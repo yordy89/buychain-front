@@ -1,0 +1,58 @@
+<div class="credit-info-wrapper">
+  <div class="credit-info-actions" *ngIf="crmPermissions.canUpdate">
+    <mat-icon color="primary" *ngIf="readonlyMode; else DoneButton" (click)="edit()">edit</mat-icon>
+    <ng-template #DoneButton>
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateCRMAccountCreditInfo()">Save</app-button>
+      <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+    </ng-template>
+  </div>
+
+  <form [formGroup]="creditForm">
+    <div class="credit-wrapper">
+      <div class="max-credit-section">
+        <div class="credit-section-header">Max Credit</div>
+        <div class="section-body">
+          <div class="readonly-mode" *ngIf="readonlyMode; else MaxCreditEditable">${{creditInfo?.maxCredit | number : '1.0-2'}}</div>
+          <ng-template #MaxCreditEditable>
+            <div class="form-wrapper">
+              <mat-form-field appearance="outline">
+                <input matInput type="number" placeholder="Max Credit" [formControl]="maxCredit" min="0">
+                <mat-error>{{maxCredit?.errors | errorMessage}}</mat-error>
+              </mat-form-field>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      <div class="used-credit-section">
+        <div class="credit-section-header">Used Credit</div>
+        <div class="section-body">
+          <div class="readonly-mode">${{usedCredit | number : '1.0-2'}}</div>
+        </div>
+      </div>
+      <div class="remaining-credit-section">
+        <div class="credit-section-header">Remaining Credit</div>
+        <div class="section-body">
+          <div class="readonly-mode">${{creditInfo?.maxCredit - usedCredit | number : '1.0-2'}}</div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="credit-terms-wrapper">
+      <div *ngIf="readonlyMode; else CreditTermsEditable">
+        <div class="unit"><p>Credit Terms: {{creditInfo?.creditTerms}}</p></div>
+      </div>
+      <ng-template #CreditTermsEditable>
+        <div class="editable-terms-wrapper">
+          <div class="unit"><p>Credit Terms: </p></div>
+          <mat-form-field appearance="outline">
+            <textarea matInput placeholder="Credit Terms" appNullOnEmpty [formControl]="creditTerms"></textarea>
+            <mat-error>{{creditTerms?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </div>
+  </form>
+</div>
+
+
+

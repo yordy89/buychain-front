@@ -1,0 +1,77 @@
+<div class="accounting-info-wrapper">
+
+  <div class="actions-container mb-20">
+    <div *ngIf="userPermissions.canUpdate">
+      <app-button [isPrimary]="true" [isNarrow]="true" *ngIf="readonlyMode$ | async" (clicked)="edit()">Edit Accounting Info</app-button>
+    </div>
+    <ng-container *ngIf="(readonlyMode$ | async) !== true">
+      <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateGroupAccountingInfo()">Save</app-button>
+      <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+    </ng-container>
+  </div>
+
+  <div class="accounting-info-details">
+    <div class="information-section">
+      <div class="accounting-info-form">
+        <ng-container *ngIf="accountingInfo && readonlyMode$ | async; else EditMode">
+          <div class="flex-grid-row">
+            <div class="flex-col text-ellipsis">EIN: {{accountingInfo?.EIN}}</div>
+            <div class="flex-col text-ellipsis">Currency: {{accountingInfo.currency}}</div>
+          </div>
+          <div class="flex-grid-row">
+            <div class="flex-col text-ellipsis">Retained Earnings Account: {{REAccount?.number}} - {{REAccount?.name}}</div>
+            <div class="flex-col text-ellipsis">Payment Details: {{accountingInfo.paymentDetails}}</div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div>
+      <form [formGroup]="formGroup">
+        <ng-template #EditMode>
+
+          <div class="flex-row">
+            <mat-form-field appearance="outline" class="flex-col">
+              <mat-label>EIN</mat-label>
+              <input mask="000-000-000" matInput placeholder="EIN" [formControl]="EIN">
+              <mat-error>{{EIN?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+
+            <app-select-with-search
+              [label]="'Currency'"
+              [appearance]="'outline'"
+              [form]="currency"
+              [optionList]="currencies"
+              class="flex-col"
+            ></app-select-with-search>
+          </div>
+
+          <div class="flex-row">
+            <app-select-with-search
+              [label]="'Retained Earnings Account'"
+              [appearance]="'outline'"
+              [form]="REAccountId"
+              [displayField]="'numberName'"
+              [valueField]="'id'"
+              [optionList]="REAccountsList"
+              [withLoadMore]="true"
+              [allLoaded]="allLoaded"
+              (loadMore)="loadAccounts()"
+              class="flex-col"
+            ></app-select-with-search>
+
+            <mat-form-field appearance="outline" class="flex-col">
+              <mat-label>Payment Details</mat-label>
+              <textarea rows="3" matInput appNullOnEmpty placeholder="Payment Details"
+                        [required]="!!accountingInfo.paymentDetails" [formControl]="paymentDetails" type="text"></textarea>
+              <mat-error>{{paymentDetails?.errors | errorMessage}}</mat-error>
+            </mat-form-field>
+          </div>
+
+        </ng-template>
+      </form>
+    </div>
+
+  </div>
+
+</div>

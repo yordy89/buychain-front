@@ -1,0 +1,20 @@
+.wrapper {
+  border: 1px solid black;
+  text-align: center;
+  font-size: 16px;
+  min-width: 200px;
+
+  div {
+    border: 1px solid black;
+    padding: 5px 10px;
+  }
+
+  .header {
+    background-color: lightgray;
+    font-weight: 900;
+  }
+
+  .id {
+    font-size: 12px;
+  }
+}

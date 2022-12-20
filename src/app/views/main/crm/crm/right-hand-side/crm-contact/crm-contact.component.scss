@@ -1,0 +1,61 @@
+.wrapper {
+  .header-section {
+    .actions {
+      display: flex;
+
+      mat-icon {
+        cursor: pointer;
+        padding-left: 10px;
+      }
+    }
+
+    .header-label {
+      .account-part {
+        display: flex;
+        margin-left: 35px;
+
+        mat-icon {
+          font-size: 18px;
+        }
+      }
+
+      .linked-to-section {
+        font-size: 13px;
+        padding-left: 39px;
+
+        span {
+          font-style: italic;
+        }
+      }
+    }
+  }
+
+  .actions-container {
+    .actions {
+      justify-content: flex-end;
+      flex-direction: row;
+      display: flex;
+      margin-right: 30px;
+
+      app-button {
+        padding: 5px 10px;
+      }
+    }
+  }
+
+  .is-expanded {
+    width: 49%;
+  }
+
+  app-crm-contact-sales-info {
+    width: 100%;
+  }
+
+  .labels-section-wrapper {
+    .labels-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}

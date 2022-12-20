@@ -1,0 +1,29 @@
+<div class="filters-wrapper">
+
+  <app-filter-expander caption="State" [(isExpanded)]="filtersState.stateExpanded">
+    <div *ngFor="let item of states">
+      <mat-checkbox color="primary"
+                    (change)="onStateCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key || '' | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Review State" [(isExpanded)]="filtersState.reviewStateExpanded">
+    <div *ngFor="let item of reviewStates">
+      <mat-checkbox color="primary"
+                    (change)="onReviewStateCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key || '' | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Customers" [(isExpanded)]="filtersState.customersExpanded">
+    <mat-form-field appearance="outline">
+      <mat-label>Customers</mat-label>
+      <mat-select multiple [formControl]="customersControl">
+        <mat-option *ngFor="let customer of crmAccounts" [value]="customer.id">{{customer.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </app-filter-expander>
+</div>

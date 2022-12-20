@@ -1,0 +1,120 @@
+@use 'mixins' as mixins;
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+
+  .left-part {
+    margin: 1% 15px 1% 0;
+    flex: 1;
+
+    &.is-crm {
+      width: 98% !important;
+    }
+
+    .upload-photo-section {
+      height: 170px;
+      min-width: 350px;
+    }
+
+    .phone-input {
+      display: flex;
+
+      .calling-code {
+        flex: 0;
+        min-width: 110px;
+        margin-right: 2px;
+
+        app-autocomplete {
+          width: 110px;
+        }
+      }
+
+      .phone-number {
+        flex: 1;
+
+        mat-form-field {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .right-part {
+    margin: 1% 0;
+    flex: 1;
+
+    .section {
+      margin-top: 2vh;
+
+      .content {
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 2vw;
+
+        .option {
+          flex: 1;
+          display: flex;
+          margin: 10px;
+
+          mat-checkbox {
+            margin-right: 0.5vw;
+          }
+
+          .name {
+            margin-top: 0;
+            font-weight: bold;
+            font-size: 16px;
+          }
+
+          .description {
+            margin-top: 5px;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+
+    .product-interest-section {
+      border-radius: 8px;
+      border: 2px solid transparent;
+
+      &.is-invalid {
+        border: 2px solid rgba(var(--palette-warn-500), 1);
+      }
+
+      .mat-error {
+        margin-left: 10px;
+      }
+    }
+
+    .user-privacy-settings-section {
+      padding-top: 15px;
+
+      .privacy-settings-content {
+        margin-left: 10%;
+        padding-top: 10px;
+      }
+    }
+  }
+}
+
+.title {
+  margin-bottom: 2%;
+  font-size: 18px;
+  color: rgba(var(--palette-primary-500), 1);
+  font-weight: 700;
+}
+
+.sub-title {
+  margin-left: 2%;
+  font-size: 13px;
+  color: rgba(var(--palette-primary-500), 0.7);
+  font-weight: 300;
+}
+
+@include mixins.breakpoint(tablet) {
+  form {
+    flex-direction: column;
+  }
+}

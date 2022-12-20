@@ -1,0 +1,14 @@
+<app-modal-base header="CRM Contact Link">
+  <ng-container content>
+    <div class="content-wrapper">
+      <mat-icon color="primary" matPrefix>link</mat-icon>
+      <p>This Contact Is Linked to <span>{{contact?.link?.firstName}}</span> from BuyChain customer {{contact?.crmAccount?.link.name}}</p>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" class="grow-1" (clicked)="close()">Close</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" icon="cached" (clicked)="syncCrmContact()">Sync</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" icon="link_off" (clicked)="unlinkCrmContact()">Unlink</app-button>
+  </ng-container>
+</app-modal-base>

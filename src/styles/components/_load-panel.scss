@@ -1,0 +1,7 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+
+.dx-loadpanel-content {
+  @include mat-css-dark-theme-global {
+    background-color: #424242;
+  }
+}

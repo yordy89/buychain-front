@@ -1,0 +1,47 @@
+.mat-radio-group {
+  margin: 0 5px;
+  display: flex;
+  flex-direction: column;
+
+  .mat-radio-button {
+    margin-bottom: 5px;
+  }
+}
+
+.checkbox-container {
+  margin: 0 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.facilities-filter-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  .selected-facilities-list {
+    margin-bottom: 20px;
+  }
+
+  .facility {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+
+    .facility-label {
+      color: var(--text-1);
+      padding-top: 2px;
+      padding-left: 4px;
+    }
+
+    .mat-icon {
+      color: var(--text-1);
+
+      &:hover {
+        cursor: pointer;
+        color: rgba(var(--palette-warn-300), 1);
+      }
+    }
+  }
+}

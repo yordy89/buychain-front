@@ -1,0 +1,117 @@
+@mixin cell-width {
+  &.checkbox {
+    min-width: 30px;
+  }
+
+  &.spec-shorthand {
+    width: 25%;
+  }
+
+  &.length {
+    min-width: 30px;
+  }
+
+  &.quantity {
+    min-width: 60px;
+  }
+
+  &.unit-piece-count {
+    min-width: 60px;
+  }
+
+  &.list-price-unit {
+    min-width: 60px;
+  }
+
+  &.unit-of-measure {
+    min-width: 25px;
+  }
+
+  &.price-system {
+    min-width: 150px;
+  }
+
+  &.ship-week {
+    min-width: 80px;
+  }
+
+  &.company {
+    min-width: 115px;
+  }
+
+  &.location {
+    min-width: 115px;
+  }
+}
+
+.validation-cell {
+  display: flex;
+
+  > input {
+    margin-right: 1px;
+
+    @include cell-width;
+  }
+
+  .mat-icon {
+    cursor: pointer;
+  }
+}
+
+.table-base {
+  min-height: 150px;
+
+  .header-row {
+    font-size: 12px;
+
+    th {
+      @include cell-width;
+    }
+  }
+
+  .body-row {
+    font-size: 14px;
+
+    td {
+      vertical-align: middle;
+      font-family: Helvetica, sans-serif;
+      font-size: 14px;
+      color: #000;
+      padding: 5px;
+
+      &.center {
+        text-align: center;
+      }
+    }
+  }
+
+  select,
+  input {
+    box-sizing: border-box;
+    height: 25px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    text-align: right;
+
+    &:is(select) {
+      min-width: 100%;
+    }
+
+    &:is(input) {
+      width: 100%;
+    }
+
+    &.invalid {
+      border-color: rgba(var(--palette-warn-500), 1);
+    }
+  }
+}
+
+.fab-container {
+  .table-fab {
+    bottom: auto;
+    right: 20px;
+    top: 80px;
+  }
+}

@@ -1,0 +1,58 @@
+<ng-container>
+  <div class="lines-data-grid-header">
+    <h4>Line Items</h4>
+  </div>
+
+  <dx-data-grid
+    [dataSource]="lineItems"
+    [showBorders]="true"
+    [remoteOperations]="false"
+    [allowColumnResizing]="true"
+    columnResizingMode="widget"
+    [allowColumnReordering]="false"
+    [rowAlternationEnabled]="true"
+    [columnHidingEnabled]="true"
+    [columnAutoWidth]="true"
+  >
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+
+    <dxi-column dataField="description" width="60%" cellTemplate="descriptionTemplate"></dxi-column>
+    <div *dxTemplate="let data of 'descriptionTemplate'">
+      <div [matTooltip]="data.value" matTooltipClass="small-tooltip" class="text-ellipsis">
+        {{data.value}}
+      </div>
+    </div>
+
+    <dxi-column dataField="quantity" caption="Qty"></dxi-column>
+
+    <dxi-column dataField="amount" caption="Amount">
+      <dxo-format type="currency" [precision]="2"></dxo-format>
+    </dxi-column>
+
+    <dxo-summary>
+      <dxi-total-item column="amount" summaryType="sum" [customizeText]="formatAmountCurrency"></dxi-total-item>
+    </dxo-summary>
+
+    <dxi-column [allowReordering]="false"
+                [allowHiding]="false"
+                [allowGrouping]="false"
+                [width]="40"
+                cellTemplate="lineActionsTemplate"
+    ></dxi-column>
+    <div *dxTemplate="let item of 'lineActionsTemplate'">
+      <app-table-actions *ngIf="item.data"
+                         [data]="item.data"
+                         [actions]="actions"
+                         (action)="onAction($event, item.data)"
+      ></app-table-actions>
+    </div>
+  </dx-data-grid>
+
+  <div *ngIf="canAddNewLineItem" class="mt-15">
+					<span class="add-line-btn" (click)="onAddLineItem()">
+					<mat-icon>add</mat-icon> Add Line Item
+				</span>
+  </div>
+</ng-container>

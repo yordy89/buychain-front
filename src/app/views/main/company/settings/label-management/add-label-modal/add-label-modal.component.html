@@ -1,0 +1,58 @@
+<app-modal-base header="Label Details">
+  <ng-container content>
+    <form [formGroup]="form">
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="name-field">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name" [formControl]="name">
+          <mat-error>{{name?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+
+        <div class="flex-col color-wrapper">
+          <div class="color-picker-wrapper">
+            <div class="color-picker"
+                 [ngStyle]="{'background-color': color.value}"
+                 [matMenuTriggerFor]="labelMenu"
+                 (menuClosed)="selectedColor()"
+            ></div>
+          </div>
+
+          <mat-menu #labelMenu="matMenu" yPosition="below" xPosition="after">
+            <div class="menu-wrapper" (click)="$event.stopPropagation()">
+              <div class="selected-color test">
+                <div class="selected-color-text">{{labelColor ? 'Selected Color' : 'Choose a color'}}</div>
+                <input class="selected-color-square" type="button" [(colorPicker)]="labelColor"
+                       [style.background]="labelColor" [cpOutputFormat]="'hex'"
+                       (colorPickerClose)="selectColorInMenu($event)">
+              </div>
+              <div class="default-list">
+                <div *ngFor="let color of defaultColorsList"
+                     class="color-square" [ngStyle]="{'background-color': color}" (click)="selectColorInMenu(color)">
+                  <mat-icon *ngIf="labelColor === color">checked</mat-icon>
+                </div>
+              </div>
+            </div>
+          </mat-menu>
+        </div>
+      </div>
+
+      <div class="static-textarea">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput placeholder="Description" [formControl]="description" rows="3"></textarea>
+          <mat-error>{{description?.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Cancel</app-button>
+    <app-button [isNarrow]="true" [isPrimary]="true" (clicked)="addUpdateLabel()">Save</app-button>
+  </ng-container>
+
+  <ng-container *ngIf="data.label" created>
+    <div>Created: {{data.label.createdAt | date}}</div>
+    <div>Last Modified: {{data.label.updatedAt | date}}</div>
+  </ng-container>
+</app-modal-base>

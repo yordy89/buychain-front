@@ -1,0 +1,38 @@
+<mat-form-field [appearance]="appearance" [ngClass]="{'w-100': fullWidth}">
+    <mat-label>{{label}}</mat-label>
+    <mat-chip-list #chipList [disabled]="isDisabled">
+        <mat-chip *ngFor="let option of addedOptions" (removed)="onRemoveOption(option)">
+            {{ getNameById(option) }}
+            <mat-icon *ngIf="!isDisabled" matChipRemove>cancel</mat-icon>
+        </mat-chip>
+
+        <input *ngIf="isDisabled && !addedOptions.size" type="text" matInput>
+
+        <div *ngIf="!isDisabled" class="d-flex w-100">
+            <input matInput
+                   autocomplete="off"
+                   [placeholder]="placeholder"
+                   [matAutocomplete]="autocompleteSelect"
+                   (blur)="onLeaveInput()"
+                   (click)="onFocusInput()"
+                   (keydown.enter)="onEnter($event)"
+                   [matChipInputFor]="chipList"
+                   [formControl]="formControl"
+                   #autocomplete="matAutocompleteTrigger"
+                   #inputElem
+            >
+            <mat-icon *ngIf="filteredOptions?.length" (click)="onFocusInput()" class="chip-list-input-suffix" matSuffix>arrow_drop_down</mat-icon>
+        </div>
+    </mat-chip-list>
+
+    <mat-autocomplete #autocompleteSelect="matAutocomplete"
+                      [displayWith]="getNameById.bind(this)"
+                      (optionSelected)="onSelectOption($event.option.value)"
+                      [panelWidth]="panelWidth"
+    >
+        <mat-option *ngFor="let item of filteredOptions" [value]="getKeyName(item)">
+            {{ getDisplayName(item) }}
+        </mat-option>
+    </mat-autocomplete>
+    <mat-error>{{formControl?.errors | errorMessage}}</mat-error>
+</mat-form-field>

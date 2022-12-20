@@ -1,0 +1,60 @@
+<div class="company-creation">
+  <form [formGroup]="form">
+    <div class="company-logo-upload" *ngIf="currentUser.profileCompletionState === ProfileCompletionState.COMPLETE">
+      <app-image-upload
+        [imageResourceType]="ImageResourceType.Logo"
+        [name]="initialData?.name"
+        formControlName="logoUrl"
+        label='Upload Company Logo'
+        description='*Maximum file size 2MB. PNG, JPG accepted'
+        [readonlyMode]="readonlyMode"
+        [allowReset]="true"
+      ></app-image-upload>
+    </div>
+
+    <ng-container *ngIf="readonlyMode; else EditMode">
+      <div class="flex-grid-row">
+        <div class="flex-col">Company Name: {{initialData.name}}</div>
+        <div class="flex-col">Website: {{initialData.website}}</div>
+      </div>
+      <div class="flex-grid-row">
+        <div class="flex-col">Address: {{initialData.streetAddress}}</div>
+        <div class="flex-col">Country: {{initialData.country}}</div>
+      </div>
+      <div class="flex-grid-row">
+        <div class="flex-col">State: {{initialData.state}}</div>
+        <div class="flex-col">City: {{initialData.city}}</div>
+      </div>
+      <div class="flex-grid-row">
+        <div class="flex-col">ZipCode: {{initialData.zipCode}}</div>
+      </div>
+    </ng-container>
+
+    <ng-template #EditMode>
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Company Name</mat-label>
+          <input matInput appNullOnEmpty placeholder="Company Name" required [formControl]="name" type="text">
+          <mat-error>{{name.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="flex-row">
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Company Website</mat-label>
+          <input matInput appNullOnEmpty placeholder="Company Website" [required]="!isCrm" [formControl]="website">
+          <mat-error>{{website.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-col">
+          <mat-label>Company Address</mat-label>
+          <input matInput appNullOnEmpty placeholder="Company Address" [required]="!isCrm" [formControl]="streetAddress">
+          <mat-error>{{streetAddress.errors | errorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+      <app-address-form *ngIf="form"
+                        [isRequired]="!isCrm"
+                        [form]="form"
+                        [isReadonly]="readonlyMode$ | async"
+      ></app-address-form>
+    </ng-template>
+  </form>
+</div>

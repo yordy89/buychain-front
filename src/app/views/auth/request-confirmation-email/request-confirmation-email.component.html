@@ -1,0 +1,40 @@
+<div class="header-section">
+  <span class="header-text">
+    Resend Activation Email
+  </span>
+</div>
+
+<form [formGroup]="form">
+
+  <div class="input-box" *ngIf="!success">
+    <input type="email" placeholder="Email" autocomplete="username" [formControl]="username">
+    <mat-icon class="icon">perm_identity_outline</mat-icon>
+  </div>
+  <div *ngIf="isInvalidField(username) && submitAttempted" class="error">
+    Please check the username for a valid email.
+  </div>
+
+  <div class="login-options" *ngIf="!success">
+    <a routerLink="../../signin">Back to Sign In</a>
+  </div>
+
+  <div *ngIf="form.valid && apiErrorMessage" class="error-message">
+    {{apiErrorMessage | authErrorMessage}}
+  </div>
+
+  <div class="success-message" *ngIf="success">
+    The email with further instructions was sent to the submitted email address. <br><br> If you don’t receive a
+    message in 5
+    minutes, check the junk folder. If you are still experiencing any problems please contact support.
+  </div>
+
+  <div>
+    <button *ngIf="!success"
+            type="submit"
+            class="login-button"
+            (click)="request()"
+            [disabled]="form.invalid && submitAttempted"
+    >Resend</button>
+  </div>
+
+</form>

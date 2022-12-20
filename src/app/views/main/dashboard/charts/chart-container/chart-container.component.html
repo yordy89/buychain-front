@@ -1,0 +1,13 @@
+<div class="wrapper">
+  <div class="header">
+    <div class="caption">
+      <span>{{caption}}</span>
+    </div>
+    <div *ngIf="showViewAll">
+      <span><a href="#" (click)="onViewAll($event)">(View All)</a></span>
+    </div>
+  </div>
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+</div>

@@ -1,0 +1,113 @@
+<app-filter-grid-layout *ngIf="permissions.canRead; else NoReadAccess"
+                        header="Chart of Accounts"
+                        [filtersCount]="selectedFiltersCount"
+                        (resetChange)="onFilterReset()"
+>
+
+  <ng-container left-side-button-section></ng-container>
+
+  <ng-container right-side-button-section>
+    <div class="show-inactive-slider">
+      <mat-slide-toggle
+          [checked]="viewState?.showInactive"
+          labelPosition="before"
+          color="primary"
+          class="text-secondary"
+          (change)="showInactiveSwitch($event)"
+      >Show Inactive</mat-slide-toggle>
+    </div>
+
+    <app-bookmark [viewKey]="viewKey" [currentState]="viewState" [defaultState]="defaultState"
+                  (stateChanged)="onViewStateChanged($event)"></app-bookmark>
+    <app-button *ngIf="permissions.canCreate" (clicked)="openCreateAccountModal()" [isPrimary]="true" icon="add">Add Account</app-button>
+  </ng-container>
+
+  <ng-container filter-section>
+      <div class="filter-section">
+
+        <app-account-filters [filters]="viewState.filters" [filtersState]="viewState.filtersState"></app-account-filters>
+
+        <div class="text-center">
+          <app-button
+              [matTooltip]="allLoaded && !isFiltersChanged() ? 'All the accounts for the specified filters are loaded.' : ''"
+              [isNarrow]="true"
+              [isPrimary]="true"
+              [isDisabled]="allLoaded && !isFiltersChanged()"
+              (clicked)="searchAccounts()">
+            {{isFiltersChanged() || allLoaded ? 'Run Query' : 'Load More'}}
+          </app-button>
+        </div>
+
+      </div>
+  </ng-container>
+
+  <ng-container main-section>
+    <div class="grid-container">
+      <dx-data-grid
+          #accountsGrid id="gridContainer"
+          [dataSource]="accountsList"
+          [filterValue]="gridFilterValue"
+          [showBorders]="true"
+          [remoteOperations]="false"
+          [allowColumnResizing]="true"
+          columnResizingMode="widget"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="false"
+          [columnHidingEnabled]="true"
+          [hoverStateEnabled]="true"
+          [focusedRowEnabled]="true"
+          keyExpr="id"
+          (onToolbarPreparing)="onToolbarPreparing($event)"
+      >
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+        <dxo-search-panel [visible]="true"></dxo-search-panel>
+        <dxo-load-panel [enabled]="true"></dxo-load-panel>
+        <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+        <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-state-storing [enabled]="true" type="custom" [customLoad]="loadGridState" [customSave]="saveGridState"
+                           [savingTimeout]="100"></dxo-state-storing>
+
+        <dxi-column  *ngIf="permissions.canDelete || permissions.canUpdate" [allowHiding]="false" cellTemplate="actionsTemplate" [allowGrouping]="false" [width]="40"></dxi-column>
+        <div *dxTemplate="let item of 'actionsTemplate'">
+          <app-table-actions *ngIf="item.data && !item.data.system"
+                            [data]="item.data"
+                            [actions]="actions"
+                            (action)="onTableAction($event, item.data)"
+          ></app-table-actions>
+        </div>
+
+        <div *dxTemplate="let data of 'toolbarPrefixTemplate'" class="toolbar-prefix-container">
+          <app-table-results-text [visibleRows]="accountsGrid.instance.totalCount()" [results]="accountsList?.length"></app-table-results-text>
+        </div>
+
+        <dxi-column dataField="number" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="name" [allowGrouping]="false"></dxi-column>
+        <dxi-column dataField="description" [allowGrouping]="false" [visible]="(isTablet$ | async) !== true"></dxi-column>
+
+        <dxi-column dataField="type"
+                    [calculateGroupValue]="calculateTypeGroupValue"
+                    groupCellTemplate="groupTypeCellTemplate"
+        ></dxi-column>
+        <div *dxTemplate="let data of 'groupTypeCellTemplate'">
+          {{data.column.caption}}: {{data.value.split(':')[1]}}
+        </div>
+
+        <dxi-column dataField="subtype" caption="Sub-Type"></dxi-column>
+        <dxi-column dataField="naturalBalance"></dxi-column>
+
+        <dxi-column dataField="inactiveString" [visible]="false" caption="Inactive"></dxi-column>
+        <dxi-column dataField="systemString" [visible]="false" caption="System Account"></dxi-column>
+
+      </dx-data-grid>
+
+    </div>
+</ng-container>
+
+</app-filter-grid-layout>
+<ng-template #NoReadAccess>
+  <div class="no-data">You do not have enough permissions for this section</div>
+</ng-template>

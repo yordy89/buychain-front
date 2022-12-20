@@ -1,0 +1,88 @@
+.content {
+  margin: 15px;
+  width: 100%;
+}
+
+.cell-template {
+  position: relative;
+}
+
+.marker {
+  position: absolute;
+  top: -8px;
+  left: calc(50% - 15px);
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: 40px;
+  opacity: 0.8;
+}
+
+.date-text {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 1000;
+  background-color: rgba(var(--palette-background-dialog), 1);
+  padding: 10px;
+  border: 1px solid lightgray;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 20%), 0 6px 20px 0 rgba(0, 0, 0, 19%);
+  overflow: auto;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    right: calc(50% - 10px);
+    bottom: -20px;
+    border-style: solid;
+    border-width: 10px;
+    border-color: transparent;
+    border-top-color: rgba(var(--palette-background-dialog), 1);
+    transition-duration: 0.3s;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+  }
+}
+
+.legends {
+  padding-top: 5px;
+  display: flex;
+  justify-content: flex-end;
+
+  div {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+}
+
+.info {
+  text-align: right;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  opacity: 0.8;
+  margin-right: 4px;
+}
+
+.green {
+  background: #5cd65c;
+}
+
+.orange {
+  background: orange;
+}
+
+.red {
+  background: rgba(var(--palette-warn-500), 1);
+}

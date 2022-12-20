@@ -1,0 +1,8 @@
+.dx-progressbar-container {
+  height: 15px;
+
+  .dx-progressbar-range {
+    background-color: rgba(var(--palette-primary-500), 1);
+    border-color: rgba(var(--palette-primary-500), 1);
+  }
+}

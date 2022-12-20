@@ -1,0 +1,161 @@
+<mat-sidenav-container
+  class="main-sidenav-container sidenav-container"
+  [ngClass]="{
+    'full-mode': isFullMode,
+    'icon-mode': isIconMode
+  }">
+  <!-- Main side navigation -->
+  <mat-sidenav #sidenavElement [opened]="true" [mode]="'side'" class="sidebar-panel">
+    <perfect-scrollbar>
+
+      <div class="navigation-hold">
+
+        <!-- App Logo -->
+        <div class="branding default-bg">
+          <img routerLink="/dashboard" [src]="Environment.logoUrl" alt="" class="logo">
+        </div>
+
+        <!-- Navigation -->
+        <mat-nav-list class="navbar-container w-100"
+                      role="list"
+                      [ngClass]="{'full-mode': isFullMode, 'icon-mode': isIconMode}"
+        >
+          <mat-list>
+            <ng-container *ngFor="let item of menuItems">
+              <button [ngClass]="{
+                        'active-main': activeMainRouteItem?.state === item.state,
+                        'main-has-active-child': mainRouteWithActiveChildItem?.state === item.state
+                      }"
+                      [routerLink]="item.defaultRoute"
+                      class="main-item"
+              >
+                <span class="icon-wrapper"
+                     matTooltipClass="small-tooltip"
+                     [matTooltipPosition]="'right'"
+                     [matTooltipShowDelay]="500"
+                     [matTooltip]="isIconMode ? item.name : ''">
+                  <mat-icon class="icon">{{item.icon}}</mat-icon>
+                </span>
+                <span class="text-wrapper">{{item.name}}</span>
+                <div class="icon-wrapper expand-arrow" *ngIf="item.children?.length && isFullMode">
+                  <mat-icon class="icon"
+                            *ngIf="activeMainRouteItem?.state === item.state
+                            || mainRouteWithActiveChildItem?.state === item.state; else arrowDown"
+                  >keyboard_arrow_up</mat-icon>
+                  <ng-template #arrowDown><mat-icon class="icon">keyboard_arrow_down</mat-icon></ng-template>
+                </div>
+              </button>
+
+              <ul *ngIf="item.children?.length
+               && (activeMainRouteItem?.state === item.state
+                || mainRouteWithActiveChildItem?.state === item.state)" class="sub-items">
+                <ng-container *ngFor="let childItem of item.children">
+                  <li *ngIf="!childItem.disabled"
+                      [routerLink]="childItem.defaultRoute"
+                      [ngClass]="{'active-child': activeChildRouteItem?.defaultRoute === childItem.defaultRoute}"
+                      class="sub-item"
+                  >
+                    <span>{{childItem.name}}</span>
+                  </li>
+                </ng-container>
+              </ul>
+
+            </ng-container>
+
+          </mat-list>
+        </mat-nav-list>
+
+
+        <mat-nav-list class="navbar-container bottom-align w-100"
+                      role="list"
+                      [ngClass]="{'full-mode': isFullMode, 'icon-mode': isIconMode}"
+        >
+          <mat-list>
+            <!-- Profile -->
+            <button [ngClass]="{'active-main': activeProfileRoute}"
+                    (click)="goToUserProfile()"
+                    class="main-item"
+            >
+                <span class="icon-wrapper"
+                      matTooltipClass="small-tooltip"
+                      [matTooltipPosition]="'right'"
+                      [matTooltipShowDelay]="500"
+                      [matTooltip]="isIconMode ? 'Profile' : ''">
+                  <mat-icon class="icon">account_circle</mat-icon>
+                </span>
+              <span class="text-wrapper">{{user.firstName}} {{user.lastName}}</span>
+              <div class="icon-wrapper expand-arrow" *ngIf="isFullMode">
+                <mat-icon class="icon" *ngIf="activeProfileRoute; else arrowDown">keyboard_arrow_up</mat-icon>
+                <ng-template #arrowDown><mat-icon class="icon">keyboard_arrow_down</mat-icon></ng-template>
+              </div>
+            </button>
+
+            <ul *ngIf="activeProfileRoute" class="sub-items">
+              <li (click)="signOut()" class="sub-item">
+                <span>Sign Out</span>
+              </li>
+            </ul>
+
+            <hr>
+
+            <!--Toggle control-->
+            <button
+              *ngIf="isFullMode"
+              (click)="toggleSidebarMode(SideBarNavigationViewMode.Icon)"
+              class="main-item">
+                <span class="icon-wrapper"
+                      matTooltip="Toggle to Icon Mode"
+                      matTooltipClass="small-tooltip"
+                      [matTooltipShowDelay]="500"
+                      [matTooltipPosition]="'right'">
+                  <mat-icon class="icon rotated">input</mat-icon>
+                </span>
+              <span class="text-wrapper">Collapse</span>
+            </button>
+
+            <button
+              *ngIf="isIconMode"
+              (click)="toggleSidebarMode(SideBarNavigationViewMode.Full)"
+              class="main-item">
+                <span class="icon-wrapper"
+                      matTooltip="Expand the Sidebar"
+                      matTooltipClass="small-tooltip"
+                      [matTooltipShowDelay]="500"
+                      [matTooltipPosition]="'right'">
+                  <mat-icon class="icon">input</mat-icon>
+                </span>
+            </button>
+          </mat-list>
+        </mat-nav-list>
+
+      </div>
+    </perfect-scrollbar>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- App content -->
+    <div class="content-container">
+      <div class="rightside-content-hold" [ngClass]="{'has-tabs': !!tabs?.length}">
+        <nav *ngIf="tabs?.length" mat-tab-nav-bar class="mat-elevation-z2">
+          <a mat-tab-link *ngFor="let tab of tabs" [routerLink]="tab.route" [active]="isActiveRoute(tab.route)">{{tab.label}}</a>
+        </nav>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+  </mat-sidenav-content>
+
+
+</mat-sidenav-container>
+
+<div *ngIf="!isSupportedResolution" class="unsupported-overlay">
+  <img src="/assets/images/buyChain-logo.png">
+  <h3>BuyChain Mobile</h3>
+  <h4>Coming soon...</h4>
+</div>
+
+<div *ngIf="isSupportedResolution && requestToRotate" class="rotate-overlay">
+  <img src="/assets/images/ipad-landscape-portrait-256x256.png">
+  <h3>Please rotate your screen</h3>
+  <h4>We support landscape mode only</h4>
+</div>

@@ -1,0 +1,50 @@
+<div class="filters-wrapper">
+
+  <app-filter-expander caption="Status" [(isExpanded)]="filtersState.stateExpanded">
+    <div *ngFor="let item of states">
+      <mat-checkbox color="primary"
+                    (change)="onStateCheckboxToggle()"
+                    [(ngModel)]="item.isSelected"
+      >{{item.key | stringUnderscoreToSpaceTitleCase}}</mat-checkbox>
+    </div>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Invoice Date" [(isExpanded)]="filtersState.invoiceDateExpanded">
+      <mat-form-field appearance="outline">
+        <mat-label>Date</mat-label>
+        <input matInput
+               [(ngModel)]="filters.invoiceDate"
+               [matDatepicker]="invoiceDateForm"
+               placeholder="mm/dd/yyyy"
+        >
+        <mat-datepicker #invoiceDateForm></mat-datepicker>
+
+        <div matSuffix class="d-flex align-items-center">
+          <mat-datepicker-toggle [for]="invoiceDateForm"></mat-datepicker-toggle>
+          <button *ngIf="filters.invoiceDate" mat-icon-button (click)="resetDate($event, 'invoiceDate')" class="clear">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+  </app-filter-expander>
+
+  <app-filter-expander caption="Due Date" [(isExpanded)]="filtersState.dueDateExpanded">
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput
+             [(ngModel)]="filters.dueDate"
+             [matDatepicker]="dueDateForm"
+             placeholder="mm/dd/yyyy"
+      >
+      <mat-datepicker #dueDateForm></mat-datepicker>
+
+      <div matSuffix class="d-flex align-items-center">
+        <mat-datepicker-toggle [for]="dueDateForm"></mat-datepicker-toggle>
+        <button *ngIf="filters.dueDate" mat-icon-button (click)="resetDate($event, 'dueDate')" class="clear">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-form-field>
+  </app-filter-expander>
+
+</div>

@@ -1,0 +1,120 @@
+<div class="wrapper">
+  <div *ngIf="!isCrm || (isCrm && facilityData)">
+    <div class="title">Image</div>
+    <div class="image-section">
+      <app-image-upload
+        class="image-control"
+        [imageResourceType]="ImageResourceType.Logo"
+        [formControl]="logoUrl"
+        [name]="facilityData?.shortName"
+        [allowReset]="true"
+        label='Select an Image'
+        description='*Maximum file size 2MB. PNG, JPG accepted'
+        [readonlyMode]="readonlyMode$ | async">
+      </app-image-upload>
+    </div>
+  </div>
+  <div class="information-section" [ngClass]="{'is-crm': isCrm}">
+    <div class="facility-form">
+      <div class="title">Information</div>
+      <ng-container *ngIf="facilityData && readonlyMode$ | async; else EditMode">
+        <div class="flex-grid-row" *ngIf="isCrm">
+          <div class="flex-col">Facility Name: {{facilityData.shortName}}</div>
+        </div>
+        <div class="flex-grid-row">
+          <div class="flex-col">Care of: {{facilityData.careOf}}</div>
+          <div class="flex-col">Street Address: {{facilityData.streetAddress}}</div>
+        </div>
+        <div class="flex-grid-row">
+          <div class="flex-col">Country: {{facilityData.country}}</div>
+          <div class="flex-col">State: {{facilityData.state}}</div>
+        </div>
+        <div class="flex-grid-row">
+          <div class="flex-col">City: {{facilityData.city}}</div>
+          <div class="flex-col">ZIP Code: {{facilityData.zipCode}}</div>
+        </div>
+        <div class="flex-grid-row" *ngIf="!isCrm">
+          <div class="flex-col">Hours: {{facilityData.generalHours}}</div>
+          <div class="flex-col">General Comments: {{facilityData.generalNotes}}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="map-section">
+      <div class="title">Location on Map</div>
+      <dx-map class="map"
+        provider="bing"
+        [zoom]="3"
+        [height]="250"
+        width="100%"
+        [controls]="true"
+        [center]="mapDefaultView"
+        [disabled]="isMapReady && (readonlyMode$ | async)"
+        (onReady)="onMapReady($event)"
+        [markers]="isMapReady ? mapMarkers : []">
+      </dx-map>
+      <div class="hint" *ngIf="(readonlyMode$ | async) !== true">Long press on map to pinpoint facility location.</div>
+    </div>
+  </div>
+
+  <form [formGroup]="form">
+    <ng-template #EditMode>
+      <div class="general-info-editable">
+        <div *ngIf="isCrm" class="flex-row">
+          <mat-form-field appearance="outline" class="flex-col">
+            <mat-label>Short Name</mat-label>
+            <input matInput type="text" placeholder="Name" appNullOnEmpty [formControl]="shortName" maxlength="35"/>
+            <mat-error>{{shortName?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex-row">
+          <mat-form-field appearance="outline" class="flex-col">
+            <mat-label>Company/CO name</mat-label>
+            <input matInput appNullOnEmpty type="text" placeholder="Name" [formControl]="careOf" maxlength="100"/>
+            <mat-error>{{careOf?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-col">
+            <mat-label>Street Address</mat-label>
+            <input [formControl]="streetAddress" matInput appNullOnEmpty type="text" placeholder="Street address"
+                   [required]="!isCrm" maxlength="50"/>
+            <mat-error>{{streetAddress?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <app-address-form *ngIf="form"
+                          [isRequired]="!isCrm"
+                          [form]="form"
+                          [isReadonly]="readonlyMode$ | async"
+                          (cityChange)="onCityChange($event)"
+        ></app-address-form>
+
+        <div class="flex-row" *ngIf="!isCrm">
+          <mat-form-field appearance="outline" class="flex-col">
+            <mat-label>Facility active hours</mat-label>
+            <textarea matInput placeholder="Start Typing" appNullOnEmpty [formControl]="generalHours" rows="3" maxlength="1000"></textarea>
+            <mat-error>{{generalHours?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-col">
+            <mat-label>General Comments</mat-label>
+            <textarea matInput placeholder="Start Typing" appNullOnEmpty [formControl]="generalNotes" rows="3" maxlength="1000"></textarea>
+            <mat-error>{{generalNotes?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </ng-template>
+  </form>
+
+  <div *ngIf="!isCrm && facilityData">
+    <div class="title">Distribution</div>
+    <mat-tab-group class="styled">
+      <mat-tab label="Inbound">
+        <app-ship-to [facility]="facilityData" class="w-100"></app-ship-to>
+      </mat-tab>
+      <mat-tab label="Outbound">
+        <app-ship-from [facility]="facilityData" class="w-100"></app-ship-from>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+
+

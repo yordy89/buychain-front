@@ -1,0 +1,14 @@
+.linking-message {
+  display: flex;
+  font-size: 18px;
+
+  mat-icon {
+    margin-right: 10px;
+  }
+}
+
+.selector-wrapper {
+  mat-form-field {
+    width: 100%;
+  }
+}

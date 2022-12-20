@@ -1,0 +1,48 @@
+@use 'variables' as *;
+
+.check-box {
+  label {
+    cursor: pointer;
+    user-select: none;
+
+    span {
+      margin-left: 25px;
+    }
+
+    input[type='checkbox'] {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      height: 0;
+      width: 0;
+      appearance: none;
+
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: -18px;
+        left: 0;
+        border: 1px solid $dark-grey;
+        background-color: white;
+        transition: $smooth-transition;
+      }
+
+      &:checked::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 7px;
+        height: 15px;
+        border: solid $yellow;
+        border-width: 0 5px 5px 0;
+        transform: rotate(45deg);
+        top: -20px;
+        left: 5px;
+        transition: $smooth-transition;
+      }
+    }
+  }
+}

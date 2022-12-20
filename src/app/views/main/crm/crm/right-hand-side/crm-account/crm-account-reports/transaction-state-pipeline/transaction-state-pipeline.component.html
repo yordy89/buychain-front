@@ -1,0 +1,25 @@
+<div class="wrapper">
+  <app-filter-by-trader
+    [crmSellersList]="crmSellersList"
+    [crmTransactions]="crmTransactions"
+    [crmAccountData]="crmAccountData"
+    [action]="action"
+  ></app-filter-by-trader>
+
+  <dx-pie-chart
+    id="pie"
+    type="doughnut"
+    title="Transactions by State"
+    palette="Soft Pastel"
+    [dataSource]="transactionCountStates">
+    <dxi-series
+      argumentField="label"
+      valueField="count">
+      <dxo-label [visible]="true" [customizeText]="customizeText">
+        <dxo-connector [visible]="true"></dxo-connector>
+      </dxo-label>
+    </dxi-series>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-legend [margin]="0" horizontalAlignment="right" verticalAlignment="top"></dxo-legend>
+  </dx-pie-chart>
+</div>

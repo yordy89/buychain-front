@@ -1,0 +1,64 @@
+<div class="wrapper">
+  <div class="label-group-header">
+    <div class="header">{{header}}: </div>
+    <div class="label-group-holder" *ngIf="labels?.length; else NoLabels">
+      <div *ngFor="let label of labels" class="label-unit" [ngStyle]="{'background-color': label.color}">
+        {{label.name}}
+      </div>
+    </div>
+    <ng-template #NoLabels>
+      <div class="no-labels">
+        <p>No Labels</p>
+      </div>
+    </ng-template>
+    <div class="icon" [matMenuTriggerFor]="accountMenu" (menuClosed)="updateLabels()"><mat-icon color="primary">dns</mat-icon></div>
+  </div>
+
+  <mat-menu #accountMenu="matMenu" yPosition="below" xPosition="before" class="menu-content-no-padding">
+    <div class="menu-wrapper" (click) = "$event.stopPropagation()">
+      <p>Apply labels to this CRM</p>
+      <hr>
+      <div class="search-bar-wrapper">
+        <form [formGroup]="form">
+          <mat-form-field appearance="outline">
+            <input matInput placeholder="Filter Labels" [formControl]="searchInput">
+          </mat-form-field>
+        </form>
+      </div>
+      <hr>
+      <div *ngIf="labelsCompleteList?.length; else NoLabelsAvailable">
+        <div class="labels-array-wrapper" *ngIf="labelsFilteredList?.length; else NoLabelsLeft">
+          <div *ngFor="let label of labelsFilteredList">
+            <div class="label-unit" (click)="toggleLabelSelection(label)">
+              <div class="name-wrapper">
+                <div class="name-details">
+                  <mat-icon *ngIf="label.isSelected; else NotSelected">done</mat-icon>
+                  <ng-template #NotSelected>
+                    <div class="not-selected"></div>
+                  </ng-template>
+                  <div class="label-color" [ngStyle]="{'background-color': label.color}"></div>
+                  <span class="label-name">{{label.name}}</span>
+                </div>
+                <div *ngIf="label.isSelected"><mat-icon>clear</mat-icon></div>
+              </div>
+              <div class="description-wrapper">{{label.description}}</div>
+            </div>
+          </div>
+        </div>
+        <ng-template #NoLabelsLeft>
+          <div class="no-labels">
+            <p class="no-labels-text">No Labels left</p>
+          </div>
+        </ng-template>
+      </div>
+      <ng-template #NoLabelsAvailable>
+        <div class="no-labels">
+          <p class="no-labels-text">No Labels Available</p>
+        </div>
+      </ng-template>
+      <div class="link-to-settings" (click)="navigateToLabelSettings()">
+        <mat-icon>edit</mat-icon><span>Go to labels settings</span>
+      </div>
+    </div>
+  </mat-menu>
+</div>

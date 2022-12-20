@@ -1,0 +1,123 @@
+<div class="table-heading">Tally</div>
+
+<div [formGroup]="tallyForm">
+    <div formArrayName="items">
+
+      <app-table-base class="striped fab-container" maxBodyHeight="400px">
+        <ng-container header>
+          <tr class="header-row">
+<!--            <th class="checkbox"></th>-->
+            <th class="spec-shorthand">Spec Shorthand</th>
+            <th class="quantity">Quantity (Units)</th>
+            <th class="quantity">Estimated Total Board Footage</th>
+            <th class="unit-piece-count">Unit Piece Count</th>
+            <th class="list-price-unit">List Price ($/UoM)</th>
+            <th class="unit-of-measure">Unit Of Measure</th>
+            <th class="price-system">Price System</th>
+            <th class="ship-week">Est Ship Week</th>
+            <th class="company">Mfg Company</th>
+            <th class="location">Mfg Location</th>
+            <th></th>
+          </tr>
+        </ng-container>
+        <ng-container body>
+          <tr *ngFor="let item of tallyForm.controls.items['controls']; let i = index"
+              [formGroupName]="i"
+              class="body-row"
+          >
+<!--            <td class="text-center">-->
+<!--              <mat-checkbox color="primary" formControlName="selected"></mat-checkbox>-->
+<!--            </td>-->
+            <td>
+              {{item.value.specShorthand}}
+            </td>
+            <td>
+              <div *ngIf="item.value.isRandomLengthProduct; else StandardLengthUnit">1</div>
+              <ng-template #StandardLengthUnit>
+                <div class="validation-cell">
+                  <input class="quantity" formControlName="quantity" type="number" [ngClass]="{'invalid': isInvalidField(item.controls.quantity)}">
+                  <mat-icon *ngIf="isInvalidField(item.controls.quantity)" color="warn" [matTooltip]="item.controls.quantity?.errors | errorMessage" matTooltipClass="error-tooltip">error_outlined</mat-icon>
+                </div>
+              </ng-template>
+            </td>
+
+            <td>
+              <div *ngIf="item.value.isRandomLengthProduct; else StandardLengthQuantity" class="validation-cell">
+                <input class="quantity" formControlName="quantity" type="number" [ngClass]="{'invalid': isInvalidField(item.controls.quantity)}">
+                <mat-icon *ngIf="isInvalidField(item.controls.quantity)" color="warn" [matTooltip]="item.controls.quantity?.errors | errorMessage" matTooltipClass="error-tooltip">error_outlined</mat-icon>
+              </div>
+              <ng-template #StandardLengthQuantity>
+                N/A
+              </ng-template>
+            </td>
+
+            <td>
+              <div class="validation-cell">
+                <input class="unit-piece-count" formControlName="unitPieceCount" type="number" [ngClass]="{'invalid': isInvalidField(item.controls.unitPieceCount)}">
+                <mat-icon *ngIf="isInvalidField(item.controls.unitPieceCount)" color="warn" [matTooltip]="item.controls.unitPieceCount?.errors | errorMessage" matTooltipClass="error-tooltip">error_outlined</mat-icon>
+              </div>
+            </td>
+            <td>
+              <div class="validation-cell">
+                <input class="list-price-unit" formControlName="listPricePerUoM" type="number" [ngClass]="{'invalid': isInvalidField(item.controls.listPricePerUoM)}">
+                <mat-icon *ngIf="isInvalidField(item.controls.listPricePerUoM)" color="warn" [matTooltip]="item.controls.listPricePerUoM?.errors | errorMessage" matTooltipClass="error-tooltip">error_outlined</mat-icon>
+              </div>
+            </td>
+            <td class="center">
+              {{item.value.unitOfMeasure}}
+            </td>
+            <td>
+              <select formControlName="priceSystem" [ngClass]="{'invalid': isInvalidField(item.controls.priceSystem)}">
+                <option *ngFor="let option of getAllowedPriceSystemsForProduct(item.value.specs.productName)" [value]="option" >{{option}}</option>
+              </select>
+            </td>
+            <td>
+              <div class="validation-cell">
+                <input class="ship-week" formControlName="shipWeek" type="date" [min]="tomorrowDate()" [ngClass]="{'invalid': isInvalidField(item.controls.shipWeek)}">
+                <mat-icon *ngIf="isInvalidField(item.controls.shipWeek)" color="warn" [matTooltip]="item.controls.shipWeek?.errors | errorMessage" matTooltipClass="error-tooltip">error_outlined</mat-icon>
+              </div>
+            </td>
+
+            <ng-container *ngIf="item.value.mfgFacilityShortName; else crmFacilityTpl">
+              <td *ngFor="let name of item.value.mfgFacilityShortName.split(' - ')" class="text-right">
+                {{name}}
+              </td>
+            </ng-container>
+
+            <ng-template #crmFacilityTpl>
+              <td>
+                <select formControlName="crmAccountId" [ngClass]="{'invalid': isInvalidField(item.controls.crmAccountId)}">
+                  <option *ngFor="let option of crmAccounts" [value]="option.id" >{{option.name}}</option>
+                </select>
+              </td>
+              <td>
+                <select formControlName="crmLocationId" [ngClass]="{'invalid': isInvalidField(item.controls.crmLocationId)}">
+                  <option *ngFor="let option of getCrmAccountLocations(item.controls.crmAccountId.value)" [value]="option.id">{{option.shortName}}</option>
+                </select>
+              </td>
+            </ng-template>
+
+            <td>
+              <app-table-actions [data]="i"
+                                 [disabled]="hasCheckedRow"
+                                 [actions]="actions"
+                                 (action)="onTableAction($event, i)"
+              ></app-table-actions>
+            </td>
+          </tr>
+
+          <app-table-fab *ngIf="hasCheckedRow"
+                         [actions]="fabActions"
+                         (action)="onFABAction($event)"
+          ></app-table-fab>
+
+          <tr *ngIf="!tallyFormItems.length">
+            <td colspan="11" class="p-0 pt-5">
+              <div class="no-data-plate">There are no tally items yet.</div>
+            </td>
+          </tr>
+
+        </ng-container>
+      </app-table-base>
+    </div>
+</div>

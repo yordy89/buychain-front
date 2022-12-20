@@ -1,0 +1,43 @@
+<app-modal-base header="Page View Templates" (closed)="close()">
+  <ng-container content>
+    <div class="sub-header">Add a new view Template or select from the saved templates</div>
+
+    <div>
+      <form class="new-form" (ngSubmit)="onSave()">
+        <div class="name-field">
+          <mat-form-field>
+            <mat-label>Add Template Name</mat-label>
+            <input matInput placeholder="Enter Name" [formControl]="nameFormControl">
+            <mat-error>{{nameFormControl?.errors | errorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <app-button [isNarrow]="true" [isPrimary]="true" type="submit" [matTooltip]="isNameExist ? 'The specified name already exists.' : ''"
+                      [isDisabled]="nameFormControl.invalid || data.saveDisabled || isNameExist"
+                      (clicked)="onSave($event)">Add</app-button>
+        </div>
+      </form>
+    </div>
+    <div>
+      <div class="saved-header">Saved Templates</div>
+      <div class="saved-bookmarks">
+        <div class="saved-bookmark-item" *ngFor="let bookmark of data.savedBookmarks">
+          <span>
+            <app-icon-button *ngIf="bookmark.key === data.activeKey" icon="star" title="In Use"></app-icon-button>
+            <app-icon-button *ngIf="bookmark.key !== data.activeKey" icon="star_border" title="Load the bookmarks state">
+            </app-icon-button>
+            {{bookmark.name}}
+          </span>
+          <div class="actions">
+            <app-icon-button icon="delete_forever" [isWarn]="true" (clicked)="onDeleteClick(bookmark)" title="Delete"></app-icon-button>
+            <app-icon-button icon="play_arrow" (clicked)="activateBookmark(bookmark)" title="Play"></app-icon-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <app-button [isNarrow]="true" (clicked)="close()">Done</app-button>
+  </ng-container>
+</app-modal-base>

@@ -1,0 +1,37 @@
+<div>
+  <app-filter-by-trader
+    [crmSellersList]="crmSellersList"
+    [crmTransactions]="crmConfirmedTransactions"
+    [crmAccountData]="crmAccountData"
+    [action]="action"
+  ></app-filter-by-trader>
+  <dx-data-grid
+    #productLotGrid
+    id="productLotsContainer"
+    [dataSource]="topTallySpecsList"
+    [showBorders]="true"
+    [remoteOperations]="false"
+    [allowColumnResizing]="true"
+    columnResizingMode="widget"
+    [columnAutoWidth]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    [columnHidingEnabled]="true"
+    [hoverStateEnabled]="true"
+    (onExporting)="onExporting($event)"
+  >
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-load-panel [enabled]="true"></dxo-load-panel>
+    <dxo-scrolling mode="virtual" [useNative]="true"></dxo-scrolling>
+    <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+
+    <dxi-column dataField="specShorthand" caption="Spec"></dxi-column>
+    <dxi-column dataField="count" [allowSearch]="false" caption="Sold Units"></dxi-column>
+    <dxi-column dataField="shipFromFacility" [allowSearch]="false" [visible]="false" caption="Location"></dxi-column>
+    <dxi-column dataField="priceOfMerit" [allowSearch]="false" [visible]="false" format="currency"  caption="Price of Merit"></dxi-column>
+  </dx-data-grid>
+</div>

@@ -1,0 +1,65 @@
+@use '~angular-material-css-vars/src/lib/public-util' as *;
+@use 'mixins' as mixins;
+
+.button {
+  min-width: 165px;
+  height: 49px;
+  border-radius: 24.5px;
+  box-shadow: 0 0 2px 0 rgba(var(--palette-primary-900), 1);
+  margin: 2px;
+  font-family: Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 26px;
+  text-align: center;
+
+  &.base {
+    @include mat_css-dark-theme {
+      background: dimgray;
+    }
+  }
+
+  &.narrow {
+    height: 38px;
+    font-size: 14px;
+  }
+
+  &.mat-primary:hover {
+    text-shadow: 0 0 21px rgba(var(--palette-primary-100), 1);
+  }
+
+  &:hover {
+    text-shadow: 0 0 21px rgba(var(--palette-primary-300), 1);
+  }
+
+  .mat-icon {
+    margin-right: 10px;
+    margin-left: -10px;
+    height: 25px;
+    width: 25px;
+  }
+
+  .content-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+}
+
+@include mixins.breakpoint(tablet) {
+  .button {
+    min-width: 130px;
+    height: 40px;
+    font-size: 14px;
+
+    .mat-icon {
+      height: 20px;
+      width: 20px;
+    }
+
+    .content-wrapper {
+      margin-left: 24px;
+      margin-right: 24px;
+    }
+  }
+}

@@ -1,0 +1,96 @@
+@use 'variables' as *;
+@use 'mixins' as mixins;
+
+.filter-grid-layout {
+  .grid-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    &.allow-buttons-row {
+      height: calc(100% - 70px);
+    }
+  }
+
+  .top-panel {
+    .right-side {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+
+      > * {
+        margin-left: 15px;
+      }
+    }
+  }
+
+  .filter {
+    .mat-form-field {
+      width: 100%;
+    }
+
+    .btn-section {
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .mat-radio-group {
+      display: flex;
+      flex-direction: column;
+
+      .mat-radio-button {
+        margin-bottom: 5px;
+      }
+    }
+
+    .product-name-container {
+      margin-bottom: 5px;
+
+      .product-name-header {
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+
+        .mat-icon {
+          margin: 0 3px 3px 0;
+        }
+      }
+
+      .products {
+        margin-left: 45px;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  .grid {
+    min-width: 0;
+    height: 100%;
+    width: 100%;
+    padding: 10px 10px 25px;
+
+    @include mixins.breakpoint(tablet) {
+      padding: 2px 2px 25px;
+    }
+
+    dx-data-grid {
+      width: 100%;
+      height: 100%;
+    }
+
+    .search-section > h4 {
+      margin-bottom: 20px;
+
+      > div {
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+
+    .dx-list-item-content {
+      padding-left: 0;
+    }
+  }
+}

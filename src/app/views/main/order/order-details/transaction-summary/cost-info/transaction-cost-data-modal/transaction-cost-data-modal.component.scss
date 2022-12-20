@@ -1,0 +1,70 @@
+form {
+  height: 400px;
+  padding: 0 20px;
+}
+
+.buy-chain-tx-fee-container,
+.subtotal-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 25px 0 10px;
+
+  .subtotal {
+    width: 94px;
+    text-align: right;
+    padding-right: 23px;
+  }
+}
+
+.subtotal-container {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.sticky-subtotal-container {
+  position: sticky;
+  bottom: -10px;
+  background-color: #fff;
+  z-index: 5;
+}
+
+.buy-chain-tx-fee-container {
+  opacity: 0.5;
+}
+
+.add-new-section {
+  padding: 10px 0;
+}
+
+.cog-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .label-col {
+    width: 275px;
+  }
+
+  .value-col {
+    width: 250px;
+    display: contents;
+
+    .mat-form-field {
+      width: 100px;
+      position: relative;
+
+      .cog-error {
+        position: absolute;
+        color: rgba(var(--palette-warn-500), 1);
+        bottom: 3px;
+        right: 100px;
+        width: 110px;
+      }
+
+      input {
+        text-align: right;
+      }
+    }
+  }
+}

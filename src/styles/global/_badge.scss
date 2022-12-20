@@ -1,0 +1,57 @@
+@use '@angular/material' as mat;
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 4px;
+  border: 1px solid transparent;
+
+  &-primary {
+    background-color: rgba(#2f5c9d, 0.1);
+    color: rgba(#2f5c9d, 1);
+    border-color: rgba(#2f5c9d, 1);
+  }
+
+  &-success {
+    background-color: rgba(map-get(mat.$green-palette, 500), 0.1);
+    color: map-get(mat.$green-palette, 500);
+    border-color: map-get(mat.$green-palette, 500);
+  }
+
+  &-warning {
+    background-color: rgba(map-get(mat.$amber-palette, 500), 0.1);
+    color: map-get(mat.$amber-palette, 500);
+    border-color: map-get(mat.$amber-palette, 500);
+  }
+
+  &-ui-warning {
+    background-color: rgba(var(--palette-warn-500), 0.2);
+    color: rgba(var(--palette-warn-700), 1);
+    border-color: rgba(var(--palette-warn-700), 1);
+  }
+
+  &-ui-primary {
+    background-color: rgba(var(--palette-primary-500), 0.2);
+    color: rgba(var(--palette-primary-700), 1);
+    border-color: rgba(var(--palette-primary-700), 1);
+  }
+
+  &-danger {
+    background-color: rgba(map-get(mat.$red-palette, 500), 0.1);
+    color: map-get(mat.$red-palette, 500);
+    border-color: map-get(mat.$red-palette, 500);
+  }
+
+  &-secondary {
+    background-color: rgba(map-get(mat.$grey-palette, 500), 0.1);
+    color: map-get(mat.$grey-palette, 500);
+    border-color: map-get(mat.$grey-palette, 500);
+  }
+}

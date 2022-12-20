@@ -1,0 +1,10 @@
+.company-creation {
+  margin: 20px auto;
+
+  & > form {
+    .company-logo-upload {
+      text-align: left;
+      height: 160px;
+    }
+  }
+}

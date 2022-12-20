@@ -1,0 +1,12 @@
+.mat-card {
+  border-radius: 0 !important;
+
+  .mat-card-header {
+    align-items: baseline;
+  }
+
+  .mat-card-header-text {
+    margin-left: 0;
+    flex-grow: 1;
+  }
+}

@@ -1,0 +1,76 @@
+<form [formGroup]="form" novalidate (keydown.enter)="onEnter($event)">
+  <section class="flex-row">
+    <div class="flex-col">
+      <app-autocomplete
+        label="Select Credit Memo"
+        [data]="_creditMemos"
+        [isRequired]="true"
+        panelWidth="auto"
+        formControlName="creditMemo"
+        keyName="id"
+        displayName="displayName"
+        placeholder="Credit Memo"
+      ></app-autocomplete>
+    </div>
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Credit Memo Amount</div>
+        <div class="key-value-pair-value">
+          {{ selectedCreditMemo?.amount || 0 | currency }}
+        </div>
+      </div>
+    </div>
+    <div class="flex-col">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Amount to apply</mat-label>
+        <input matInput placeholder="Amount" formControlName="amount" currencyMask required />
+        <mat-error>{{ form.get('amount')?.errors | errorMessage }}</mat-error>
+      </mat-form-field>
+    </div>
+  </section>
+  <section class="flex-row">
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Customer</div>
+        <div class="key-value-pair-value">
+          {{ salesOrder.customer.company | displayItemFromList: crmAccounts:'id':'name' }}
+        </div>
+      </div>
+    </div>
+    <div class="flex-col">
+      <div class="key-value-pair">
+        <div class="key-value-pair-label">Apply To</div>
+        <div class="key-value-pair-value">Invoice {{ invoice.number }}</div>
+      </div>
+    </div>
+  </section>
+
+  <mat-form-field appearance="outline" class="w-100 mt-15">
+    <mat-label>Description</mat-label>
+    <textarea
+      rows="3"
+      matInput
+      placeholder="Description"
+      formControlName="description"
+      appNullOnEmpty
+      maxlength="500"
+    ></textarea>
+    <mat-error>{{ form.get('description')?.errors | errorMessage }}</mat-error>
+  </mat-form-field>
+
+  <div class="flex-row mt-15">
+    <div class="flex-col position-relative">
+      <app-accounting-file-upload [(attachments)]="attachments"></app-accounting-file-upload>
+    </div>
+    <mat-form-field appearance="outline" class="flex-col">
+      <mat-label>Notes</mat-label>
+      <textarea rows="3" matInput placeholder="Notes" formControlName="notes" appNullOnEmpty maxlength="500"></textarea>
+      <mat-error>{{ form.get('notes')?.errors | errorMessage }}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end mt-15">
+  <app-button [isNarrow]="true" (clicked)="onCancel()">Cancel</app-button>
+  <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="onSubmit()" class="ml-15">Submit</app-button>
+</div>

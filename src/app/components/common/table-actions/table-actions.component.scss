@@ -1,0 +1,10 @@
+.menu-btn {
+  display: block;
+  cursor: pointer;
+
+  &.inactive {
+    opacity: 0.5;
+    color: #000;
+    pointer-events: none;
+  }
+}

@@ -1,0 +1,52 @@
+<div class="main-wrapper" *ngIf="facility">
+  <div class="top-wrapper">
+    <div class="actions-row-container">
+      <div class="facility-header">
+        <div class="facility-name">
+          {{facility.shortName}}
+          <span class="badge badge-ui-warning ml-15" *ngIf="facility?.archived">Archived</span>
+        </div>
+        <div class="facility-description">
+          <span *ngIf="(readonlyMode$ | async); else editModeDesc">{{description.value}}</span>
+          <ng-template #editModeDesc>
+            <form [formGroup]="form">
+              <mat-form-field class="top-border-0 w-100 small" [matTooltip]="description.value?.length > 55 ? description.value : ''">
+                <input matInput appNullOnEmpty required [formControl]="description" type="text">
+                <mat-error>{{description.errors | errorMessage}}</mat-error>
+              </mat-form-field>
+            </form>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="actions-buttons-row">
+        <app-button *ngIf="facilityPermissions.canUpdate && !facility.archived" [isNarrow]="true" [isWarn]="true"
+                    (clicked)="archiveFacility()">
+          Archive Facility
+        </app-button>
+        <app-button *ngIf="facilityPermissions.canUpdate && facility.archived" [isNarrow]="true" [isPrimary]="true"
+                    (clicked)="unarchiveFacility()">
+          Unarchive Facility
+        </app-button>
+
+        <ng-container *ngIf="(readonlyMode$ | async); else editModeTpl">
+          <app-button *ngIf="facilityPermissions.canUpdate" [isPrimary]="true" [isNarrow]="true"
+                      (clicked)="editFacility()">
+            Edit Facility
+          </app-button>
+
+          <app-button [isNarrow]="true" (clicked)="backToCompanySettings()">Back</app-button>
+        </ng-container>
+
+        <ng-template #editModeTpl>
+          <app-button [isPrimary]="true" [isNarrow]="true" (clicked)="updateFacility()">Save</app-button>
+          <app-button [isNarrow]="true" (clicked)="cancel()">Cancel</app-button>
+        </ng-template>
+
+      </div>
+
+    </div>
+  </div>
+
+  <app-facility-form [facilityData]="facility" [parentForm]="form" [readonlyMode$]="readonlyMode$"></app-facility-form>
+</div>
