@@ -42,7 +42,7 @@ const config = {
   }
 };
 
-const env = 'local';
+const env = 'development';
 
 export const environment = {
   name: 'DEVELOPMENT',
@@ -50,11 +50,11 @@ export const environment = {
   apiHost: config[env].api,
   authApiHost: config[env].auth_api,
   mediaApiHost: config[env].media_api,
-  //documentsApiHost: config[env].documents_api,
+  documentsApiHost: config[env].documents_api,
   searchApiHost: config[env].search_api,
-  //reportsApiHost: config[env].reports_api,
+  reportsApiHost: config[env].reports_api,
   accountingApiHost: config[env].accounting_api,
-  //accountingAttachmentsApiHost: config[env].accounting_attachments_api,
+  accountingAttachmentsApiHost: config[env].accounting_attachments_api,
   clientSecret: 'NXJxaDFkcXZrN3JmdDdpYjZlaDBhbHY1bXUydjRmOkpKdW00NldvV2NNeW5vVTFDV2xraEw=',
   apiVersion: 'v1',
   restUrl() {
