@@ -1,59 +1,114 @@
 
 version: 2.1
+commands:
+  front-build:
+    parameters:
+      stage:
+        default: 'dev'
+        type: string
+    steps:
+      - run: npm run build-<< parameters.stage >>
+  front-deploy:
+    parameters:
+      stage:
+        default: 'DEV'
+        type: string
+    steps:
+      - run: aws s3 sync dist/frontend-gzip/ s3://${S3_BUCKET_<< parameters.stage >>}/ --delete --exact-timestamps --content-encoding gzip;
 jobs:
-  build:
+  install-and-lint:
     working_directory: ~/repo
     docker:
       - image: circleci/node:16
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
       - run:
           name: Install dependencies
           command: npm install
-      - save_cache:
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
       - run:
-          name: Build
-          command: |
-            if [ $CIRCLE_BRANCH = 'development' ]; then
-              npm run build-dev
-            fi
+          name: Lint
+          command: npm run lint
       - persist_to_workspace:
           root: .
           paths:
             - .
-  deploy:
+  build-deploy-dev:
     working_directory: ~/repo
     docker:
       - image: innovatorjapan/awscli:latest
     steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Deploy
-          command: |
-            if [ $CIRCLE_BRANCH = 'development' ]; then
-              aws s3 sync dist/frontend-gzip/ s3://buychain-front-dev/ --delete --exact-timestamps --content-encoding gzip;
-            fi
+      - front-build:
+          stage: 'dev'
+      - front-deploy:
+          stage: 'DEV'
+  build-deploy-demo:
+    working_directory: ~/repo
+    docker:
+      - image: innovatorjapan/awscli:latest
+    steps:
+      - attach_workspace:
+          at: .
+      - front-build:
+          stage: 'demo'
+      - front-deploy:
+          stage: 'DEMO'
+  build-deploy-prod:
+    working_directory: ~/repo
+    docker:
+      - image: innovatorjapan/awscli:latest
+    steps:
+      - attach_workspace:
+          at: .
+      - front-build:
+          stage: 'prod'
+      - front-deploy:
+          stage: 'PROD'
+
+filter_workflow-jobs: &filter_workflow-jobs
+  branches:
+    ignore: /.*/
+  tags:
+    only: /v[0-9]+(\.[0-9]+)+/
+
 workflows:
   build_and_deploy:
     jobs:
-      - build:
+      - install-and-lint:
           filters:
             branches:
               only:
                 - development
-      - deploy:
+                - main
+            tags:
+              only: /v[0-9]+(\.[0-9]+)+/
+      - build-deploy-dev:
           context: aws-secrets
+          name: deploy-dev
           requires:
-            - build
+            - install-and-lint
           filters:
             branches:
               only:
                 - development
+      - build-deploy-demo:
+          context: aws-secrets
+          name: deploy-demo
+          requires:
+            - install-and-lint
+          filters:
+            <<: *filter_workflow-jobs
+      - hold-deploy-prod:
+          type: approval
+          requires:
+            - deploy-demo
+          filters:
+            <<: *filter_workflow-jobs
+      - build-deploy-prod:
+          context: aws-secrets
+          name: deploy-prod
+          filters:
+            <<: *filter_workflow-jobs
+          requires:
+            - hold-deploy-prod

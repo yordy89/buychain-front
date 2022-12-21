@@ -3,14 +3,14 @@ import { Environment } from '@services/app-layer/app-layer.environment';
 import { ProductSpec } from '@services/data-layer/http-api/base-api/swagger-gen';
 
 export class SpecHelper {
-  public static getSpecShorthand(spec: ProductSpec): string {
+  public static getSpecShorthand(): string {
     const uiProducts = Environment.getUiProducts();
     if (!uiProducts) return '';
     //return SpecLib.getShorthand(spec, uiProducts) || '';
     return '';
   }
 
-  public static substituteTemplate(template, specs) {
+  public static substituteTemplate() {
     //return SpecLib._generateShorthand(template, specs);
     return '';
   }

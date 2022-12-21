@@ -28,7 +28,7 @@ export class ConstantDataHelperService {
     //   .then(() => {
     //     Environment.setUiProducts(this.getUiProducts());
     //   });
-    return null
+    return null;
   }
 
   getCountries() {
