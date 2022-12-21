@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/repo
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:16
     steps:
       - checkout
       - restore_cache:
@@ -39,7 +39,7 @@ jobs:
           name: Deploy
           command: |
             if [ $CIRCLE_BRANCH = 'development' ]; then
-              aws s3 sync dist/frontend-gzip/ s3://buychain-front-dev/ --delete --exact-timestamps;
+              aws s3 sync dist/frontend-gzip/ s3://buychain-front-dev/ --delete --exact-timestamps --content-encoding gzip;
             fi
 workflows:
   build_and_deploy:
@@ -50,6 +50,7 @@ workflows:
               only:
                 - development
       - deploy:
+          context: aws-secrets
           requires:
             - build
           filters:
