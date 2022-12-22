@@ -108,15 +108,7 @@ export class ShippingTransportationComponent implements OnInit, OnDestroy {
   private calculateMaxShippingCost(): void {
     this.maxShippingCost = Math.min(
       ...this.transactionData.tallyUnits.map(
-        item =>
-          BuychainLibHelper.getDeliveredPricePerUom(
-            item,
-            BuychainLibHelper.getDeliveryCostPerUom(
-              this.transactionData.tallyUnits,
-              this.transactionData.costData.shippingCost
-            ),
-            this.transactionData.trackingData.transportTerm
-          ) * this.transactionData.tallyTotalMeasureTemporary
+        item => BuychainLibHelper.getDeliveredPricePerUom() * this.transactionData.tallyTotalMeasureTemporary
       )
     );
   }

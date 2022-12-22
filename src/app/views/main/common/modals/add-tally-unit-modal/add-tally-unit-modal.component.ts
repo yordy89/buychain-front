@@ -44,10 +44,7 @@ export class AddTallyUnitModalComponent implements OnInit {
     let products: ProductEntity[];
     if (this.data.transaction.isSales) {
       const selectionCriteria = Environment.getCurrentCompany().salesPractices.selectionCriteria;
-      const sortedProducts: ProductEntity[] = BuychainLibHelper.sortBasedOnSelectionCriteria(
-        this.data.availableProductsList,
-        selectionCriteria
-      );
+      const sortedProducts: ProductEntity[] = BuychainLibHelper.sortBasedOnSelectionCriteria();
       products = sortedProducts.slice(0, this.units.value);
     } else {
       // in case of purchase add some selection criteria
