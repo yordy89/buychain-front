@@ -93,7 +93,7 @@ export class ProductSpecSelectionComponent implements OnDestroy {
     specs.unitPieceCount = '0';
 
     const template = selectedProduct.shorthandTemplate || this.selectedProductGroup.shorthandTemplate;
-    const shorthand = SpecHelper.substituteTemplate(template, specs);
+    const shorthand = SpecHelper.substituteTemplate();
     return { specs: specs, shorthand: shorthand };
   }
 }

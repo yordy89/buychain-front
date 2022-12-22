@@ -74,7 +74,7 @@ export class ContractProductEntity extends ProductLotSearchBase {
     this.closedContractUnitsCount = contracts.filter(contract => contract.isClosed).length;
     this.terms = contracts[0].terms;
     this.openContractUnitsCount = this.contractUnitsCount - this.closedContractUnitsCount;
-    this.qtyPerProduct = BuychainLibHelper.getUomValue(this.spec);
+    this.qtyPerProduct = BuychainLibHelper.getUomValue();
     this.qtyInUom = this.qtyPerProduct * this.products.length;
     this.uomLabel = ProductsHelper.getMeasureLabel(this.spec);
   }

@@ -24,18 +24,18 @@ export interface ProductLotAccessRoles {
 export class ProductsHelper {
   static calcAvgCostBasisPerUom(spec, costBasisSumOfProducts: number, numberOfProducts: number): number {
     if (numberOfProducts === 0) return 0;
-    const unitMeasures = BuychainLibHelper.getUomValue(spec);
+    const unitMeasures = BuychainLibHelper.getUomValue();
     const totalMeasure = numberOfProducts * unitMeasures;
     return costBasisSumOfProducts / totalMeasure;
   }
 
   static getAskPricePerUnit(product: Product): number {
-    return BuychainLibHelper.getAskPrice(product);
+    return BuychainLibHelper.getAskPrice();
   }
 
   static getAvgAskPricePerUnit(products: Product[]): number {
     return products?.length
-      ? products.reduce((acc, cur) => acc + BuychainLibHelper.getAskPrice(cur), 0) / products.length
+      ? products.reduce((acc, cur) => acc + BuychainLibHelper.getAskPrice(), 0) / products.length
       : 0;
   }
 
@@ -44,13 +44,13 @@ export class ProductsHelper {
   }
 
   static calcProfitTotal(products: Product[]) {
-    return products.reduce((acc, cur) => acc + BuychainLibHelper.getEstimatedProfit(cur), 0);
+    return products.reduce((acc, cur) => acc + BuychainLibHelper.getEstimatedProfit(), 0);
   }
 
   static sortProductsBySelectionCriteria(products: ProductEntity[]): ProductEntity[] {
     if (!products?.length) return [];
     const selectionCriteria = Environment.getCurrentCompany().salesPractices.selectionCriteria;
-    return BuychainLibHelper.sortBasedOnSelectionCriteria(products, selectionCriteria);
+    return BuychainLibHelper.sortBasedOnSelectionCriteria();
   }
 
   static getAveragePurchaseAge(products: ProductEntity[]): number {
@@ -75,12 +75,12 @@ export class ProductsHelper {
 
   static getProductLotUnitMeasure(spec: ProductSpec): number {
     if (!spec) return;
-    return BuychainLibHelper.getUomValue(spec);
+    return BuychainLibHelper.getUomValue();
   }
 
   static getProductLotUnitWeight(spec: ProductSpec): number {
     if (!spec) return;
-    return BuychainLibHelper.getUomValue(spec) * 3500;
+    return BuychainLibHelper.getUomValue() * 3500;
   }
 
   static getProductLotMeasuresInUom(spec, productCount) {

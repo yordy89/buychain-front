@@ -1,5 +1,7 @@
 
 version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@0.1.18
 commands:
   front-build:
     parameters:
@@ -17,7 +19,7 @@ commands:
       - run: aws s3 sync dist/frontend-gzip/ s3://${S3_BUCKET_<< parameters.stage >>}/ --delete --exact-timestamps --content-encoding gzip;
 jobs:
   install-and-lint:
-    working_directory: ~/repo
+    working_directory: ~/frontend
     docker:
       - image: circleci/node:16
     steps:
@@ -25,44 +27,64 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
-      - run:
-          name: Lint
-          command: npm run lint
+      # - run:
+      #     name: Lint
+      #     command: npm run lint
       - persist_to_workspace:
           root: .
           paths:
             - .
-  build-deploy-dev:
-    working_directory: ~/repo
+  semantic-release:
     docker:
-      - image: innovatorjapan/awscli:latest
+      - image: 'circleci/node:16'
+    steps:
+      - attach_workspace:
+          at: .
+      - run: mkdir -p ~/.ssh
+      - run: ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Semantic release
+          command: npx semantic-release
+  build-deploy-dev:
+    working_directory: ~/frontend
+    docker:
+      - image: circleci/node:16
     steps:
       - attach_workspace:
           at: .
       - front-build:
           stage: 'dev'
+      - run: 
+          name: Install AWS CLI
+          command: sudo apt-get update && sudo apt-get install awscli
       - front-deploy:
           stage: 'DEV'
   build-deploy-demo:
-    working_directory: ~/repo
+    working_directory: ~/frontend
     docker:
-      - image: innovatorjapan/awscli:latest
+      - image: circleci/node:16
     steps:
       - attach_workspace:
           at: .
       - front-build:
           stage: 'demo'
+      - run: 
+          name: Install AWS CLI
+          command: sudo apt-get update && sudo apt-get install awscli
       - front-deploy:
           stage: 'DEMO'
   build-deploy-prod:
-    working_directory: ~/repo
+    working_directory: ~/frontend
     docker:
-      - image: innovatorjapan/awscli:latest
+      - image: circleci/node:16
     steps:
       - attach_workspace:
           at: .
       - front-build:
           stage: 'prod'
+      - run: 
+          name: Install AWS CLI
+          command: sudo apt-get update && sudo apt-get install awscli
       - front-deploy:
           stage: 'PROD'
 
@@ -83,6 +105,12 @@ workflows:
                 - main
             tags:
               only: /v[0-9]+(\.[0-9]+)+/
+      - semantic-release:
+          requires:
+            - install-and-lint
+          filters:
+            branches:
+              only: main
       - build-deploy-dev:
           context: aws-secrets
           name: deploy-dev

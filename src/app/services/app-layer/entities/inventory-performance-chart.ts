@@ -19,7 +19,7 @@ export class InventoryPerformanceChartEntity {
 
     this.productList.forEach(product => {
       this.sumOfCostBasis += product.priceHistory?.costBasis || 0;
-      this.sumOfMeasure += BuychainLibHelper.getUomValue(product.spec);
+      this.sumOfMeasure += BuychainLibHelper.getUomValue();
       const productTurnTime = this.getProductTurnTime(product);
       if (productTurnTime) {
         this.avgTurnTime += this.getProductTurnTime(product);

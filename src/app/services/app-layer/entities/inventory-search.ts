@@ -90,7 +90,7 @@ export class InventorySearchEntity extends ProductLotSearchBase {
   }
 
   private getQtyInUom(): number {
-    return BuychainLibHelper.getUomValue(this.spec) * this.productsCount;
+    return BuychainLibHelper.getUomValue() * this.productsCount;
   }
 
   private getQtyInUomWithLabel(): string {
@@ -186,7 +186,7 @@ export class InventoryStreamlineEntity {
     this.hasAllocatedProducts = this.products.some(p => p.isAllocated);
     this.allocatedProductsCount = this.products.filter(p => p.isAllocated).length;
 
-    this.qtyInUom = BuychainLibHelper.getUomValue(this.spec) * this.productsCount;
+    this.qtyInUom = BuychainLibHelper.getUomValue() * this.productsCount;
     this.qtyInUomWithLabel = `${this.qtyInUom.toFixed(3)} ${ProductsHelper.getMeasureLabel(this.spec)}`;
     this.totalCostBasis = this.products.reduce((acc, cur) => acc + cur.costBasis, 0);
     this.averageCostBasis = this.productsCount ? this.totalCostBasis / this.productsCount : 0;
