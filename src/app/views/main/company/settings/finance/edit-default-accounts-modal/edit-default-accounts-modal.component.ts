@@ -12,7 +12,7 @@ import {
   CompanyDetails,
   CompanyAccountingPracticesDefaultAccounts
 } from '@services/data-layer/http-api/base-api/swagger-gen';
-import { CompanyLib } from '@buychain/lib';
+//import { CompanyLib } from '@buychain/lib';
 
 @Component({
   selector: 'app-edit-default-accounts-modal',
@@ -22,8 +22,9 @@ import { CompanyLib } from '@buychain/lib';
 export class EditDefaultAccountsModalComponent implements OnInit {
   form: FormGroup;
   accountsKeyTypeList = [];
-  private readonly defaultAccountRules: { [key: string]: { naturalBalance: string; type: string } } =
-    CompanyLib.getDefaultAccountsRules();
+  // private readonly defaultAccountRules: { [key: string]: { naturalBalance: string; type: string } } =
+  //   CompanyLib.getDefaultAccountsRules();
+  private readonly defaultAccountRules: { [key: string]: { naturalBalance: string; type: string } } = {};
 
   constructor(
     private notificationHelperService: NotificationHelperService,

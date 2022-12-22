@@ -48,13 +48,12 @@ export class InventoryAuditGridEntity {
     this.state = TransformHelper.stringUnderscoreToSpaceTitleCase(product.state);
     this.specShorthand = product.specShorthand;
     this.spec = { ...product.spec, specShorthand: this.specShorthand };
-    this.qty = Math.round(BuychainLibHelper.getUomValue(product.spec) * 1000) / 1000;
+    this.qty = Math.round(BuychainLibHelper.getUomValue() * 1000) / 1000;
     this.priceSystem = product.spec.priceSystem;
     this.allocated = product.allocatedTransactionId ? 'Yes' : 'No';
     this.permission = product.permission;
     this.value = Math.round(product.priceHistory.costBasis * 100) / 100;
-    this.costBasisPerUOM =
-      Math.round((product.priceHistory.costBasis / BuychainLibHelper.getUomValue(product.spec)) * 100) / 100;
+    this.costBasisPerUOM = Math.round((product.priceHistory.costBasis / BuychainLibHelper.getUomValue()) * 100) / 100;
     this.purchaseDate = product.dateHistory?.purchaseDate ? new Date(product.dateHistory.purchaseDate) : null;
     this.landedDate = product.dateHistory?.landedDate ? new Date(product.dateHistory.landedDate) : null;
     this.custodyDate = product.dateHistory?.custodyDate ? new Date(product.dateHistory.custodyDate) : null;

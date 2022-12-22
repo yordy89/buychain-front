@@ -110,11 +110,8 @@ export class TallyComponent implements OnDestroy, OnChanges {
 
   onDeliveredValueChanged(line) {
     const term = this.transactionData.trackingData.transportTerm;
-    const deliveryCostPerUom = BuychainLibHelper.getDeliveryCostPerUom(
-      this.transactionData.tallyUnits,
-      this.transactionData.costData.shippingCost
-    );
-    const offer = BuychainLibHelper.getOfferPerUom(line.deliveredOfferFormControl.value, deliveryCostPerUom, term);
+    const deliveryCostPerUom = BuychainLibHelper.getDeliveryCostPerUom();
+    const offer = BuychainLibHelper.getOfferPerUom();
     line.offerFormControl.setValue(offer);
     line.formGroup.markAsDirty();
   }
@@ -236,10 +233,7 @@ export class TallyComponent implements OnDestroy, OnChanges {
           p => !p.allocatedTransactionId && !line.unitProducts.some(u => u.id === p.id)
         );
         const selectionCriteria = Environment.getCurrentCompany().salesPractices.selectionCriteria;
-        const sortedAvailableProducts = BuychainLibHelper.sortBasedOnSelectionCriteria(
-          availableProducts,
-          selectionCriteria
-        );
+        const sortedAvailableProducts = BuychainLibHelper.sortBasedOnSelectionCriteria();
         const productsToDeleteFromTally = line.products.filter(p => p.product.allocatedTransactionId);
         const productsToAddToTally = sortedAvailableProducts.slice(0, productsToDeleteFromTally.length);
 
@@ -356,10 +350,7 @@ export class TallyComponent implements OnDestroy, OnChanges {
     let productsToRemove = [];
     const selectionCriteria = Environment.getCurrentCompany().salesPractices.selectionCriteria;
     if (tallyItem.qtyFormControl.value < tallyItem.qty) {
-      const reverseSortedProducts = BuychainLibHelper.sortBasedOnSelectionCriteria(
-        tallyItem.unitProducts,
-        selectionCriteria
-      ).reverse();
+      const reverseSortedProducts = BuychainLibHelper.sortBasedOnSelectionCriteria().reverse();
       productsToRemove = reverseSortedProducts.slice(0, tallyItem.qty - tallyItem.qtyFormControl.value);
       const unitsToRemove = tallyItem.products.filter(p => productsToRemove.some(r => r.id === p.product.id));
       unitsToRemove.forEach(p =>
@@ -372,10 +363,7 @@ export class TallyComponent implements OnDestroy, OnChanges {
       const additionalAvailableProducts = lot.availableProducts.filter(
         p => !tallyItem.unitProducts.some(item => item.id === p.id)
       );
-      const sortedProducts = BuychainLibHelper.sortBasedOnSelectionCriteria(
-        additionalAvailableProducts,
-        selectionCriteria
-      );
+      const sortedProducts = BuychainLibHelper.sortBasedOnSelectionCriteria();
       const productsToAdd = sortedProducts.slice(0, tallyItem.qtyFormControl.value - tallyItem.qty);
 
       productsToAdd.forEach(p => {
@@ -467,14 +455,7 @@ export class TallyComponent implements OnDestroy, OnChanges {
   }
 
   private handleDeliveredPrice(item, unitsOldDelivered) {
-    const deliveredCost = BuychainLibHelper.getDeliveredPricePerUom(
-      item,
-      BuychainLibHelper.getDeliveryCostPerUom(
-        this.transactionData.tally.units,
-        this.transactionData.costData.shippingCost
-      ),
-      this.transactionData.trackingData.transportTerm
-    );
+    const deliveredCost = BuychainLibHelper.getDeliveredPricePerUom();
     item.deliveredOfferFormControl = new FormControl(deliveredCost, [
       Validators.required,
       Validators.min(0),

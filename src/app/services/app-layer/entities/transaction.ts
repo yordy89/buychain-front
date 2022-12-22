@@ -109,8 +109,8 @@ export class TallyUnitEntity {
     this.offer = this.getOffer();
     this.contract = this.getContract();
     this.shipWeekEstimate = this.getShipWeekEstimate();
-    this.unitTotalSalesPrice = BuychainLibHelper.getSalesPriceOfUnits(this.products);
-    this.unitTotalMeasure = BuychainLibHelper.getUomOfUnits(this.products);
+    this.unitTotalSalesPrice = BuychainLibHelper.getSalesPriceOfUnits();
+    this.unitTotalMeasure = BuychainLibHelper.getUomOfUnits();
     this.hasOutstandingProducts = this.isAvailableOutstandingProducts();
     this.hasAllocatedProducts = this.products.some(p => !!p.product.allocatedTransactionId);
     this.unitTotalCostBasis = this.getCostBasisOfUnits();
@@ -136,11 +136,11 @@ export class TallyUnitEntity {
   }
 
   private getCostBasisOfUnits() {
-    return this.products[0]?.product?.priceHistory ? BuychainLibHelper.getCostBasisOfUnits(this.products) : 0;
+    return this.products[0]?.product?.priceHistory ? BuychainLibHelper.getCostBasisOfUnits() : 0;
   }
 
   private getListPriceOfUnits() {
-    return this.products[0]?.product?.salesData ? BuychainLibHelper.getListPriceOfUnits(this.products) : 0;
+    return this.products[0]?.product?.salesData ? BuychainLibHelper.getListPriceOfUnits() : 0;
   }
 
   private getSampleProduct(): Product {
@@ -193,7 +193,7 @@ export class TallyUnitEntity {
 
   private getListPricePerProduct(): number {
     const product = this.products[0];
-    return product?.product?.salesData ? BuychainLibHelper.getListPriceOfUnit(product) : 0;
+    return product?.product?.salesData ? BuychainLibHelper.getListPriceOfUnit() : 0;
   }
 
   private getOfferOrListPricePerProduct() {
@@ -204,7 +204,7 @@ export class TallyUnitEntity {
     // used in tally component dx grid
     if (!this.offer || this.offer >= this.priceOfMerit) return null;
     return this.products?.length && this.products[0].product.salesData
-      ? BuychainLibHelper.getDiscountOfUnit(this.products[0]) * this.qty
+      ? BuychainLibHelper.getDiscountOfUnit() * this.qty
       : 0;
   }
 
@@ -237,7 +237,7 @@ export class TallyUnitEntity {
   private getUnitMeasurePerProduct(): number {
     const unit = this.products[0];
     if (!unit.product?.spec) return 0;
-    return BuychainLibHelper.getUomOfUnit(unit);
+    return BuychainLibHelper.getUomOfUnit();
   }
 
   private getMeasureLabel(): string {
@@ -256,7 +256,7 @@ export class TallyUnitEntity {
 
   private getSpecShorthand(): string {
     const spec = this.sampleProduct?.spec;
-    return spec ? SpecHelper.getSpecShorthand(spec) : '';
+    return spec ? SpecHelper.getSpecShorthand() : '';
   }
 
   private getProductGroup(): string {
@@ -841,7 +841,7 @@ export class TransactionEntity {
   }
 
   protected getTallyTotalMeasureTemporary() {
-    return BuychainLibHelper.getUomOfUnits(this.tallyUnits);
+    return BuychainLibHelper.getUomOfUnits();
   }
 
   protected initBase(dto) {
@@ -879,7 +879,7 @@ export class TransactionEntity {
       );
       if (tallyUnits.length) {
         if (this.role === RoleInTransaction.Seller && tallyUnits[0]?.product?.priceHistory) {
-          this.profit = BuychainLibHelper.getSellerProfit(tallyUnits, this.costData.cogArray) || null;
+          this.profit = BuychainLibHelper.getSellerProfit() || null;
           this.initMargin(tallyUnits);
         }
 
@@ -891,12 +891,7 @@ export class TransactionEntity {
   }
 
   private initMargin(tallyUnits) {
-    const margin = BuychainLibHelper.getSellerMargin(
-      tallyUnits,
-      this.costData.cogArray,
-      this.trackingData.transportTerm,
-      this.costData.shippingCost
-    );
+    const margin = BuychainLibHelper.getSellerMargin();
 
     this.isMarginNotDefined = margin === 'n/a';
 
@@ -913,12 +908,12 @@ export class TransactionEntity {
   }
 
   private initDiscount(tallyUnits) {
-    this.discount = BuychainLibHelper.getDiscount(tallyUnits) || null;
+    this.discount = BuychainLibHelper.getDiscount() || null;
     if (this.discount <= 0) {
       this.discount = 0;
       this.discountPercentage = 0;
     } else {
-      this.discountPercentage = BuychainLibHelper.getDiscountPercentage(tallyUnits) || null;
+      this.discountPercentage = BuychainLibHelper.getDiscountPercentage() || null;
       if (this.discountPercentage) this.discountPercentage /= 100;
     }
   }
@@ -1067,7 +1062,7 @@ export class TransactionEntity {
   }
 
   protected checkIfHasMixedUomTallyItem() {
-    if (this.tallyUnits.length) return !BuychainLibHelper.isSamePriceSystem(this.tallyUnits);
+    if (this.tallyUnits.length) return !BuychainLibHelper.isSamePriceSystem();
     return false;
   }
 
@@ -1119,12 +1114,7 @@ export class TransactionEntity {
       return 0;
     }
 
-    return BuychainLibHelper.getTransactionFee(
-      Environment.getCurrentCompany().contract,
-      this.tallyUnits,
-      this.costData.shippingCost,
-      this.trackingData.transportTerm
-    );
+    return BuychainLibHelper.getTransactionFee();
   }
 
   private getIsConfirmedOrHigherState(): boolean {
@@ -1262,43 +1252,30 @@ export class TransactionEntity {
       return terms.includes(this.trackingData.transportTerm) ? this.costData.shippingCost : 0;
     }
     if (this.role === RoleInTransaction.Buyer) {
-      return BuychainLibHelper.getShippingCostPayableByBuyer(
-        this.trackingData.transportTerm,
-        this.costData.shippingCost
-      );
+      return BuychainLibHelper.getShippingCostPayableByBuyer();
     }
   }
 
   protected getDeliveredPriceTotal(): number {
     if (!this.tallyUnits?.length) return 0;
 
-    return BuychainLibHelper.getDeliveredPrice(
-      this.tallyUnits,
-      this.costData.shippingCost,
-      this.trackingData.transportTerm
-    );
+    return BuychainLibHelper.getDeliveredPrice();
   }
 
   private getDeliveryCostPerUom(): number {
     if (!this.tallyUnits.length) return 0;
-    return BuychainLibHelper.getDeliveryCostPerUom(this.tallyUnits, this.costData.shippingCost);
+    return BuychainLibHelper.getDeliveryCostPerUom();
   }
 
   calcDeliveredPricePerLineItem(tallyItem: TallyUnitEntity) {
     if (!tallyItem.products.length) return 0;
-    const deliveredPrices = tallyItem.products.map(p =>
-      BuychainLibHelper.getDeliveredPricePerUnit(p, this.deliveryCostPerUom, this.trackingData.transportTerm)
-    );
+    const deliveredPrices = tallyItem.products.map(p => BuychainLibHelper.getDeliveredPricePerUnit());
     return deliveredPrices.reduce((acc, cur) => acc + cur, 0);
   }
 
   calcDeliveredPricePerUoM(tallyItem: TallyUnitEntity) {
     const tallyUnit = tallyItem.products[0];
-    const deliveredPrice = BuychainLibHelper.getDeliveredPricePerUom(
-      tallyUnit,
-      this.deliveryCostPerUom,
-      this.trackingData.transportTerm
-    );
+    const deliveredPrice = BuychainLibHelper.getDeliveredPricePerUom();
     return deliveredPrice || 0;
   }
 
@@ -1370,7 +1347,7 @@ export class TransactionEntity {
   private getTotalCostBasis(): number {
     const units = this.tallyUnits.filter(item => !item.contract);
     if (units.length === 0) return 0;
-    return BuychainLibHelper.getCostBasisOfUnits(units);
+    return BuychainLibHelper.getCostBasisOfUnits();
   }
 
   protected getTallyMeasurePerPriceSystem(): any[] {
@@ -1393,7 +1370,7 @@ export class TransactionEntity {
 
   private getTallyTotalMeasureTemporaryExcludingContracts(): number {
     const units = this.tallyUnits.filter(item => !item.contract);
-    return BuychainLibHelper.getUomOfUnits(units);
+    return BuychainLibHelper.getUomOfUnits();
   }
 
   // used only up to Review state ONLY
