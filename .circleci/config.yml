@@ -90,12 +90,11 @@ jobs:
 
 filter_workflow-jobs: &filter_workflow-jobs
   branches:
-    ignore: /.*/
-  tags:
-    only: /v[0-9]+(\.[0-9]+)+/
+    only:
+      - main
 
 workflows:
-  build_and_deploy:
+  build_and_deploy-prod:
     jobs:
       - install-and-lint:
           filters:
@@ -103,15 +102,8 @@ workflows:
               only:
                 - development
                 - main
-            tags:
-              only: /v[0-9]+(\.[0-9]+)+/
-      - semantic-release:
-          context: semantic-release
-          requires:
-            - install-and-lint
-          filters:
-            branches:
-              only: main
+            # tags:
+            #   only: /v[0-9]+(\.[0-9]+)+/
       - build-deploy-dev:
           context: aws-secrets
           name: deploy-dev
@@ -121,17 +113,17 @@ workflows:
             branches:
               only:
                 - development
-      - build-deploy-demo:
-          context: aws-secrets
-          name: deploy-demo
-          requires:
-            - install-and-lint
-          filters:
-            <<: *filter_workflow-jobs
+      # - build-deploy-demo:
+      #     context: aws-secrets
+      #     name: deploy-demo
+      #     requires:
+      #       - install-and-lint
+      #     filters:
+      #       <<: *filter_workflow-jobs
       - hold-deploy-prod:
           type: approval
           requires:
-            - deploy-demo
+            - install-and-lint
           filters:
             <<: *filter_workflow-jobs
       - build-deploy-prod:
@@ -141,3 +133,10 @@ workflows:
             <<: *filter_workflow-jobs
           requires:
             - hold-deploy-prod
+      - semantic-release:
+          context: semantic-release
+          name: semantic-release
+          requires:
+            - hold-deploy-prod
+          filters:
+            <<: *filter_workflow-jobs
