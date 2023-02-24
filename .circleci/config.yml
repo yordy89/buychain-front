@@ -94,7 +94,7 @@ filter_workflow-jobs: &filter_workflow-jobs
       - main
 
 workflows:
-  build_and_deploy-prod:
+  build_and_deploy:
     jobs:
       - install-and-lint:
           filters:
